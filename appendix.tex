@@ -1,0 +1,148 @@
+% \large
+% 	\begingroup
+% 		\let\clearpage\relax
+% 		\chapter*{Appendix}
+% 	\endgroup
+% \normalsize
+% \addcontentsline{toc}{chapter}{Appendix}
+% \section{Assistance for Running the Project}
+% 	\subsection{Deep Sort And YOLO V4}
+% 		\subsubsection{Clone Git Project}
+% 			\begin{verbatim}
+% 				https://gitlab.com/khwopa1/VV.git
+% 			\end{verbatim}
+% 		\subsubsection{Installation Required}	
+% 			To run the project, python3.6 or above required and pip3 with latest version 20.X.X\\
+% 			Upgrade the pip3 version to latest
+% 			version\ldots (Required)
+% 			\begin{verbatim}
+% 				sudo -H pip3 install --upgrade pip
+% 			\end{verbatim}
+% 			To run the required libraries run the install.sh file as:
+% 			\begin{verbatim}
+% 				./install.sh
+% 			\end{verbatim}				
+% 		\subsubsection{Inclusion needed (Optional since file is already converted and stored in model\_data)}
+% 			Download and add yolov4.weights file in model\_data folder,
+% 			then run 
+% 			\begin{verbatim}
+% 				python3 convert.py
+% 			\end{verbatim}
+% 			This will convert the yolov4 weights file to keras model (.h5 file) The keras model will save in the model\_data directory..
+% 		\subsubsection{Inference}
+% 			\begin{verbatim}
+% 				python3 main.py
+% 			\end{verbatim}
+% 			Change video name on line 59 in main.py
+% 			\begin{verbatim}
+% 				self.filename = `[filename]'
+% 			\end{verbatim}
+% 			\pagebreak
+% 	\subsection{Mot-ground-truth}
+% 		\subsubsection{How to use?}
+% 			\begin{verbatim}
+% 				python3 main.py --data [directory containing images] --dest [filename 
+% 				to store result]
+% 			\end{verbatim}
+% 		\subsubsection{Preprocessing}
+% 			For this, the image must be stored in a directory and name it like 1.jpg, 2.jpg, \ldots and do not brake in naming from 1,2,3\ldots ..
+% 		\subsubsection{During Run time}
+% 			Image will open\ldots Be careful don't click on image,
+% 			\begin{enumerate} 
+% 				\item The First image will open with name 1.jpg.
+% 				\item There select the rectangle box:
+% 					\begin{itemize}
+% 						\item First pick the first point.
+% 						\item Pick the second point.
+% 						\item Then, you will be ask to input track id, there enter the track id.
+% 					\end{itemize}
+% 				\item Repeat the 2. step for other object in that image also.
+% 				\item Press ESC to get next image.
+% 				\item Repeat the step 2 and 3.
+% 			\end{enumerate}
+% 		\subsubsection{MOT-evaluation}
+% 			How to use? 
+% 			\begin{verbatim}
+% 				python3 evaluate_tracking.py --seqmap [Path to seqmap file] 
+% 				--track [Path to Tracking result directory] 
+% 				--gt [Path to Ground-truth annotation directory]
+% 			\end{verbatim}
+			
+% 		\subsubsection{Preprocessing}
+% 			The sequence map must be update with the required directory name. Generally the directory name will match with the video file name.
+% 	\pagebreak
+
+
+	
+% 	\section{Snapshot}
+% 	\subsection{Asana} \label{Appendix:Asana}
+% 	\begin{figure}[h]
+% 		\centering
+% 			\includegraphics[width=1\textwidth]{img/asana.png}
+% 	\end{figure}
+% 	\subsection{Create task in asana} \label{Appendix: Create task in asana}
+% 	\begin{figure}[h]
+% 		\begin{center}
+% 			\includegraphics[width=0.75\textwidth]{img/asana_create_task.png}
+% 		\end{center}
+% 	\end{figure}
+% 	\break
+% 	\subsection{Create issue in gitlab} \label{Appendix: Create issue in gitlab}
+% 	\begin{figure}[h]
+% 		\begin{center} 
+% 			\includegraphics[width=1\textwidth]{img/gitlab_create_issue.png}
+% 		\end{center}
+% 	\end{figure}
+% 	\break
+% 	\subsection{Gantt Chart of project for iteration1 made with Instagantt} \label{Appendix: Gantt Chart of project for iteration1 made with Instagantt}
+% 	\begin{figure}[h] 
+% 		\centering
+% 			\includegraphics[width=1.3\textwidth, angle=90]{img/gantt_chart.jpeg}
+% 	\end{figure}
+% 	\break
+	
+% 	\subsection{Outcome of desktop App for dattatraya}\label{appendix:Actual outcome of desktop App for dattatraya}
+% 	\begin{figure}[h]
+% 		\centering
+% 			\includegraphics[width=.9\textwidth]{img/VV_actual.png}
+% 	\end{figure}
+% 	\subsection{Unit test 1 for detection module}\label{appendix:Unit test 1 for detection module}
+% 	\begin{figure}[h]
+% 		\centering
+% 		\includegraphics[width=0.9\textwidth]{img/object_test1.jpg}
+% 	\end{figure}
+% 	\break
+% 	\subsection{Unit test 2 for detection module}\label{appendix:Unit test 2 for detection module}
+% 	\begin{figure}[h]
+% 		\centering
+% 		\includegraphics[width=0.9\textwidth]{img/object_test2.jpg} 
+% 	\end{figure}
+% 	\subsection{Unit test 3 for detection module}\label{appendix:Unit test 3 for detection module}
+% 	\begin{figure}[h]
+% 		\centering
+% 		\includegraphics[width=0.9\textwidth]{img/object_test3.jpg}  
+% 	\end{figure}
+% 	\break
+% 	\subsection{Unit test 1 for region detection in mobile}\label{appendix:Unit test 1 for region detection in mobile}
+% 	\begin{figure}[h]
+% 		\centering
+% 		\includegraphics[width=0.3\textwidth]{img/region_detect_test_1.jpg}  
+% 	\end{figure}
+% 	\subsection{Unit test 2 for region detection in mobile}\label{appendix:Unit test 2 for region detection in mobile}
+% 	\begin{figure}[h]
+% 		\centering
+% 		\includegraphics[width=0.3\textwidth]{img/region_detect_test_2.jpg}
+% 	\end{figure}
+% 	\break
+% 	\subsection{Unit test 3 for region detection in mobile}\label{appendix:Unit test 3 for region detection in mobile}
+% 	\begin{figure}[h]
+% 		\centering
+% 		\includegraphics[width=0.3\textwidth]{img/region_detect_test_3.jpg}
+% 	\end{figure}
+% 	\subsection{Unit test 4 for region detection in mobile}\label{appendix:Unit test 4 for region detection in mobile}
+% 	\begin{figure}[h]
+% 		\centering
+% 		\includegraphics[width=0.3\textwidth]{img/region_detect_test_4.jpg}
+% 	\end{figure}
+% 	  \pagebreak
+	

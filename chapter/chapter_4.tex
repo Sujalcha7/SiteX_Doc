@@ -1,0 +1,208 @@
+\chapter{Methodology}
+\section{Block Diagram}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{img/BlockDiagram.png}
+	\caption{Block Diagram}
+	\label{fig:block-diagram}
+\end{figure}
+The diagram illustrates the block diagram of the Predictive Site Selection System
+
+\begin{itemize}
+	\item\textbf{User Interaction Components}: The process begins when the \textbf{User} selects a location on the \textbf{Map UI}. The \textbf{Backend} receives the coordinates and, after processing, sends the final "Success Score" to the \textbf{Frontend} for display.
+
+	\item\textbf{Data Processing Engine}: The core logic is handled by two distinct services. The \textbf{Feature} calculator receives the coordinates from the backend and uses the \textbf{Geographic Database} to calculate a set of numerical features. These features are then sent to the \textbf{Predictor}, which uses the \textbf{Trained Model File} to generate a prediction score.
+
+	\item\textbf{External Assets}: The system relies on two critical, pre-existing assets: the \textbf{Geographic Database}, which stores all location data, and the \textbf{Trained Model File} (\texttt{.pkl}), which contains the system's predictive intelligence. These are consumed by the live system but created offline.
+\end{itemize}
+% \pagebreak
+\section{Usecase Diagram}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{img/UsecaseDiagram.png}
+	\caption{Usecase Diagram}
+	\label{fig:Usecase-diagram}
+\end{figure}\
+\noindent
+\ignorespaces The use case diagram for the Predictive Site Selection System illustrates interactions between the system and its users: Business Owner and Data Analyst. Key components include:
+\begin{itemize}
+	\item \textbf{Business Owner}: Performs \textit{Select Location}, \textit{Get Success Prediction}, \textit{View Prediction Breakdown}, \textit{Manage Saved Sites}, and \textit{Compare Multiple Locations}.
+	\item \textbf{Data Analyst}: Manages \textit{AI Model}, \textit{View System Analytics}, \textit{Manage Geographic Data}, and \textit{Update Competitor Locations}.
+	\item \textbf{System}: Central entity with use cases extending and including various functionalities.
+\end{itemize}
+\pagebreak
+\setlength{\parindent}{15pt}
+\section{Zero Context level Diagram}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{img/ContextDiagram.png}
+	\caption{0-level Context Diagram}
+	\label{fig:Context-level-diagram}
+\end{figure}
+
+This is a high-level view of the entire system.
+
+\section*{External Entities:}
+\begin{enumerate}
+	\item \textbf{Data Analyst / Project Team}: verifies and inputs Geographic data of Relevant Competitors.
+	\item \textbf{Business Owner / Entrepreneur}: requests analysis of proposed location.
+\end{enumerate}
+
+\section*{Process:}
+\begin{enumerate}
+	\item \textbf{Predictive Site Selection System}: runs prediction models to obtain the success rate of the proposed site location and provides the resulting score report and insights to the Business Owner / Entrepreneur.
+\end{enumerate}
+
+\section*{Data Store}
+\begin{enumerate}
+	\item \textbf{External Data Storage}: stores raw map data obtained from various sources such as OpenStreetMap.
+\end{enumerate}
+\pagebreak
+\section{Workflow Diagram}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{img/WorkflowDiagram.png}
+	\caption{Workflow Diagram}
+	\label{fig:Workflow-diagram}
+\end{figure}
+This diagram illustrates the two primary and distinct workflows that define the entire project.
+
+\begin{itemize}
+	\item\textbf{Data Analyst Workflow (Right Side)} This represents the offline, foundational process required to build the system's intelligence. It begins with downloading raw data, processing it in GIS, and storing it in a \textbf{Master Database}. This data is then used in an \textbf{ML Pipeline} to engineer features and train a model, resulting in the final \textbf{Trained Model File}.
+
+	\item\textbf{Business Owner Workflow (Left Side)} This represents the real-time, online process. A \textbf{User} selects a location, which triggers the \textbf{Backend API}. The API orchestrates the calculation of features, loads the trained model, feeds the features into it, and sends the final score and insights to the user for display.
+
+	\item\textbf{The Bridge} The diagram critically shows the connection between the two workflows. The outputs of the Analyst's work—the \textbf{Master Database} (used by the "Calculate Features" step) and the \textbf{Trained Model File} (used by the "Load Trained" step)—are the essential inputs that power the live Business Owner workflow.
+\end{itemize}
+% \noindent
+%     The development of the predictive site selection platform will follow a systematic methodology grounded in geospatial data analysis and supervised machine learning. The project is designed to transform raw geographic data into actionable business intelligence, providing a data-driven forecast of a new retail location's potential success. The workflow encompasses geospatial data aggregation, feature engineering, predictive model training, and deployment via an interactive web application.
+
+\subsection{Geospatial Data Collection and Aggregation}
+
+The project's foundation is a high-quality, multi-layered geographic dataset. This "Master Dataset" will be built by aggregating data from both public online sources and manual field verification within a defined geographic scope (e.g., Bhaktapur).
+
+The primary tool for this phase will be the open-source Geographic Information System (GIS) software, \texttt{QGIS}. Data will be collected and organized into distinct layers:
+
+\begin{itemize}
+	\item \textbf{Competitor Layer:} Locations of all existing businesses of the same type (e.g., cafes). This will be sourced initially from OpenStreetMap (OSM) and then verified and augmented through manual "ground-truthing" to ensure accuracy and completeness.
+	\item \textbf{People Magnet Layer (Points of Interest - POIs):} Locations that attract significant foot traffic, such as schools, temples, major offices, and bus stops. This data will also be sourced from OSM and manually verified.
+	\item \textbf{Road Network Layer:} The complete network of roads, paths, and alleys within the study area, sourced from OSM.
+\end{itemize}
+
+Each data point will be stored with its precise geographic coordinates (latitude and longitude) in a central database.
+
+\subsection{Feature Engineering and Data Structuring}
+
+This critical phase involves converting the raw geospatial data into a structured, numerical format suitable for machine learning. This process, known as feature engineering, will be performed using GIS analysis tools within QGIS and Python libraries like \texttt{GeoPandas}.
+
+For each existing cafe in our dataset, we will calculate a set of predictive features:
+\begin{itemize}
+	\item \textbf{Competitor Density:} The number of other cafes within a 100-meter and 300-meter radius, calculated using a buffer analysis.
+	\item \textbf{Proximity to POIs:} The straight-line distance to the nearest "People Magnet" in each category (e.g., nearest school, nearest bus stop), calculated using a distance matrix analysis.
+	\item \textbf{Road Type Classification:} A manually assigned score based on the road's classification (e.g., Main Commercial Route, Feeder Street, Local Alley).
+	\item \textbf{Visibility Score:} A manually assigned score (1-5) based on the storefront's visibility from main pathways.
+\end{itemize}
+
+Alongside these features, we will define our target variable:
+\begin{itemize}
+	\item \textbf{Popularity Score (Target Variable):} A composite score (1-10) calculated from publicly available data like Google Maps ratings, the number of reviews and Social Media Presence. This score acts as a proxy for business success.
+\end{itemize}
+
+\noindent Each data point will be structured in a JSON-like format for training:
+
+\{\\
+\hspace*{1em}"id": 25,\\
+\hspace*{1em}"cafe\_name": "Himalayan Java",\\
+\hspace*{1em}"popularity\_score": 8.7,\\
+\hspace*{1em}"competitor\_density\_100m": 3,\\
+\hspace*{1em}"dist\_to\_school\_m": 152,\\
+\hspace*{1em}"road\_type": "Main Commercial Route",\\
+\hspace*{1em}"visibility\_score": 5\\
+\}\\
+
+To prepare for model training and evaluation, the dataset will be partitioned using the standard train-test-validation split:
+\begin{itemize}
+	\item 70\% for training the model.
+	\item 15\% for validation during hyperparameter tuning.
+	\item 15\% for final testing on unseen data.
+\end{itemize}
+
+\subsection{Predictive Modeling System}
+
+The core of the application is the system that provides real-time predictions for new, hypothetical locations. The user interaction is designed to be simple and intuitive.
+
+\begin{itemize}
+	\item A user selects any point on the interactive map interface.
+	\item The frontend application sends the selected coordinates to the backend API.
+	\item The backend, in real-time, calculates all the engineered features for that specific point by querying the geographic database.
+	\item These features are then fed into the pre-trained machine learning model.
+	\item The model returns a single output: the predicted "Success Score".
+	\item The system will also provide a "Prediction Breakdown," showing which features contributed most positively or negatively to the score, offering actionable insights.
+\end{itemize}
+
+\subsection{Predictive Engine via Supervised Learning}
+
+Unlike adaptive systems that use Reinforcement Learning, our project will utilize a **Supervised Learning** model. This approach is ideal for our problem, as we are training a model to predict a specific, known target value (Popularity Score) based on a labeled dataset of existing examples.
+
+The system will be modeled using the standard supervised regression framework:
+
+\begin{tabular}{|l|p{10cm}|}
+	\hline
+	\textbf{ML Component}         & \textbf{Description}                                                                                                                \\
+	\hline
+	\textbf{Input Features (X):}  & A vector of numerical values representing the engineered features (competitor density, proximity, visibility, etc.).                \\
+	\hline
+	\textbf{Target Variable (Y):} & The continuous "Popularity Score" that the model learns to predict.                                                                 \\
+	\hline
+	\textbf{Model Architecture:}  & A gradient boosted decision tree model, specifically \textbf{XGBoost}, chosen for its high accuracy and robustness on tabular data. \\
+	\hline
+	\textbf{Prediction Output:}   & A single, continuous value (e.g., 7.8) representing the predicted success score for a new location.                                 \\
+	\hline
+\end{tabular}
+
+\subsubsection{Example Input Feature Vector}
+\noindent An example input vector fed to the model for a new location might look like:
+\begin{verbatim}
+    [ 2, 4, 250, 80, 3, 4 ] 
+    // Represents [competitors_100m, competitors_300m, dist_to_school,
+    // dist_to_bus_stop, road_type_score, visibility_score]
+    \end{verbatim}
+
+\subsection{Model Training and Evaluation Strategy}
+
+The training process is designed to ensure the model is both accurate and reliable.
+\begin{itemize}
+	\item A baseline model (e.g., Linear Regression) will be established to measure the performance uplift provided by our chosen model.
+	\item The primary model, \textbf{XGBoost}, will be trained on the 70\% training dataset.
+	\item Model performance will be assessed on the test set using standard regression metrics:
+	      \begin{itemize}
+		      \item \textbf{Mean Absolute Error (MAE):} Measures the average absolute difference between predicted and actual scores.
+		      \item \textbf{Root Mean Squared Error (RMSE):} Similar to MAE but penalizes larger errors more heavily.
+		      \item \textbf{R-squared (R²):} Indicates the proportion of the variance in the success score that is predictable from the input features.
+	      \end{itemize}
+\end{itemize}
+
+\subsection{Data Schema and Storage}
+
+To support the real-time feature calculation, all aggregated geographic data will be stored in a professional-grade database system.
+\begin{itemize}
+	\item \textbf{Database Technology:} \textbf{PostgreSQL} with the \textbf{PostGIS} extension.
+	\item \textbf{Why PostGIS?} This extension provides powerful functions to perform geographic queries directly in the database (e.g., \texttt{ST\_DWithin}, \texttt{ST\_Distance}), which is extremely efficient.
+\end{itemize}
+
+\noindent \textbf{Example Schema for `locations` Table}
+
+\{\\
+\hspace*{1em}"location\_id": "pk\_101",\\
+\hspace*{1em}"name": "Himalayan Java",\\
+\hspace*{1em}"type": "cafe",\\
+\hspace*{1em}"geom": "POINT(85.4290 27.6715)", \textit{-- PostGIS geometry type}\\
+\hspace*{1em}"google\_rating": 4.5,\\
+\hspace*{1em}"google\_reviews\_count": 1800\\
+\}\\
+
+\noindent This structured storage allows our backend to quickly query all necessary information relative to a new user-selected coordinate, making the entire system fast and responsive.
+
+
+
+

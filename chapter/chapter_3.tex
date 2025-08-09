@@ -1,0 +1,93 @@
+\chapter{PROJECT MANAGEMENT}
+\section{Team Members}
+\text{This project is the joint effort of: }
+\begin{enumerate}
+	\item Anish Maka      - 780304
+	\item Roj Gosai       - 780334
+	\item Subekshya Kadel - 780341
+	\item Sujal Koju      - 780342
+\end{enumerate}
+% \section{Feasibility Study}
+% \section{Work Breakdown Structure}
+
+% \begin{table}[h]
+% \centering
+% \setlength{\tabcolsep}{12pt}  % Increases horizontal padding
+% \renewcommand{\arraystretch}{1.5}  % Increases vertical padding
+% \begin{tabular}{|c|l|c|c|c|c|c|c|}
+% \hline
+% S.N & \multirow{2}{*}{Job Description} & \multicolumn{6}{c|}{Month} \\
+% \cline{3-8}
+%  & & 1st & 2nd & 3rd & 4th & 5th & 6th \\
+%  & & month & month & month & month & month & month \\
+% \hline
+% 1. & Project Identification & \cellcolor{black} & & & & & \\
+% \hline
+% 2. & Analysis & \cellcolor{black} & \cellcolor{black} & & & & \\
+% \hline
+% 3. & Design & & \cellcolor{black} & \cellcolor{black} & \cellcolor{black} & & \\
+% \hline
+% 4. & Coding \& testing & & & \cellcolor{black} & \cellcolor{black} & \cellcolor{black} & \\
+% \hline
+% 5. & Implementation & & & & & \cellcolor{black} & \cellcolor{black} \\
+% \hline
+% 6. & Documentation & \multicolumn{6}{c|}{\cellcolor{black}} \\
+% \hline
+% \end{tabular}
+% \caption{Project Timeline}
+% \label{tab:project-timeline}
+% \end{table}
+
+\section{Software Requirements}
+
+The software requirements for the development and deployment of the predictive site selection system include:
+\begin{enumerate}
+	\item \textbf{Collaboration \& Planning:} Google Drive, Trello, Discord
+	\item \textbf{Backend Development:} Python 3.9+
+	\item \textbf{GIS \& Data Analysis:} QGIS Desktop
+	\item \textbf{Database:} PostgreSQL with the PostGIS extension
+	\item \textbf{Frontend Development:} Node.js, React.js
+	\item \textbf{Version Control:} Git, GitHub
+	\item \textbf{Code Editor:} Visual Studio Code
+	\item \textbf{Documentation:} Overleaf
+\end{enumerate}
+
+\section{Hardware Requirements}
+
+The hardware requirements for the development machine and end-user system are as follows:
+\begin{enumerate}[label=\alph*.]
+	\item \textbf{Development Machine:}
+	      \begin{itemize}
+		      \item \textbf{RAM:} Minimum 8GB, recommended 16GB (for handling datasets and running the database server).
+		      \item \textbf{Processor:} Modern multi-core CPU (e.g., Intel Core i5 / AMD Ryzen 5 or better).
+		      \item \textbf{Operating System:} Windows, macOS, or Linux.
+	      \end{itemize}
+	\item \textbf{End-User System:}
+	      \begin{itemize}
+		      \item A modern web browser (e.g., Chrome, Firefox, Safari) on any desktop or mobile device.
+	      \end{itemize}
+\end{enumerate}
+
+\section{Functional Requirements}
+
+The functional requirements define the specific behaviors and capabilities of the proposed system:
+\begin{enumerate}[label=\alph*.]
+	\item \textbf{Geospatial Data Visualization:} The system must display an interactive map of the defined geographic area (e.g., Bhaktapur).
+	\item \textbf{Interactive Location Selection:} Users must be able to select any point on the map to analyze its suitability.
+	\item \textbf{Predictive Score Generation:} Upon selection, the system must process the location's features and return a quantitative "Success Score".
+	\item \textbf{Feature-based Insights:} The system must display a breakdown of the key factors (e.g., competitor density, proximity to POIs) that influenced the predicted score.
+	\item \textbf{Data Management Interface (Admin):} A secure interface must exist for the project team to update the underlying geographic data (e.g., add a new competitor).
+\end{enumerate}
+
+\section{Non-Functional Requirements}
+
+The non-functional requirements define the quality attributes and operational standards of the system:
+\begin{enumerate}[label=\alph*.]
+	\item \textbf{Accuracy:} The predictive model must achieve a satisfactory level of accuracy (measured by metrics like MAE and R²) when evaluated against the test dataset.
+	\item \textbf{Performance / Latency:} The system must return a prediction within a few seconds (e.g., < 3 seconds) of a user selecting a location to ensure a responsive user experience.
+	\item \textbf{Reliability:} The web application should have high availability and consistently provide predictions without crashing or producing errors.
+	\item \textbf{Scalability:} The backend architecture must be able to handle multiple concurrent user requests without significant degradation in performance.
+	\item \textbf{Data Integrity:} The system must ensure that the geographic database is protected from corruption and unauthorized modifications.
+\end{enumerate}
+
+
