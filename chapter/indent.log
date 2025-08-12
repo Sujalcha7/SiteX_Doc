@@ -1,10 +1,10 @@
 INFO:  latexindent version 3.24.4, 2024-07-18, a script to indent .tex files
        latexindent lives here: /usr/share/texlive/texmf-dist/scripts/latexindent/
-       Sat Aug  9 16:07:41 2025
-       Filename: /home/sujalcha/Downloads/PU_Report_Format_for_Projects/chapter/chapter_4.tex
+       Tue Aug 12 12:42:31 2025
+       Filename: /home/sujalcha/Projects/SpoTex_Doc/chapter/chapter_1.tex
 INFO:  Processing switches:
 INFO:  Directory for backup files and log file indent.log:
-       /home/sujalcha/Downloads/PU_Report_Format_for_Projects/chapter
+       /home/sujalcha/Projects/SpoTex_Doc/chapter
 INFO:  YAML settings read: defaultSettings.yaml
        Reading defaultSettings.yaml from /usr/share/texlive/texmf-dist/scripts/latexindent/defaultSettings.yaml
 INFO:  YAML reading settings
