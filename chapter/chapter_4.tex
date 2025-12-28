@@ -89,10 +89,10 @@ The Level-1 Context Diagram provides a decomposed view of the SiteCortex system,
 	\item \textbf{Core Processes:}
 	The SiteCortex platform is divided into four primary internal processes:
 	\begin{enumerate}
-		\item \textit{Handle API Requests}: Serves as the central coordination layer, managing incoming user requests, routing data flows, and aggregating responses.
-		\item \textit{Calculate Location Features}: Responsible for deriving spatial and contextual features such as competitor density, POI accessibility, and demographic indicators.
-		\item \textit{Predict Suitability Score}: Executes machine learning inference using the trained XGBoost model to compute the final suitability score.
-		\item \textit{Filter Property Listings}: Filters available “To-Let” properties based on user-defined requirements such as budget, area, and location constraints.
+		\item \textbf{Handle API Requests}: Serves as the central coordination layer, managing incoming user requests, routing data flows, and aggregating responses.
+		\item \textbf{Calculate Location Features}: Responsible for deriving spatial and contextual features such as competitor density, POI accessibility, and demographic indicators.
+		\item \textbf{Predict Suitability Score}: Executes machine learning inference using the trained XGBoost model to compute the final suitability score.
+		\item \textbf{Filter Property Listings}: Filters available “To-Let” properties based on user-defined requirements such as budget, area, and location constraints.
 	\end{enumerate}
 
 	\item \textbf{Data Stores:}
@@ -146,13 +146,13 @@ This sequence diagram illustrates the chronological interaction between the user
 	The workflow begins when the user accesses the system through the UI Frontend. Initially, the frontend requests nearby Points of Interest (POIs) data to render an interactive base map. The user then enters a specific location and defines their business preferences, such as business type and constraints.
 
 	\item \textbf{API Request Handling:}
-	Upon submission, the UI sends an analysis request to the backend \textit{Handle API Requests} service. This component acts as the orchestrator, managing communication between feature computation services, databases, and the prediction engine.
+	Upon submission, the UI sends an analysis request to the backend Handle API Requests service. This component acts as the orchestrator, managing communication between feature computation services, databases, and the prediction engine.
 
 	\item \textbf{Feature Calculation Process:}
-	The API service requests location-based features from the \textit{Calculate Location Features} module. This module queries multiple data sources—including POI data, competitor information, and demographic datasets—from the database cluster. After aggregating and processing this information, it returns a structured feature vector representing the selected location.
+	The API service requests location-based features from the Calculate Location Features module. This module queries multiple data sources—including POI data, competitor information, and demographic datasets—from the database cluster. After aggregating and processing this information, it returns a structured feature vector representing the selected location.
 
 	\item \textbf{Suitability Prediction:}
-	The computed feature vector is forwarded to the \textit{Predict Suitability Score} service. This service dynamically loads the pre-trained XGBoost model and performs inference to generate a personalized suitability score. In parallel, supporting spatial outputs such as heatmap intensity values are generated.
+	The computed feature vector is forwarded to the Predict Suitability Score service. This service dynamically loads the pre-trained XGBoost model and performs inference to generate a personalized suitability score. In parallel, supporting spatial outputs such as heatmap intensity values are generated.
 
 	\item \textbf{Result Delivery:}
 	The predicted score and heatmap data are returned to the API service, which then sends the consolidated results back to the UI Frontend. Finally, the frontend displays the suitability score, visual heatmap, and detailed insights to the user, completing the interaction loop.
