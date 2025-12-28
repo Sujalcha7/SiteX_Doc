@@ -72,6 +72,42 @@ This block diagram illustrates the system architecture of \textbf{  SiteX}, deta
     \item[Primary Data Flows:] The diagram highlights the interactive, multi-step dialogue between the Entrepreneur and the system. The user first sends their \texttt{Business Profile}, receives a \texttt{Personalized Heatmap}, then sends a \texttt{Selected Location for Analysis} to receive the final \texttt{Detailed Analysis Dashboard \& Report}.
 \end{description}
 \pagebreak
+\section{Level-1 Context Diagram}
+\begin{figure}[h!]
+	\centering
+	% \includegraphics[width=\textwidth]{img/Level1ContextDiagram.png}
+	\caption{Level-1 Context Diagram}
+	\label{fig:level1-context-diagram}
+\end{figure}
+\noindent
+The Level-1 Context Diagram provides a decomposed view of the SiteCortex system, expanding upon the 0-level context by detailing the system’s internal functional processes and their interactions with external entities and data stores.
+
+\begin{itemize}
+	\item \textbf{Core Processes:}
+	The SiteCortex platform is divided into four primary internal processes:
+	\begin{enumerate}
+		\item \textbf{Handle API Requests}: Serves as the central coordination layer, managing incoming user requests, routing data flows, and aggregating responses.
+		\item \textbf{Calculate Location Features}: Responsible for deriving spatial and contextual features such as competitor density, POI accessibility, and demographic indicators.
+		\item \textbf{Predict Suitability Score}: Executes machine learning inference using the trained XGBoost model to compute the final suitability score.
+		\item \textbf{Filter Property Listings}: Filters available “To-Let” properties based on user-defined requirements such as budget, area, and location constraints.
+	\end{enumerate}
+
+	\item \textbf{Data Stores:}
+	Each process interacts with specialized databases optimized for specific data types:
+	\begin{itemize}
+		\item \textbf{Listings Database:} Stores property listings and rental information.
+		\item \textbf{Competitor Database:} Contains data about existing businesses in the surrounding area.
+		\item \textbf{Demographics Database:} Holds neighborhood-level population and socio-economic data.
+		\item \textbf{POI Database:} Stores geospatial information about nearby amenities and landmarks.
+		\item \textbf{Trained Model Repository:} Stores the pre-trained XGBoost model used for prediction.
+	\end{itemize}
+
+	\item \textbf{Data Flow Overview:}
+	User requests originating from the UI Frontend enter the system through the API handler. Feature computation processes query the relevant databases and return calculated features. These features are then passed to the prediction process, which generates suitability scores and heatmap values. The filtered listings, scores, and visual analytics are consolidated and returned to the frontend for presentation.
+\end{itemize}
+
+This Level-1 Context Diagram emphasizes the modular, service-oriented architecture of SiteCortex, illustrating how independent yet interconnected components collaborate to transform raw geospatial data into personalized, decision-support intelligence for entrepreneurs.
+
 \section{Workflow Diagram}
 \begin{figure}[h!]
 	\centering
@@ -92,6 +128,34 @@ This block diagram illustrates the system architecture of \textbf{  SiteX}, deta
 % \noindent
 %     The development of the predictive site selection platform will follow a systematic methodology grounded in geospatial data analysis and supervised machine learning. The project is designed to transform raw geographic data into actionable business intelligence, providing a data-driven forecast of a new retail location's potential success. The workflow encompasses geospatial data aggregation, feature engineering, predictive model training, and deployment via an interactive web application.
 
+\section{Sequence Diagram}
+\begin{figure}[h!]
+	\centering
+	% \includegraphics[width=\textwidth]{img/SequenceDiagram.png}
+	\caption{Sequence Diagram}
+	\label{fig:sequence-diagram}
+\end{figure}
+\noindent
+This sequence diagram illustrates the chronological interaction between the user, frontend interface, backend services, databases, and the machine learning model during a complete analysis cycle in the SiteCortex platform. It highlights how a user’s request is transformed into actionable location intelligence through coordinated backend operations.
+
+\begin{itemize}
+	\item \textbf{User \& Frontend Interaction:}
+	The workflow begins when the user accesses the system through the UI Frontend. Initially, the frontend requests nearby Points of Interest (POIs) data to render an interactive base map. The user then enters a specific location and defines their business preferences, such as business type and constraints.
+
+	\item \textbf{API Request Handling:}
+	Upon submission, the UI sends an analysis request to the backend Handle API Requests service. This component acts as the orchestrator, managing communication between feature computation services, databases, and the prediction engine.
+
+	\item \textbf{Feature Calculation Process:}
+	The API service requests location-based features from the Calculate Location Features module. This module queries multiple data sources—including POI data, competitor information, and demographic datasets—from the database cluster. After aggregating and processing this information, it returns a structured feature vector representing the selected location.
+
+	\item \textbf{Suitability Prediction:}
+	The computed feature vector is forwarded to the Predict Suitability Score service. This service dynamically loads the pre-trained XGBoost model and performs inference to generate a personalized suitability score. In parallel, supporting spatial outputs such as heatmap intensity values are generated.
+
+	\item \textbf{Result Delivery:}
+	The predicted score and heatmap data are returned to the API service, which then sends the consolidated results back to the UI Frontend. Finally, the frontend displays the suitability score, visual heatmap, and detailed insights to the user, completing the interaction loop.
+\end{itemize}
+
+This sequence diagram clearly demonstrates how SiteCortex integrates real-time user inputs with geospatial analytics and machine learning inference to deliver instant, data-driven business location recommendations.
 \subsection{Geospatial Data Collection and Aggregation}
 
 The project's foundation is a high-quality, multi-layered geographic dataset. This "Master Dataset" will be built by aggregating data from public online sources and manual field verification within the core commercial areas. The primary tool for this phase will be the open-source Geographic Information System (GIS) software, \texttt{QGIS}. Data is collected and organized into a relational structure with four primary layers:
