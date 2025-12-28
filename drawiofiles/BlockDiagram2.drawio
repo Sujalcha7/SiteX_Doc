@@ -1,0 +1,120 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.0.6 Chrome/138.0.7204.100 Electron/37.2.3 Safari/537.36" version="28.0.6">
+  <diagram name="Page-1" id="AhPKVKy7I9SuhimaPjM_">
+    <mxGraphModel dx="1501" dy="1985" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="1R0acBccUZpkOqp8oSZe-1" value="Data &amp; Model Assets" style="whiteSpace=wrap;strokeWidth=2;verticalAlign=top;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="630" y="-10" width="254" height="315" as="geometry" />
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-2" value="Backend Services" style="whiteSpace=wrap;strokeWidth=2;verticalAlign=top;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="90" y="40" width="435" height="183.5" as="geometry" />
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-3" value="User Interface (Frontend)" style="whiteSpace=wrap;strokeWidth=2;verticalAlign=top;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="20" y="318" width="920" height="202" as="geometry" />
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-4" value="Explore Personalized Map&#xa;&amp; Listings" style="rounded=1;arcSize=20;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="230" y="390" width="217" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-5" value="Define Profile &amp;&#xa;Requirements" style="rounded=1;arcSize=20;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="45" y="390" width="141" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-6" value="Select Point for&#xa;Deep Analysis" style="rounded=1;arcSize=20;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="515" y="390" width="139" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-8" value="Analysis &amp;&#xa;Prediction Engine" style="rounded=1;arcSize=20;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="345" y="93" width="155" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-9" value="API Gateway" style="rounded=1;arcSize=20;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="115" y="110" width="123" height="54" as="geometry" />
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-10" value="Relational Database&#xa;(PostGIS)" style="whiteSpace=wrap;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="654" y="50" width="204" height="78" as="geometry" />
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-11" value="Trained Model&#xa;(XGBoost)" style="ellipse;aspect=fixed;strokeWidth=2;whiteSpace=wrap;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="699" y="153" width="117" height="117" as="geometry" />
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-12" value="" style="curved=0;startArrow=none;endArrow=block;exitX=1;exitY=0.5;entryX=0;entryY=0.5;rounded=0;exitDx=0;exitDy=0;fontSize=14;" edge="1" parent="1" source="1R0acBccUZpkOqp8oSZe-5" target="1R0acBccUZpkOqp8oSZe-4">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-13" value="" style="curved=0;startArrow=none;endArrow=block;exitX=1;exitY=0.5;entryX=0;entryY=0.5;rounded=0;exitDx=0;exitDy=0;fontSize=14;" edge="1" parent="1" source="1R0acBccUZpkOqp8oSZe-4" target="1R0acBccUZpkOqp8oSZe-6">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-15" value="" style="curved=0;startArrow=block;endArrow=block;exitX=1;exitY=0.39;entryX=0;entryY=0.5;rounded=0;fontSize=14;" edge="1" parent="1" source="1R0acBccUZpkOqp8oSZe-9" target="1R0acBccUZpkOqp8oSZe-8">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-16" value="User Profile" style="curved=0;startArrow=none;endArrow=block;entryX=0.154;entryY=0.977;rounded=0;exitX=0.614;exitY=-0.017;exitDx=0;exitDy=0;entryDx=0;entryDy=0;entryPerimeter=0;exitPerimeter=0;fontSize=14;" edge="1" parent="1" source="1R0acBccUZpkOqp8oSZe-5" target="1R0acBccUZpkOqp8oSZe-9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+            <mxPoint x="109" y="410" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-17" value="Map &amp; Listing Data" style="curved=0;startArrow=none;endArrow=block;entryX=0.138;entryY=0.037;rounded=0;entryDx=0;entryDy=0;entryPerimeter=0;exitX=0.445;exitY=1.028;exitDx=0;exitDy=0;exitPerimeter=0;fontSize=14;" edge="1" parent="1" source="1R0acBccUZpkOqp8oSZe-9" target="1R0acBccUZpkOqp8oSZe-4">
+          <mxGeometry x="0.2052" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="170" y="300" />
+              <mxPoint x="260" y="300" />
+            </Array>
+            <mxPoint x="115" y="96" as="sourcePoint" />
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-18" value="Location &amp; Profile for Analysis" style="curved=0;startArrow=none;endArrow=block;exitX=0;exitY=0.25;entryX=0.599;entryY=0.977;rounded=0;exitDx=0;exitDy=0;entryDx=0;entryDy=0;entryPerimeter=0;fontSize=14;" edge="1" parent="1" source="1R0acBccUZpkOqp8oSZe-7" target="1R0acBccUZpkOqp8oSZe-9">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="690" y="410" />
+              <mxPoint x="690" y="360" />
+              <mxPoint x="320" y="360" />
+              <mxPoint x="320" y="260" />
+              <mxPoint x="190" y="260" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-19" value="Full Analysis Package" style="curved=0;startArrow=none;endArrow=block;exitX=0.854;exitY=1.009;entryX=0.36;entryY=0;rounded=0;exitDx=0;exitDy=0;exitPerimeter=0;fontSize=14;" edge="1" parent="1" source="1R0acBccUZpkOqp8oSZe-9" target="1R0acBccUZpkOqp8oSZe-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="220" y="250" />
+              <mxPoint x="600" y="250" />
+              <mxPoint x="600" y="350" />
+              <mxPoint x="802" y="350" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-20" value="Queries Geospatial &#xa;&amp; Listing Data" style="curved=0;startArrow=none;endArrow=block;exitX=1;exitY=0.25;entryX=0;entryY=0.5;rounded=0;exitDx=0;exitDy=0;fontSize=14;" edge="1" parent="1" source="1R0acBccUZpkOqp8oSZe-8" target="1R0acBccUZpkOqp8oSZe-10">
+          <mxGeometry x="0.0562" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="113" />
+              <mxPoint x="570" y="89" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-21" value="Loads Model for &#xa;Prediction" style="curved=0;startArrow=blockThin;endArrow=none;exitX=1;exitY=0.75;entryX=0;entryY=0.5;rounded=0;exitDx=0;exitDy=0;fontSize=14;startFill=1;endFill=0;" edge="1" parent="1" source="1R0acBccUZpkOqp8oSZe-8" target="1R0acBccUZpkOqp8oSZe-11">
+          <mxGeometry x="-0.2432" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="570" y="152" />
+              <mxPoint x="570" y="212" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-22" value="" style="curved=0;startArrow=none;endArrow=block;exitX=1;exitY=0.5;entryX=0;entryY=0.5;rounded=0;entryDx=0;entryDy=0;fontSize=14;" edge="1" parent="1" source="1R0acBccUZpkOqp8oSZe-6" target="1R0acBccUZpkOqp8oSZe-7">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+            <mxPoint x="654" y="429" as="sourcePoint" />
+            <mxPoint x="103" y="207" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="1R0acBccUZpkOqp8oSZe-7" value="View Detailed&#xa;Analysis Dashboard" style="rounded=1;arcSize=20;strokeWidth=2;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="740" y="390" width="172" height="78" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
