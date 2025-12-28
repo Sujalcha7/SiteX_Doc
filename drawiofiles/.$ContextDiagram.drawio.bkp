@@ -1,0 +1,94 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.0.6 Chrome/138.0.7204.100 Electron/37.2.3 Safari/537.36" version="28.0.6">
+  <diagram name="Page-1" id="Aew_B55_UnD8cNiA4tmi">
+    <mxGraphModel dx="1188" dy="701" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="0" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-2" value="SiteX: Location&#xa;Intelligence Platform" style="rounded=1;arcSize=20;strokeWidth=2" parent="1" vertex="1">
+          <mxGeometry x="350.3936291240046" y="245.6221198156682" width="144.1410693970421" height="91.6589861751152" as="geometry" />
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-3" value="Entrepreneur" style="whiteSpace=wrap;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="106.58465301478954" y="470.0037788018433" width="126.02047781569966" height="63.456221198156676" as="geometry" />
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-4" value="Project Admin" style="whiteSpace=wrap;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="100" y="34.10138248847926" width="132.6097838452787" height="63.456221198156676" as="geometry" />
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-5" value="Public Geospatial&#xa;Data Sources" style="whiteSpace=wrap;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="620" y="455.19" width="152.38" height="78.27" as="geometry" />
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-6" value="Real Estate&#xa;Data Sources" style="whiteSpace=wrap;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="643.0603185437997" y="30" width="129.31513083048918" height="91.6589861751152" as="geometry" />
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-7" value="OpenRouteService API" style="whiteSpace=wrap;strokeWidth=2;" parent="1" vertex="1">
+          <mxGeometry x="925.0057679180886" y="981.3437788018433" width="185.32423208191128" height="63.456221198156676" as="geometry" />
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-8" value="Business Profile &amp; Requirements" style="curved=0;startArrow=none;endArrow=block;exitX=1;exitY=0.25;entryX=0.21;entryY=0.99;rounded=0;exitDx=0;exitDy=0;" parent="1" source="IBn8k_Y71Vg94rKfspyU-3" target="IBn8k_Y71Vg94rKfspyU-2" edge="1">
+          <mxGeometry x="-0.3681" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="380.04550625711033" y="482.9953917050691" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-9" value="Personalized Heatmap &amp;&#xa;Property Listings" style="curved=0;startArrow=none;endArrow=block;exitX=0;exitY=0.5;entryX=0.25;entryY=0;rounded=0;entryDx=0;entryDy=0;exitDx=0;exitDy=0;" parent="1" source="IBn8k_Y71Vg94rKfspyU-2" target="IBn8k_Y71Vg94rKfspyU-3" edge="1">
+          <mxGeometry x="0.1504" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="134.5938566552901" y="290.2764976958525" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-10" value="Selected Location for Analysis" style="curved=0;startArrow=none;endArrow=block;exitX=1;exitY=0.75;entryX=0.5;entryY=1;rounded=0;exitDx=0;exitDy=0;entryDx=0;entryDy=0;" parent="1" source="IBn8k_Y71Vg94rKfspyU-3" target="IBn8k_Y71Vg94rKfspyU-2" edge="1">
+          <mxGeometry x="-0.3226" y="-1" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="422.8759954493743" y="513.5483870967741" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-11" value="Detailed Analysis &#xa;Dashboard &amp; Report" style="curved=0;startArrow=none;endArrow=block;exitX=0;exitY=0.8;entryX=0.75;entryY=0;rounded=0;entryDx=0;entryDy=0;" parent="1" source="IBn8k_Y71Vg94rKfspyU-2" target="IBn8k_Y71Vg94rKfspyU-3" edge="1">
+          <mxGeometry x="-0.4212" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="198.0159271899886" y="318.47926267281105" />
+            </Array>
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-12" value="Verified Geospatial Data&#xa;(Competitors, POIs, etc.)" style="curved=0;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=0;entryY=0.31;rounded=0;" parent="1" source="IBn8k_Y71Vg94rKfspyU-4" target="IBn8k_Y71Vg94rKfspyU-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-13" value="Base Map, POI &amp;amp;&#xa;Road Network Data" style="curved=0;startArrow=none;endArrow=block;exitX=0.5;exitY=0;entryX=1;entryY=0.75;rounded=0;entryDx=0;entryDy=0;exitDx=0;exitDy=0;" parent="1" source="IBn8k_Y71Vg94rKfspyU-5" target="IBn8k_Y71Vg94rKfspyU-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+            <mxPoint x="731.3341638225255" y="695.6221198156682" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-14" value="Property Listings &amp;&#xa;Pricing Data" style="curved=0;startArrow=none;endArrow=block;exitX=0.5;exitY=1;entryX=1;entryY=0.34;rounded=0;" parent="1" source="IBn8k_Y71Vg94rKfspyU-6" target="IBn8k_Y71Vg94rKfspyU-2" edge="1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-15" value="Isochrone Generation Request" style="curved=0;startArrow=none;endArrow=block;exitX=0.994;exitY=0.846;entryX=0;entryY=0.5;rounded=0;entryDx=0;entryDy=0;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" target="IBn8k_Y71Vg94rKfspyU-7" edge="1">
+          <mxGeometry x="0.3332" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="780.8646985210466" y="1013.0718894009217" />
+            </Array>
+            <mxPoint as="offset" />
+            <mxPoint x="779.9998521046643" y="837.9656221198156" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IBn8k_Y71Vg94rKfspyU-16" value="Trade Area Polygon Data" style="curved=0;startArrow=none;endArrow=block;exitX=0.64;exitY=0;entryX=1;entryY=0.65;rounded=0;" parent="1" source="IBn8k_Y71Vg94rKfspyU-7" edge="1">
+          <mxGeometry x="-0.0358" relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1043.6132764505119" y="820.352995391705" />
+            </Array>
+            <mxPoint as="offset" />
+            <mxPoint x="780.8646985210466" y="820.000460829493" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

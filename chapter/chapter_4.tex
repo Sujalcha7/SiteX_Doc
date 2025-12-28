@@ -6,7 +6,7 @@
 	\caption{Block Diagram}
 	\label{fig:block-diagram}
 \end{figure}
-This block diagram illustrates the system architecture of \textbf{SiteCortex}, detailing the interaction between the frontend user interface, the backend services, and the core data and model assets.
+This block diagram illustrates the system architecture of \textbf{  SiteX}, detailing the interaction between the frontend user interface, the backend services, and the core data and model assets.
 
 \begin{itemize}
     \item \textbf{User Interface (Frontend):} The user's journey begins here. They input their unique \textbf{Business Profile} (e.g., \textit{`Quiet Study Hub' vibe}, budget, rent) into the UI. The frontend is responsible for rendering the \textbf{Personalized Opportunity Zone Heatmap} and, upon user selection of a point, displaying the rich, multi-faceted \textbf{Detailed Analysis Dashboard}.
@@ -19,7 +19,7 @@ This block diagram illustrates the system architecture of \textbf{SiteCortex}, d
         \item \textbf{The Trained Model:} A pre-trained \textbf{XGBoost model file}. The Predictor Service loads this model to calculate the final, personalized \textbf{Suitability Score} for the user's specific business profile at the selected location.
     \end{itemize}
 \end{itemize}
-\pagebreak
+% \pagebreak
 \section{Usecase Diagram}
 \begin{figure}[h!]
 	\centering
@@ -28,49 +28,46 @@ This block diagram illustrates the system architecture of \textbf{SiteCortex}, d
 	\label{fig:Usecase-diagram}
 \end{figure}\
 \noindent
-\par This use case diagram illustrates the interactions between the system's two primary actors---the \textbf{Entrepreneur} (end-user) and the \textbf{Project Admin}---and the core functionalities of the SiteCortex platform.
+\par This diagram illustrates the simplified high-level architecture of the   SiteX platform, focusing on the clear separation of concerns between the user interface, backend services, and core data assets. It highlights the primary flow of data through the system during a typical user session.
 
 \begin{itemize}
-    \item \textbf{Entrepreneur:} This actor represents the primary user, a small business owner. Their interactions are focused on the decision-making journey and include use cases such as:
+    \item \textbf{User Interface (Frontend):} This layer, depicted as a linear flowchart, represents the user's entire interactive journey. The process begins when the user defines their profile and requirements. This information is sent to the backend, which returns personalized map and listing data for the user to explore. After selecting a point for analysis, the relevant data is sent back to the backend. Finally, the frontend receives a complete analysis package to display on the detailed dashboard. This layer is responsible for all presentation and user interaction.
+
+    \item \textbf{Backend Services:} This layer acts as the central brain of the application and is logically divided into two distinct components:
     \begin{itemize}
-        \item \texttt{Define Business Profile}: The crucial first step where the user inputs their unique strategy and requirements to personalize the analysis.
-        \item \texttt{Explore Personalized Map \& Listings}: Interacting with the custom-generated heatmap and available properties.
-        \item \texttt{Select point for Deep analysis}: The central action that triggers the system's full analytical power.
-        \item \texttt{Compare Saved Locations} and \texttt{Generate PDF Report}: Tools to support the final decision-making process.
+        \item \textbf{API Gateway:} The single, public-facing entry point for the backend. It handles all incoming requests from the User Interface (User Profile, Location for Analysis) and routes them to the engine. It also formats and sends back all responses (Map Data, Full Analysis Package).
+        \item \textbf{Analysis \& Prediction Engine:} The internal powerhouse that performs all the heavy lifting. It receives tasks from the API Gateway and executes the core business logic: querying the database for geospatial data and loading the pre-trained XGBoost model to generate the full analysis.
     \end{itemize}
 
-    \item \textbf{Project Admin:} This actor is responsible for maintaining the system's intelligence and data integrity. Their tasks include:
+    \item \textbf{Data \& Model Assets:} These are the foundational pillars of the system's intelligence, accessed exclusively by the backend's Analysis \& Prediction Engine.
     \begin{itemize}
-        \item \texttt{Manage Geographic Data} and \texttt{Manage 'To-Let' Listings}: Keeping the system's foundational data accurate and up-to-date.
-        \item \texttt{Train \& Validate ML Model}: Running the offline machine learning pipeline to update the predictive model.
-        \item \texttt{Monitor System Analytics}: Observing system performance and usage.
+        \item \textbf{Relational Database (PostGIS):} Stores all the live, structured geospatial data, including competitor locations, demographic polygons, points of interest, and real estate listings.
+        \item \textbf{Trained Model (XGBoost):} The static, pre-trained machine learning model file. It contains the predictive intelligence required to calculate the Personalized Suitability Score.
     \end{itemize}
-
-    \item \textbf{Core Relationships:} The diagram critically shows that the \texttt{Select point for Deep analysis} use case \textbf{\texttt{<<includes>>}} a bundle of sub-processes: generating the score, the XAI breakdown, and analyzing the trade area and competitors. This demonstrates how a single user action initiates a comprehensive, multi-faceted analysis in the backend.
 \end{itemize}
-\pagebreak
+% \pagebreak
 % \setlength{\parindent}{15pt}
 \section{Zero Context level Diagram}
 \begin{figure}[h!]
 	\centering
-	\includegraphics[width=\textwidth]{img/ContextDiagram.png}
+	\includegraphics[width=\textwidth]{img/Level0ContextDiagram.png}
 	\caption{0-level Context Diagram}
 	\label{fig:Context-level-diagram}
 \end{figure}
 \noindent
-\par This 0-level context diagram provides a high-level overview of the SiteCortex platform, illustrating its boundaries and its interactions with external entities. It shows the primary data flows into and out of the system without detailing the internal processes.
+\par This 0-level context diagram provides a high-level overview of the   SiteX platform, illustrating its boundaries and its interactions with external entities. It shows the primary data flows into and out of the system without detailing the internal processes.
 
 \begin{description}
-    \item[Central System:] The \textbf{SiteCortex: Location Intelligence Platform} is the core process that transforms raw data and user requirements into actionable business insights.
+    \item[Central System:] The \textbf{SiteX} is the core process that transforms raw data and user requirements into actionable business insights.
 
-    \item[External Entities:]
-    \begin{itemize}
-        \item \textbf{Entrepreneur:} The primary user who initiates the analysis and receives the final intelligence.
-        \item \textbf{Project Admin:} The team responsible for curating and inputting verified ground-truth data into the system.
-        \item \textbf{Public Geospatial Data Sources:} External sources like OpenStreetMap that provide foundational data (base maps, POIs, road networks).
-        \item \textbf{Real Estate Data Sources:} External sources for property listings and pricing data, which are used for both the property discovery feature and for deriving demographic proxies.
-        \item \textbf{OpenRouteService API:} An external, third-party service that the system calls upon to perform the complex task of calculating realistic trade area isochrones.
-    \end{itemize}
+	\item[External Entities:] External entities involve following: 
+	\begin{itemize}
+		\item \textbf{Entrepreneur:} The primary user who initiates the analysis and receives the final intelligence.
+		\item \textbf{Project Admin:} The team responsible for curating and inputting verified ground-truth data into the system.
+		\item \textbf{Public Geospatial Data Sources:} External sources like OpenStreetMap that provide foundational data (base maps, POIs, road networks).
+		\item \textbf{Real Estate Data Sources:} External sources for property listings and pricing data, which are used for both the property discovery feature and for deriving demographic proxies.
+		% \item \textbf{OpenRouteService API:} An external, third-party service that the system calls upon to perform the complex task of calculating realistic trade area isochrones.
+	\end{itemize}
 
     \item[Primary Data Flows:] The diagram highlights the interactive, multi-step dialogue between the Entrepreneur and the system. The user first sends their \texttt{Business Profile}, receives a \texttt{Personalized Heatmap}, then sends a \texttt{Selected Location for Analysis} to receive the final \texttt{Detailed Analysis Dashboard \& Report}.
 \end{description}
@@ -83,7 +80,7 @@ This block diagram illustrates the system architecture of \textbf{SiteCortex}, d
 	\label{fig:Workflow-diagram}
 \end{figure}
 \noindent
-\par This diagram illustrates the two primary and distinct workflows that define the entire SiteCortex project: the offline data science pipeline that builds the system's intelligence, and the online user journey that consumes it.
+\par This diagram illustrates the two primary and distinct workflows that define the entire   SiteX project: the offline data science pipeline that builds the system's intelligence, and the online user journey that consumes it.
 
 \begin{itemize}
     \item \textbf{Admin Workflow (Right Side):} This represents the foundational, \textbf{offline process} performed by the project team. It begins with collecting multi-layered data (geospatial, demographic, listings) and populating the relational database. This structured data is then fed into an ML Pipeline to engineer features and train the XGBoost model. The two critical outputs of this workflow are the system's core assets: the populated \textbf{Relational Database} and the final \textbf{Trained Model} file.
@@ -97,12 +94,12 @@ This block diagram illustrates the system architecture of \textbf{SiteCortex}, d
 
 \subsection{Geospatial Data Collection and Aggregation}
 
-The project's foundation is a high-quality, multi-layered geographic dataset. This "Master Dataset" will be built by aggregating data from public online sources and manual field verification within the core commercial area of Bhaktapur. The primary tool for this phase will be the open-source Geographic Information System (GIS) software, \texttt{QGIS}. Data is collected and organized into a relational structure with four primary layers:
+The project's foundation is a high-quality, multi-layered geographic dataset. This "Master Dataset" will be built by aggregating data from public online sources and manual field verification within the core commercial areas. The primary tool for this phase will be the open-source Geographic Information System (GIS) software, \texttt{QGIS}. Data is collected and organized into a relational structure with four primary layers:
 
 \begin{itemize}
 	\item \textbf{Businesses Layer (Competitors):} Locations of all existing cafes, sourced initially from OpenStreetMap (OSM) and then verified and augmented through manual "ground-truthing" to ensure accuracy and to collect ground-truth data for training the model's target variable.
 	\item \textbf{Points of Interest (POIs) Layer:} Locations that attract foot traffic (e.g., schools, temples, offices, bus stops), sourced from OSM and manually verified. This layer acts as a source for "people magnets."
-    \item \textbf{Neighborhoods Layer:} GIS polygons defining different zones across Bhaktapur. This layer is enriched with \textbf{demographic proxies} (e.g., average rent per square foot, student service density) derived from scraped real estate data and POI density analysis.
+    \item \textbf{Neighborhoods Layer:} GIS polygons defining different zones across the area. This layer is enriched with \textbf{demographic proxies} (e.g., average rent per square foot, student service density) derived from scraped real estate data and POI density analysis.
     \item \textbf{Listings Layer:} Dynamic data of available "To-Let" commercial properties, including their location, area, and monthly rent, integrated to bridge analysis with real-world opportunities.
 \end{itemize}
 
