@@ -111,9 +111,6 @@ chapter/*.bbl
 chapter/*.blg
 chapter/indent.log
 drawiofiles/*.bak
-img/*.bak
-img/*.tmp
-img/*.backup
 *.gz
 *.zip
 *.rar
@@ -194,9 +191,7 @@ chapter/*.bbl
 chapter/*.blg
 chapter/indent.log
 drawiofiles/*.bak
-img/*.bak
-img/*.tmp
-img/*.backup
+
 run.sh
 
 # Flask stuff:

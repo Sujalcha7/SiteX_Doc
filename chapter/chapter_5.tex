@@ -1,21 +1,66 @@
 \chapter{PROJECT WORK STATUS}\label{chap:outcomes}
 \section{Completed Works}
 
-Upon completion, this project will deliver more than an academic exercise; it will be a functional, professional-grade Predictive Site Selection System named \textbf{SiteX}. Our primary goal is to create a live web application that serves as an indispensable strategic partner for business owners. We envision a friend, a \textit{dai} or \textit{didi}, using SiteX not just to find a "good" location, but to discover the \textit{right} location that aligns perfectly with their unique business vision, budget, and strategy, thereby transforming a high-stakes gamble into a data-informed decision.
+The following major components of the project have been completed:
 
-\vspace{0.4cm}
-\noindent
-The final application will not merely provide a single, static "success score." Instead, it will offer a comprehensive and interactive decision-support dashboard tailored to the user's specific needs. We expect the user to be able to:
-\begin{itemize}
-    \item Define their unique business profile.
-    \item Explore a dynamic heatmap that visualizes opportunity zones personalized to their specific profile.
-    \item Seamlessly discover and analyze available "To-Let" properties directly on the map.
-    \item Receive a \textbf{Personalized Suitability Score} for any selected point, accompanied by an explainable AI breakdown that clearly articulates the \textit{why}  the positive and negative drivers behind the score.
-    \item Conduct in-depth competitor analysis, visualize a realistic customer trade area using isochrones, and understand the neighborhood's demographic alignment with their target audience.
-    \item Generate a one-click, professional PDF report summarizing the entire analysis for business planning and investor pitches.
-\end{itemize}
-In essence, we are leveling the playing field, providing the kind of sophisticated, data-driven insights previously accessible only to large corporations, and making them intuitive for local entrepreneurs.
+\begin{enumerate}
+    \item \textbf{Main Project User Interface:} \\
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.7\textwidth]{img/image2.png}
+        \caption{Main user interface showing the interactive map, sidebar for location input, POI radar chart, and contextual information for selected locations.}
+        \label{fig:main-ui}
+    \end{figure}
+    \par The main user interface integrates an interactive map with a sidebar for inputting location details, selecting radius, and visualizing POI distributions. It provides users with a comprehensive overview of the area, allowing them to explore and analyze spatial data efficiently.
 
-\vspace{0.4cm}
+    % \pagebreak
+    \item \textbf{Filtering and Searching POIs:} \\
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.5\textwidth]{img/image3.png}
+        \caption{Filtering and searching interface with category-based POI filters and dynamic search results.}
+        \label{fig:filter-search}
+    \end{figure}
+    \par This component enables users to filter and search for Points of Interest (POIs) by categories such as cafes, temples, banks, education, and health. The dynamic search panel displays the number of results per category and lists matching POIs, making it easy to focus on specific types of locations within the map.
+
+    % \pagebreak
+    \item \textbf{Result Analysis Dashboard:} \\
+    \begin{figure}[h!]
+        \centering
+        \includegraphics[width=0.5\textwidth]{img/image1.png}
+        \noindent \caption{Result analysis dashboard showing success score, POI distribution charts, and detailed statistics for the selected location.}
+        \label{fig:result-analysis}
+    \end{figure}
+    \par The result analysis dashboard presents a detailed breakdown of the selected location’s performance. It displays the computed success score, radar and bar charts for POI distribution, a donut chart comparing competitors with other POIs, and lists of top counts and detailed statistics for each POI category, supporting informed decision-making.
+\end{enumerate}
+
 \noindent
-On a personal and technical level, this project represents the culmination of our entire engineering education. It is our opportunity to synthesize theory from multiple domains geospatial analysis with PostGIS and QGIS, high-performance backend development with FastAPI, modern frontend design with React, and advanced machine learning with XGBoost. We are not just training a model; we are architecting and building a complete, end-to-end data science solution from scratch. We expect to emerge from this project not just as students who completed a requirement, but as engineers who have designed, built, and deployed a robust, data-intensive application that solves a tangible, meaningful problem for our own community here in Nepal.
+\par These completed modules form the core analytical and visualization features of the project, enabling users to perform spatial analysis and make informed decisions based on geospatial data.
+
+\pagebreak
+\section{Remaining Works}
+
+The following key components are planned for future implementation to enhance the site analysis platform for opening a cafe:
+
+\begin{enumerate}
+    \item \textbf{Heat Map Visualization:} \\
+    Develop and integrate a heat map feature to visually represent popular or viable areas for opening a cafe. This will help users quickly identify high-potential locations based on aggregated POI data and other relevant metrics.
+
+    \item \textbf{Demographic and Neighborhood Analysis:} \\
+    Incorporate demographic data and neighborhood characteristics into the analysis. This includes integrating population density, age distribution, income levels, and other socio-economic factors to provide a more comprehensive evaluation of each location.
+
+    \item \textbf{Area Comparison and Ranking:} \\
+    Implement tools to compare multiple areas side-by-side, allowing users to rank locations based on various criteria such as POI density, demographic suitability, and accessibility.
+
+    \item \textbf{User Analysis History and Comparison:} \\
+    Enable saving of users' past analysis sessions, allowing them to revisit previous results and perform direct comparisons between different locations or time periods.
+
+    \item \textbf{Enhanced Reporting and Export Options:} \\
+    Add functionality for generating detailed reports of analysis results, including charts and maps, with options to export these reports in PDF or other formats for offline review and sharing.
+
+    \item \textbf{User Feedback and Customization:} \\
+    Implement features for users to provide feedback on analysis results and customize the weighting of different factors according to their business strategy or preferences.
+\end{enumerate}
+
+\noindent
+These enhancements will provide users with deeper insights and greater flexibility, supporting more informed and strategic decisions for cafe site selection.
