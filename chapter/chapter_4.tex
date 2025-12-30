@@ -156,36 +156,112 @@ This sequence diagram illustrates the chronological interaction between the user
 \end{itemize}
 
 This sequence diagram clearly demonstrates how SiteCortex integrates real-time user inputs with geospatial analytics and machine learning inference to deliver instant, data-driven business location recommendations.
+\section{Data Collection and Preprocessing}
 \subsection{Geospatial Data Collection and Aggregation}
 
-The project's foundation is a high-quality, multi-layered geographic dataset. This "Master Dataset" will be built by aggregating data from public online sources and manual field verification within the core commercial areas. The primary tool for this phase will be the open-source Geographic Information System (GIS) software, \texttt{QGIS}. Data is collected and organized into a relational structure with four primary layers:
+The project's foundation is built on a comprehensive multi-layered geographic dataset covering the commercial areas in Kathmandu. The data collection process evolved through several iterations to achieve efficiency and scale:
+
+\begin{enumerate}
+	\item \textbf{Manual Data Collection:} Initially, data was collected manually through field surveys and Google Maps exploration. However, this approach proved to be highly time-consuming and difficult to scale across the geographic area.
+	
+	\item \textbf{Google Maps Scraper Extension:} To improve efficiency, the \textbf{Chrome Google Maps Scraper extension} was utilized. However, this tool had significant limitations, extracting only approximately 30 entries per scraping session, making it impractical for large-scale data aggregation.
+	
+	\item \textbf{Apify Web Scraping Platform:} To overcome these limitations, \textbf{Apify}, a professional web scraping platform, was employed. This tool proved highly effective, enabling the collection of a comprehensive dataset exceeding \textbf{3,000 total data entries}, including all Points of Interest (POIs) and competitor businesses. Among these, the cafe category alone contributed \textbf{1,330 entries}.
+\end{enumerate}
+
+The collected data is organized into four primary layers within a PostGIS database:
 
 \begin{itemize}
-	\item \textbf{Businesses Layer (Competitors):} Locations of all existing cafes, sourced initially from OpenStreetMap (OSM) and then verified and augmented through manual "ground-truthing" to ensure accuracy and to collect ground-truth data for training the model's target variable.
-	\item \textbf{Points of Interest (POIs) Layer:} Locations that attract foot traffic (e.g., schools, temples, offices, bus stops), sourced from OSM and manually verified. This layer acts as a source for "people magnets."
-    \item \textbf{Neighborhoods Layer:} GIS polygons defining different zones across the area. This layer is enriched with \textbf{demographic proxies} (e.g., average rent per square foot, student service density) derived from scraped real estate data and POI density analysis.
-    \item \textbf{Listings Layer:} Dynamic data of available "To-Let" commercial properties, including their location, area, and monthly rent, integrated to bridge analysis with real-world opportunities.
+	\item \textbf{Competitors (Cafe Businesses):} Locations of all existing cafes sourced via Apify web scraping (1,330 entries), with precise geographic coordinates and metadata.
+	\item \textbf{Points of Interest (POIs):} Locations of foot-traffic attractors including schools, temples, offices, hospitals, banks, and other public amenities (from the remaining 1,670+ entries). This layer identifies "people magnets" that influence foot traffic patterns.
+    \item \textbf{Neighborhoods Layer:} GIS polygons defining commercial zones across Kathmandu, enriched with demographic proxies derived from POI density analysis and real estate data.
 \end{itemize}
 
-Each data point is stored with its precise geographic coordinates in a central PostGIS database, enabling high-performance spatial queries.
+\subsection{POI Weight Calculation and Aggregation}
+
+A critical preprocessing step involved systematic calculation of POI weights and category-level aggregation. The methodology proceeded as follows:
+
+\begin{enumerate}
+	\item \textbf{Individual POI Weighting:} Each Point of Interest was assigned a weight reflecting its influence on foot traffic generation and commercial viability. These weights were derived based on POI category importance and proximity effects.
+	
+	\item \textbf{POI Category Aggregation:} POIs were grouped into meaningful categories: \textbf{banks}, \textbf{temples}, \textbf{education institutions}, \textbf{health facilities}, \textbf{other amenities}, and \textbf{competitor cafes}. For each category, an \textbf{aggregate POI score} was calculated by summing the weighted influence of all POIs in that category.
+	
+	\item \textbf{Location-based Scoring:} For each cafe in the dataset, a final \textbf{composite suitability score} was calculated based on the aggregate POI scores of all categories within a one-kilometer radius buffer. This score represents the cumulative "attractiveness" of the immediate surroundings as determined by proximity to various amenities and competition.
+\end{enumerate}
+
+This multi-step weighting and aggregation process converts raw POI location data into meaningful predictive features that capture the commercial dynamics of each location.
+
+\subsection{Mathematical definitions and formulas}
+
+The following formulas summarise the computations performed by `master.py` when producing per-POI weights, per-cafe POI metrics, and the final composite score.
+
+Per-POI combined weight (for POI $j$): components available for a POI (base weight, rating norm, reviews norm, weekly hours norm) are averaged. For $k$ available components $c_{jm}$:
+$$
+	ext{combined}_j=\frac{1}{k}\sum_{m=1}^{k}c_{jm}
+$$
+
+Haversine distance (meters) between points with latitude/longitude $(\varphi_1,\lambda_1)$ and $(\varphi_2,\lambda_2)$ (in radians), with Earth radius $R=6{,}371{,}000\,$m:
+$$
+\Delta\varphi=\varphi_2-\varphi_1,\quad\Delta\lambda=\lambda_2-\lambda_1
+$$
+$$
+a=\sin^2\left(\tfrac{\Delta\varphi}{2}\right)+\cos\varphi_1\cos\varphi_2\sin^2\left(\tfrac{\Delta\lambda}{2}\right)
+$$
+$$
+d=2R\arctan2\big(\sqrt{a},\sqrt{1-a}\big)
+$$
+
+% % Per-cafe POI metrics (for category $p$ and cafe $i$):
+% % - Let $w_{i}^{(p)}$ be the sum of `_computed_weight` for category $p$ within the radius (e.g. 1km).
+% % - Normalise by the category maximum (when $\max(w^{(p)})>0$):
+$$
+	ext{norm\_}w_{i}^{(p)}=\frac{w_{i}^{(p)}}{\max_j w_{j}^{(p)}}\quad(\text{else }0)
+$$
+- Category component:
+$$
+	ext{component}_{i}^{(p)}=\text{norm\_}w_{i}^{(p)}\times\text{category\_weight}_{p}
+$$
+
+Cafe-level property components (rating, reviews, weekly hours, rank) are normalised individually (e.g. $\text{rating}/5$, $\log(1+\text{reviews})/\max\log(1+\text{reviews})$, weekly hours normalized to default) and averaged to produce the cafe properties score:
+$$
+	ext{cafe\_props}_i=\frac{1}{K}\sum_{m=1}^{K}p_{im}
+$$
+where $p_{im}$ are the available property components.
+
+Nearby-cafes component: sum cafe property scores for other cafes within the master radius $R_{\text{master}}$ (exclude the cafe itself):
+$$
+	ext{nearby\_sum}_i=\sum_{j\ne i:\ d_{ij}\le R_{\text{master}}}\text{cafe\_props}_j
+$$
+Normalise:
+$$
+	ext{nearby\_norm}_i=\frac{\text{nearby\_sum}_i}{\max_j\text{nearby\_sum}_j}\quad(\text{else }0)
+$$
+
+Final composite POI score (summed over all category components plus cafe props and nearby component):
+$$
+	ext{poi\_composite\_score}_i=\sum_{p}\text{component}_{i}^{(p)}+\text{PROPS\_WEIGHT}\times\text{props}_i+\text{NEIGHBOR\_WEIGHT}\times\text{nearby\_norm}_i
+$$
+
+Individual cafe weight (normalised cafe properties):
+$$
+	ext{cafe\_individual\_score}_i=\text{cafe\_props}_i,\qquad
+	ext{cafe\_weight}_i=\frac{\text{cafe\_individual\_score}_i}{\max_j\text{cafe\_individual\_score}_j}\quad(\text{else }0)
+$$
+
+
 
 \subsection{Feature Engineering and Data Structuring}
 
-This critical phase involves converting the raw geospatial data into a structured, numerical format suitable for machine learning. This process, known as feature engineering, is performed using GIS analysis tools within QGIS and Python libraries like \texttt{GeoPandas}. For any given point on the map, a rich set of predictive features is calculated on-the-fly:
+The preprocessed POI weights and category aggregations are further refined through feature engineering using Python libraries such as \textbf{GeoPandas} and \textbf{Shapely}. For any given point on the map, a rich set of predictive features is calculated:
 
 \begin{itemize}
-	\item \textbf{Competitor Density:} The number of other cafes within multiple radii (e.g., 100m, 300m), calculated using a buffer analysis.
-	\item \textbf{Proximity to POIs:} The straight-line distance to the nearest "People Magnet" in various categories (e.g., nearest school, nearest bus stop).
-    \item \textbf{Neighborhood-based Demographic Features:} The point inherits features from the neighborhood polygon it falls within, such as \texttt{avg\_rent\_psf} or \texttt{population\_density}. This allows the model to understand the socio-economic context of a location.
-	\item \textbf{Visibility \& Accessibility Scores:} Manually assigned scores based on a location's visibility from main pathways and its road classification (e.g., Main Commercial Route, Local Alley).
+	\item \textbf{Competitor Density:} The number of other cafes (weighted) within a one-kilometre radius.
+	\item \textbf{POI Proximity Features:} Aggregate weighted scores for each POI category (banks, temples, education, health, other) within one kilometre.
+    \item \textbf{Neighborhood-based Features:} Demographic context inherited from the neighborhood polygon in which the location falls.
+	\item \textbf{Composite Suitability Score (Target Variable):} A continuous value representing the location's commercial viability, derived from the weighted POI aggregations and existing cafe performance data.
 \end{itemize}
 
-Alongside these predictive features, the model is trained on a carefully defined target variable:
-\begin{itemize}
-	\item \textbf{Popularity Score (Target Variable):} A composite score (1-10) that serves as a proxy for business success. It is calculated for each existing cafe using publicly available data like Google Maps ratings, the number of reviews, and social media presence.
-\end{itemize}
-
-To prepare for model training and evaluation, the dataset of existing cafes is partitioned using a standard train-test-validation split: 70\% for training, 15\% for validation (hyperparameter tuning), and 15\% for final testing on unseen data.
+To prepare for model training and evaluation, the dataset is partitioned using a standard train-test-validation split: 70\% for training, 15\% for validation (hyperparameter tuning), and 15\% for final testing on unseen data.
 
 \subsection{Personalized Predictive Modeling System}
 

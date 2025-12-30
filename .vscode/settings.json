@@ -21,7 +21,7 @@
     ],
     "latex-workshop.view.pdf.viewer": "tab",
     "latex-workshop.latex.autoBuild.run": "onSave",
-    "latex-workshop.latex.outDir": "%DIR%/build",
+    "latex-workshop.latex.outDir": "%DIR%",
     "latex-workshop.synctex.afterBuild.enabled": true,
     "files.exclude": {
         "**/.vscode/build/**": true,
