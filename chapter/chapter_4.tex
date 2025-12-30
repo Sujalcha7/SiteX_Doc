@@ -179,27 +179,31 @@ The collected data is organized into four primary layers within a PostGIS databa
 
 \subsection{POI Weight Calculation and Aggregation}
 
-A critical preprocessing step involved systematic calculation of POI weights and category-level aggregation. The methodology proceeded as follows:
+A critical preprocessing step involved systematic calculation of POI weights and category-level aggregation, performed by the data preprocessing pipeline (\texttt{master.py}) prior to model training. The methodology proceeded as follows:
 
 \begin{enumerate}
-	\item \textbf{Individual POI Weighting:} Each Point of Interest was assigned a weight reflecting its influence on foot traffic generation and commercial viability. These weights were derived based on POI category importance and proximity effects.
+	\item \textbf{Individual POI Weighting:} Each Point of Interest was assigned a weight reflecting its influence on foot traffic generation and commercial viability. These weights were derived by combining multiple components: base category weight, normalized rating scores, normalized review counts, and normalized weekly operating hours. These components are averaged to produce a unified weight for each POI.
 	
-	\item \textbf{POI Category Aggregation:} POIs were grouped into meaningful categories: \textbf{banks}, \textbf{temples}, \textbf{education institutions}, \textbf{health facilities}, \textbf{other amenities}, and \textbf{competitor cafes}. For each category, an \textbf{aggregate POI score} was calculated by summing the weighted influence of all POIs in that category.
+	\item \textbf{POI Category Aggregation:} POIs were grouped into meaningful categories: \textbf{banks}, \textbf{temples}, \textbf{education institutions}, \textbf{health facilities}, and \textbf{other amenities}. For each category, both raw counts and weighted sums were calculated for all POIs within a one-kilometer radius of each cafe location. These values were then normalized across the dataset to enable fair comparison.
 	
-	\item \textbf{Location-based Scoring:} For each cafe in the dataset, a final \textbf{composite suitability score} was calculated based on the aggregate POI scores of all categories within a one-kilometer radius buffer. This score represents the cumulative "attractiveness" of the immediate surroundings as determined by proximity to various amenities and competition.
+	\item \textbf{Cafe-Level Scoring:} Individual cafe characteristics (rating, review count, weekly hours, search rank) were normalized and combined to produce a cafe properties score. Additionally, a "nearby cafes" component was calculated by aggregating the property scores of other cafes within the analysis radius.
+	
+	\item \textbf{Composite Score Generation:} For each cafe in the dataset, a final \textbf{poi\_composite\_score} (the target variable for prediction) was calculated by combining normalized category components, weighted cafe properties, and nearby cafe influence. This continuous score (ranging from 0.558 to 3.868, mean: 2.097) represents the location's commercial viability based on its surrounding amenities and competitive environment.
 \end{enumerate}
 
-This multi-step weighting and aggregation process converts raw POI location data into meaningful predictive features that capture the commercial dynamics of each location.
+The output of this preprocessing pipeline is a structured dataset where each cafe location has pre-computed POI count features, POI weight features, and the composite score target variable. This processed dataset serves as the input for the machine learning training phase.
 
-\subsection{Mathematical definitions and formulas}
+\subsection{Mathematical Formulas for Preprocessing Pipeline}
 
-The following formulas summarise the computations performed by `master.py` when producing per-POI weights, per-cafe POI metrics, and the final composite score.
+The following formulas describe the computations performed by the preprocessing pipeline (\texttt{master.py}) when producing per-POI weights, per-cafe POI metrics, and the final composite score. Note that these calculations are performed \textbf{prior to model training}, and the resulting pre-computed features are loaded by the training notebook.
 
-Per-POI combined weight (for POI $j$): components available for a POI (base weight, rating norm, reviews norm, weekly hours norm) are averaged. For $k$ available components $c_{jm}$:
+\subsubsection{Per-POI Weight Calculation}
+Per-POI combined weight (for POI $j$): available components for a POI (base weight, rating norm, reviews norm, weekly hours norm) are averaged. For $k$ available components $c_{jm}$:
 $$
-	ext{combined}_j=\frac{1}{k}\sum_{m=1}^{k}c_{jm}
+\text{combined}_j=\frac{1}{k}\sum_{m=1}^{k}c_{jm}
 $$
 
+\subsubsection{Distance Calculation}
 Haversine distance (meters) between points with latitude/longitude $(\varphi_1,\lambda_1)$ and $(\varphi_2,\lambda_2)$ (in radians), with Earth radius $R=6{,}371{,}000\,$m:
 $$
 \Delta\varphi=\varphi_2-\varphi_1,\quad\Delta\lambda=\lambda_2-\lambda_1
@@ -211,77 +215,129 @@ $$
 d=2R\arctan2\big(\sqrt{a},\sqrt{1-a}\big)
 $$
 
-% % Per-cafe POI metrics (for category $p$ and cafe $i$):
-% % - Let $w_{i}^{(p)}$ be the sum of `_computed_weight` for category $p$ within the radius (e.g. 1km).
-% % - Normalise by the category maximum (when $\max(w^{(p)})>0$):
+\subsubsection{Category-Level Aggregation and Normalization}
+For each POI category $p$ and cafe location $i$, weights within the search radius (e.g., 1km) are summed and normalized:
 $$
-	ext{norm\_}w_{i}^{(p)}=\frac{w_{i}^{(p)}}{\max_j w_{j}^{(p)}}\quad(\text{else }0)
-$$
-- Category component:
-$$
-	ext{component}_{i}^{(p)}=\text{norm\_}w_{i}^{(p)}\times\text{category\_weight}_{p}
+\text{norm\_}w_{i}^{(p)}=\frac{w_{i}^{(p)}}{\max_j w_{j}^{(p)}}\quad(\text{else }0)
 $$
 
-Cafe-level property components (rating, reviews, weekly hours, rank) are normalised individually (e.g. $\text{rating}/5$, $\log(1+\text{reviews})/\max\log(1+\text{reviews})$, weekly hours normalized to default) and averaged to produce the cafe properties score:
+Category component with category-specific weight:
 $$
-	ext{cafe\_props}_i=\frac{1}{K}\sum_{m=1}^{K}p_{im}
-$$
-where $p_{im}$ are the available property components.
-
-Nearby-cafes component: sum cafe property scores for other cafes within the master radius $R_{\text{master}}$ (exclude the cafe itself):
-$$
-	ext{nearby\_sum}_i=\sum_{j\ne i:\ d_{ij}\le R_{\text{master}}}\text{cafe\_props}_j
-$$
-Normalise:
-$$
-	ext{nearby\_norm}_i=\frac{\text{nearby\_sum}_i}{\max_j\text{nearby\_sum}_j}\quad(\text{else }0)
+\text{component}_{i}^{(p)}=\text{norm\_}w_{i}^{(p)}\times\text{category\_weight}_{p}
 $$
 
-Final composite POI score (summed over all category components plus cafe props and nearby component):
+\subsubsection{Cafe Property Score}
+Cafe-level property components (rating, reviews, weekly hours, rank) are normalized individually (e.g., $\text{rating}/5$, $\log(1+\text{reviews})/\max\log(1+\text{reviews})$) and averaged:
 $$
-	ext{poi\_composite\_score}_i=\sum_{p}\text{component}_{i}^{(p)}+\text{PROPS\_WEIGHT}\times\text{props}_i+\text{NEIGHBOR\_WEIGHT}\times\text{nearby\_norm}_i
+\text{cafe\_props}_i=\frac{1}{K}\sum_{m=1}^{K}p_{im}
+$$
+where $p_{im}$ are the available normalized property components.
+
+\subsubsection{Nearby Cafes Component}
+Sum cafe property scores for other cafes within the analysis radius $R_{\text{master}}$ (excluding the cafe itself):
+$$
+\text{nearby\_sum}_i=\sum_{j\ne i:\ d_{ij}\le R_{\text{master}}}\text{cafe\_props}_j
+$$
+Normalized nearby component:
+$$
+\text{nearby\_norm}_i=\frac{\text{nearby\_sum}_i}{\max_j\text{nearby\_sum}_j}\quad(\text{else }0)
 $$
 
-Individual cafe weight (normalised cafe properties):
+\subsubsection{Final Composite Score (Target Variable)}
+The \texttt{poi\_composite\_score} combines all category components, cafe properties, and nearby cafe influence:
+\begin{multline*}
+\text{poi\_composite\_score}_i=\sum_{p}\text{component}_{i}^{(p)}+\text{PROPS\_WEIGHT}\times\text{cafe\_props}_i \\
++\text{NEIGHBOR\_WEIGHT}\times\text{nearby\_norm}_i
+\end{multline*}
+
+This composite score serves as the \textbf{target variable} (Y) for the supervised learning regression model. The trained model learns to predict this score for new locations based on their POI feature vectors.
+
+\subsubsection{Individual Cafe Weight}
+For reference, individual cafe weights (normalized cafe properties) are calculated as:
 $$
-	ext{cafe\_individual\_score}_i=\text{cafe\_props}_i,\qquad
-	ext{cafe\_weight}_i=\frac{\text{cafe\_individual\_score}_i}{\max_j\text{cafe\_individual\_score}_j}\quad(\text{else }0)
+\text{cafe\_individual\_score}_i=\text{cafe\_props}_i
 $$
+$$
+\text{cafe\_weight}_i=\frac{\text{cafe\_individual\_score}_i}{\max_j\text{cafe\_individual\_score}_j}\quad(\text{else }0)
+$$
+
+\textbf{Note:} All these computations are performed during the preprocessing phase. The model training notebook loads the resulting dataset with pre-computed count features (e.g., \texttt{banks\_count\_1km}), weight features (e.g., \texttt{banks\_weight\_1km}), and the target variable \texttt{poi\_composite\_score}.
 
 
 
 \subsection{Feature Engineering and Data Structuring}
 
-The preprocessed POI weights and category aggregations are further refined through feature engineering using Python libraries such as \textbf{GeoPandas} and \textbf{Shapely}. For any given point on the map, a rich set of predictive features is calculated:
+The preprocessed POI weights and category aggregations are further refined through feature engineering using Python libraries such as \textbf{GeoPandas}, \textbf{Shapely}, and \textbf{scikit-learn}. The feature engineering process transforms raw geospatial data into a comprehensive feature set designed to capture location attractiveness.
 
+\subsubsection{Raw Features}
+For any given point on the map, the following base features are extracted:
 \begin{itemize}
-	\item \textbf{Competitor Density:} The number of other cafes (weighted) within a one-kilometre radius.
-	\item \textbf{POI Proximity Features:} Aggregate weighted scores for each POI category (banks, temples, education, health, other) within one kilometre.
-    \item \textbf{Neighborhood-based Features:} Demographic context inherited from the neighborhood polygon in which the location falls.
-	\item \textbf{Composite Suitability Score (Target Variable):} A continuous value representing the location's commercial viability, derived from the weighted POI aggregations and existing cafe performance data.
+	\item \textbf{Geographic Coordinates:} Latitude (\texttt{lat}) and longitude (\texttt{lng}) values.
+	\item \textbf{POI Count Features:} Raw counts of each POI category within 1km radius:
+	\begin{itemize}
+		\item \texttt{banks\_count\_1km}: Number of banking institutions
+		\item \texttt{education\_count\_1km}: Number of educational facilities
+		\item \texttt{health\_count\_1km}: Number of healthcare facilities
+		\item \texttt{temples\_count\_1km}: Number of religious sites
+		\item \texttt{other\_count\_1km}: Count of other amenities
+	\end{itemize}
+	\item \textbf{POI Weight Features:} Quality-adjusted weighted scores for each POI category:
+	\begin{itemize}
+		\item \texttt{banks\_weight\_1km}, \texttt{education\_weight\_1km}, \texttt{health\_weight\_1km}, \texttt{temples\_weight\_1km}, \texttt{other\_weight\_1km}
+	\end{itemize}
 \end{itemize}
 
-To prepare for model training and evaluation, the dataset is partitioned using a standard train-test-validation split: 70\% for training, 15\% for validation (hyperparameter tuning), and 15\% for final testing on unseen data.
-
-\subsection{Personalized Predictive Modeling System}
-
-The core of the application is a system that provides personalized, real-time predictions for new, hypothetical locations. The user interaction is designed to be intuitive and user-centric:
-
+\subsubsection{Engineered Features}
+Advanced features are derived to capture complex spatial relationships:
 \begin{itemize}
-    \item A user begins by defining their specific \textbf{business profile}, including strategy (e.g., 'Quiet Study Hub', 'Tourist Hotspot'), budget, and space requirements.
-	\item The backend uses this profile to generate a \textbf{personalized opportunity heatmap} and filter relevant property listings.
-	\item The user selects any point on the interactive map for deep analysis.
-	\item The frontend sends the coordinates and the user's profile to the backend API.
-	\item The backend, in real-time, calculates all engineered features for that specific point by querying the geographic database.
-	\item These features are fed into the pre-trained machine learning model, which returns a \textbf{Personalized Suitability Score}.
-	\item The system also provides an explainable AI \textbf{Prediction Breakdown} (powered by SHAP analysis), showing which features contributed most positively or negatively to the score, offering actionable insights.
+	\item \textbf{\texttt{total\_poi\_count\_1km}:} Total count of all POIs within 1km radius, representing overall area activity level.
+	\item \textbf{Category Ratio Features:} Proportional distribution of each POI type:
+	\begin{itemize}
+		\item \texttt{bank\_ratio}: Proportion of banks among all POIs
+		\item \texttt{education\_ratio}: Proportion of educational facilities
+		\item \texttt{temple\_ratio}: Proportion of religious sites
+		\item \texttt{health\_ratio}: Proportion of healthcare facilities
+	\end{itemize}
+	\item \textbf{\texttt{weighted\_POI\_strength}:} A composite metric combining all weighted POI scores to represent the overall quality-adjusted attractiveness of the location.
+	\item \textbf{Target Variable (\texttt{poi\_composite\_score}):} A continuous value representing location commercial viability, derived from weighted POI aggregations and existing cafe performance data.
 \end{itemize}
 
-\subsection{Predictive Engine via Supervised Learning}
+\subsubsection{Data Preprocessing and Handling}
+\begin{itemize}
+	\item \textbf{Missing Value Imputation:} Missing values are handled using median imputation to maintain data integrity without introducing bias.
+	\item \textbf{Outlier Detection:} Statistical analysis and visualization techniques identify and handle outliers in the dataset.
+	\item \textbf{Feature Scaling:} For baseline models requiring normalization, \texttt{StandardScaler} is applied to ensure features are on comparable scales.
+	\item \textbf{Duplicate Handling:} Initial data inspection removes duplicate entries to ensure training data quality.
+\end{itemize}
 
-The project utilizes a \textbf{Supervised Learning} regression model. This approach is ideal as we are training a model to predict a specific, known continuous value (the Popularity Score) based on a labeled dataset of existing, successful and unsuccessful cafes.
+\subsubsection{Dataset Partitioning}
+To prepare for model training and rigorous evaluation, the dataset is partitioned using a standard train-test split, following best practices for supervised learning model validation.
 
-The system is modeled using the standard supervised regression framework:
+\subsection{Real-Time Location Scoring System}
+
+The core of the application is a system that provides data-driven suitability predictions for any location in the study area. The prediction workflow operates as follows:
+
+\begin{itemize}
+    \item The user interacts with an \textbf{interactive map interface} displaying the study area.
+	\item Upon selecting any point on the map, the frontend sends the geographic coordinates (latitude, longitude) to the backend API.
+	\item The backend employs a \textbf{k-Nearest Neighbors (k=5) spatial query} against the pre-computed POI dataset to efficiently estimate all required features for that location:
+	\begin{itemize}
+		\item POI count features (e.g., \texttt{banks\_count\_1km}, \texttt{education\_count\_1km})
+		\item POI weight features (e.g., \texttt{banks\_weight\_1km}, \texttt{education\_weight\_1km})
+		\item Engineered ratio features (e.g., \texttt{bank\_ratio}, \texttt{education\_ratio})
+		\item Aggregate strength metric (\texttt{weighted\_POI\_strength})
+	\end{itemize}
+	\item The computed feature vector is passed to the pre-trained XGBoost model for inference.
+	\item The model returns a \textbf{Location Suitability Score} (continuous value in range 0.558-3.868).
+	\item For heatmap generation, predictions are batched (1000 locations at a time) for computational efficiency.
+	\item The system categorizes scores into risk levels: High Risk ($<$1.0), Medium Risk (1.0-2.0), Low Risk ($>$2.0).
+\end{itemize}
+
+\subsection{Supervised Learning Regression Model}
+
+The project employs a \textbf{Supervised Learning} regression approach to predict location suitability. The model is trained on a labeled dataset of 1,330 existing cafe locations, each with pre-computed POI features and a known \texttt{poi\_composite\_score} target value.
+
+The system follows the standard supervised regression framework:
 
 \begin{table}[h!]
 \centering
@@ -289,39 +345,100 @@ The system is modeled using the standard supervised regression framework:
 	\hline
 	\textbf{ML Component}         & \textbf{Description} \\
 	\hline
-	\textbf{Input Features (X):}  & A vector of numerical values representing the engineered features, including competitor density, proximity to POIs, visibility scores, and inherited demographic proxies from the neighborhood. \\
+	\textbf{Input Features (X):}  & A 16-dimensional feature vector comprising: geographic coordinates (\texttt{lat}, \texttt{lng}), POI count features for 5 categories, POI weight features for 5 categories, \texttt{total\_poi\_count\_1km}, 4 ratio features (\texttt{bank\_ratio}, \texttt{education\_ratio}, \texttt{temple\_ratio}, \texttt{health\_ratio}), and \texttt{weighted\_POI\_strength}. \\
 	\hline
-	\textbf{Target Variable (Y):} & The continuous "Popularity Score" that the model learns to predict, acting as a proxy for general business success. \\
+	\textbf{Target Variable (Y):} & \texttt{poi\_composite\_score}: A continuous value (range 0.558-3.868, mean 2.097) representing location commercial viability based on surrounding amenities, cafe properties, and competitive environment. \\
 	\hline
-	\textbf{Model Architecture:}  & A gradient boosted decision tree model, specifically \textbf{XGBoost}, chosen for its high accuracy, performance, and interpretability on tabular data. \\
+	\textbf{Model Architecture:}  & \texttt{xgb.XGBRegressor} with default hyperparameters - a gradient boosted decision tree ensemble chosen for superior performance on tabular geospatial data, built-in regularization, and ability to capture non-linear spatial relationships. \\
 	\hline
-	\textbf{Prediction Output:}   & A single, continuous value (e.g., 8.2) representing the \textbf{Personalized Suitability Score} for a new location, tailored to the user's business profile. \\
+	\textbf{Prediction Output:}   & A single continuous score (e.g., 2.35) representing the predicted \texttt{poi\_composite\_score} for a new location, indicating its commercial attractiveness. \\
 	\hline
 \end{tabular}
 \end{table}
 
-\subsubsection{Example Input Feature Vector}
-An example input vector fed to the model for a new location would be enriched with demographic data:
+\subsubsection{Actual Feature Vector Structure}
+The complete input feature vector for a given location (after feature engineering):
 \begin{verbatim}
-[ 2, 4, 250, 80, 3, 4, 150, 0.75 ] 
-// Represents [competitors_100m, competitors_300m, 
-// dist_to_school, dist_to_bus_stop, road_type_score, 
-// visibility_score, neighborhood_avg_rent_psf, 
-// neighborhood_student_density]
+Feature Vector (16 dimensions):
+[
+  lat, lng,                           # Geographic coordinates
+  banks_count_1km, education_count_1km, health_count_1km, 
+  temples_count_1km, other_count_1km, # POI counts
+  banks_weight_1km, education_weight_1km, health_weight_1km,
+  temples_weight_1km, other_weight_1km, # POI weights
+  total_poi_count_1km,                # Total POI count
+  bank_ratio, education_ratio, temple_ratio, health_ratio, # Ratios
+  weighted_POI_strength                # Aggregate strength
+]
+
+Example values for a high-potential location:
+[27.7172, 85.3240, 12, 8, 5, 3, 15, 45.2, 32.1, 
+ 18.5, 12.3, 38.7, 43, 0.279, 0.186, 0.070, 0.116, 146.8]
 \end{verbatim}
 
 \subsection{Model Training and Evaluation Strategy}
 
-The training process is designed to ensure the model is both accurate and reliable.
+The training process follows a rigorous methodology to ensure both accuracy and reliability, with comparative analysis between baseline and advanced models.
+
+\subsubsection{Model Selection and Training}
+\begin{enumerate}
+	\item \textbf{Baseline Model (Linear Regression):} A linear regression model with standardized features serves as the baseline, providing a performance benchmark. The model is implemented using scikit-learn's \texttt{Pipeline} combining \texttt{StandardScaler} and \texttt{LinearRegression} to ensure proper feature normalization.
+	
+	\item \textbf{Primary Model (XGBoost):} The production model uses \texttt{xgb.XGBRegressor}, a gradient boosted decision tree algorithm chosen for its:
+	\begin{itemize}
+		\item Superior performance on tabular geospatial data
+		\item Built-in regularization preventing overfitting
+		\item Ability to capture non-linear relationships between POI features
+		\item Scale invariance (no feature normalization required)
+		\item Native support for missing values
+	\end{itemize}
+\end{enumerate}
+
+\subsubsection{Evaluation Metrics}
+Model performance is assessed on the held-out test set using comprehensive regression metrics:
 \begin{itemize}
-	\item A baseline model (e.g., Linear Regression) will be established to measure the performance uplift provided by our chosen model.
-	\item The primary model, \textbf{XGBoost}, will be trained on the 70\% training dataset.
-	\item Model performance will be assessed on the test set using standard regression metrics:
-	      \begin{itemize}
-		      \item \textbf{Mean Absolute Error (MAE):} Measures the average absolute difference between predicted and actual scores.
-		      \item \textbf{Root Mean Squared Error (RMSE):} Similar to MAE but penalizes larger errors more heavily.
-		      \item \textbf{R-squared (R²):} Indicates the proportion of the variance in the success score that is predictable from the input features.
-	      \end{itemize}
+	\item \textbf{Mean Absolute Error (MAE):} Measures the average absolute difference between predicted and actual scores, providing an interpretable error metric in the same units as the target variable.
+	\item \textbf{Root Mean Squared Error (RMSE):} Similar to MAE but penalizes larger errors more heavily, ensuring the model performs well across the entire distribution.
+	\item \textbf{R-squared (R²):} Indicates the proportion of variance in the success score that is predictable from the input features, with values closer to 1.0 indicating better model fit.
+	\item \textbf{Mean and Standard Deviation of Residuals:} Assess model bias and prediction consistency.
+\end{itemize}
+
+\subsubsection{Model Performance Results}
+The XGBoost model demonstrates exceptional predictive performance on the test dataset:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|r|}
+	\hline
+	\textbf{Metric} & \textbf{Value} \\
+	\hline
+	\textbf{MAE} & 0.0908 points \\
+	\textbf{RMSE} & 0.1176 points \\
+	\textbf{R² Score} & 0.9822 (98.22\%) \\
+	\textbf{Mean Residual} & 0.00191 \\
+	\textbf{Std Residual} & 0.1178 \\
+	\hline
+\end{tabular}
+\caption{XGBoost Model Performance Metrics}
+\label{tab:model-performance}
+\end{table}
+
+The R² score of 0.9822 indicates that the model successfully explains 98.22\% of the variance in location suitability scores. The near-zero mean residual (0.00191) demonstrates that predictions are unbiased, while the low MAE (0.0908) confirms the model's practical accuracy for real-world deployment.
+
+\subsubsection{Model Persistence and Deployment}
+\begin{itemize}
+	\item The trained XGBoost model is serialized using \texttt{joblib} and saved to the models directory as \texttt{xgb\_baseline.pkl}.
+	\item Feature names are stored separately as \texttt{model\_features.pkl} to ensure consistency between training and production inference.
+	\item The production prediction pipeline requires only latitude and longitude as input, automatically computing all engineered features using k-Nearest Neighbors (k=5) for efficient spatial feature estimation.
+	\item Predictions are batched (batch size = 1000) for computational efficiency when generating heatmaps.
+\end{itemize}
+
+\subsubsection{Risk Assessment Framework}
+The system translates raw suitability scores into actionable risk categories:
+\begin{itemize}
+	\item \textbf{High Risk:} Score $<$ 1.0 (location not recommended)
+	\item \textbf{Medium Risk:} Score between 1.0 and 2.0 (proceed with caution)
+	\item \textbf{Low Risk:} Score $>$ 2.0 (favorable location)
 \end{itemize}
 
 \subsection{Database Schema and Storage}
