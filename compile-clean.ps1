@@ -13,17 +13,27 @@ Remove-Item -Path "$docDir\*.lof" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$docDir\*.lot" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$docDir\*.fls" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$docDir\*.fdb_latexmk" -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$docDir\*.bbl" -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "$docDir\*.blg" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$docDir\chapter\*.aux" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "$docDir\main.pdf" -Force -ErrorAction SilentlyContinue
 
 Write-Host "Recompiling document..." -ForegroundColor Cyan
 
 # First pass - redirect input from nul to prevent hanging
-Write-Host "Pass 1/2: Generating structure..."
+Write-Host "Pass 1/4: Initial LaTeX run..."
 cmd /c "xelatex -halt-on-error -interaction=batchmode $mainFile.tex < nul > nul 2>&1"
 
+# BibTeX pass
+Write-Host "Pass 2/4: Processing bibliography..."
+cmd /c "bibtex $mainFile.aux"
+
 # Second pass
-Write-Host "Pass 2/2: Updating TOC and references..."
+Write-Host "Pass 3/4: Updating TOC and references..."
+cmd /c "xelatex -halt-on-error -interaction=batchmode $mainFile.tex < nul > nul 2>&1"
+
+# Third pass
+Write-Host "Pass 4/4: Final pass for reference resolution..."
 cmd /c "xelatex -halt-on-error -interaction=batchmode $mainFile.tex < nul > nul 2>&1"
 
 Write-Host ""

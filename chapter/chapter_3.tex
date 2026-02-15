@@ -76,33 +76,25 @@ The hardware requirements for the development machine and end-user system are as
 The functional requirements define the specific behaviors and capabilities of the SiteCortex platform. The system must:
 
 \begin{enumerate}
-    \item[\textbf{a.}] \textbf{Personalized User Input:} Provide an interface for the user to define their unique business profile, including their business strategy (e.g., 'Quiet Study Hub', 'Tourist Hotspot'), monthly rent budget, and space requirements.
 
+    \item[\textbf{a.}] \textbf{Location Selection via Map Interface:} Provide an interactive map interface that allows users to select and evaluate a potential café or restaurant location by pin-pointing a specific latitude and longitude.
     \item[\textbf{b.}] \textbf{Dynamic Heatmap Generation:} Generate and display a personalized "Opportunity Zone" heatmap on an interactive map of Bhaktapur, with high-potential areas tailored to the user's specific business profile.
     \item[\textbf{c.}] \textbf{Integrated Property Discovery:} Display icons for currently available "To-Let" commercial properties that match the user's requirements directly on the map, allowing for seamless filtering and discovery.
-
     \item[\textbf{d.}] \textbf{Personalized Suitability Score Generation:} Upon selection of any point or property listing, calculate and display a quantitative "Personalized Suitability Score" that predicts the location's potential for success for the user's specific business profile.
-
     \item[\textbf{e.}] \textbf{Explainable AI (Prediction Breakdown):} Display a transparent breakdown of the key factors that positively and negatively influenced the suitability score, explaining the AI's reasoning to the user.
-
     \item[\textbf{f.}] \textbf{Trade Area Analysis:} Generate and visualize a realistic customer trade area based on a "5-minute walk" isochrone, providing an accurate view of the immediate customer base.
-
     \item[\textbf{g.}] \textbf{Detailed Competitor Analysis:} Display a list and map of nearby competitors, including their distance and calculated Popularity Score.
-
     \item[\textbf{h.}] \textbf{Location Comparison Dashboard:} Provide a feature for users to "pin" or save multiple locations and compare their key metrics side-by-side in a dedicated dashboard.
-
     \item[\textbf{i.}] \textbf{Automated PDF Report Generation:} Allow the user to download a comprehensive, professionally formatted PDF report summarizing the complete analysis for a chosen location with a single click.
-    
-    \item[\textbf{j.}] \textbf{Data Management Interface (Admin):} Provide a secure administrative interface for the project team to manage and update the underlying geospatial data layers (e.g., add a new competitor, update a property listing's status).
 \end{enumerate}
 
 \subsection{Non-Functional Requirements}
 The non-functional requirements define the quality attributes and operational standards of the system:
 
 \begin{enumerate}
-    \item[\textbf{a.}] \textbf{Accuracy:} The predictive model must achieve a satisfactory level of accuracy (measured by metrics like MAE and R²) when evaluated against the test dataset to ensure trustworthy recommendations.
+    \item[\textbf{a.}] \textbf{Accuracy:} The predictive model must achieve a satisfactory level of accuracy (measured by metrics like MAE  and R²) when evaluated against the test dataset to ensure trustworthy recommendations. %accuracy metrics might be RMSE or R², depending on the model's output type change it if needed.
 
-    \item[\textbf{b.}] \textbf{Performance / Latency:} The system must return a full analysis (score, heatmap data, etc.) within a few seconds (e.g., < 3 seconds) of a user selecting a location to ensure a responsive and fluid user experience.
+    \item[\textbf{b.}] \textbf{Performance / Latency:} The system must return a full analysis (score, heatmap data, etc.) within a few seconds (e.g., < 1 seconds) of a user selecting a location to ensure a responsive and fluid user experience.
 
     \item[\textbf{c.}] \textbf{Usability:} The user interface must be intuitive and easy to navigate for non-technical entrepreneurs, requiring minimal training to perform a full site analysis.
 
