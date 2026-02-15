@@ -169,151 +169,183 @@ The project's foundation is built on a comprehensive multi-layered geographic da
 	\item \textbf{Apify Web Scraping Platform:} To overcome these limitations, \textbf{Apify}, a professional web scraping platform, was employed. This tool proved highly effective, enabling the collection of a comprehensive dataset exceeding \textbf{3,000 total data entries}, including all Points of Interest (POIs) and competitor businesses. Among these, the cafe category alone contributed \textbf{1,330 entries}.
 \end{enumerate}
 
-The collected data is organized into four primary layers within a PostGIS database:
-
+The final curated layers used by the system are organized by category:
 \begin{itemize}
-	\item \textbf{Competitors (Cafe Businesses):} Locations of all existing cafes sourced via Apify web scraping (1,330 entries), with precise geographic coordinates and metadata.
-	\item \textbf{Points of Interest (POIs):} Locations of foot-traffic attractors including schools, temples, offices, hospitals, banks, and other public amenities (from the remaining 1,670+ entries). This layer identifies "people magnets" that influence foot traffic patterns.
-    \item \textbf{Neighborhoods Layer:} GIS polygons defining commercial zones across Kathmandu, enriched with demographic proxies derived from POI density analysis and real estate data.
+    \item \textbf{Competitors (Cafes):} Existing cafe locations scraped via Apify and cleaned into a standardized schema (final CSV), also exported as GeoJSON for map display.
+    \item \textbf{Points of Interest (POIs):} Foot-traffic attractors grouped into categories including \textbf{banks, education, health, temples, and other amenities}. These layers serve as proxies for demand generators and contextual signals around candidate sites.
+    \item \textbf{Road network layer (context feature):} A roadway GeoJSON layer is included to support road-aware analysis (e.g., proximity to road types and accessibility-related features).
+    \item \textbf{To-Let listings (candidate locations):} A newly added dataset of \textbf{commercial rental/To-Let listings} (maintained as a CSV and associated assets) is integrated into the system to represent \textbf{real, available candidate sites}. These listings are used as evaluation targets on the map and in the analysis workflow, allowing the model to score and compare \emph{available} locations rather than only arbitrary coordinates.
 \end{itemize}
 
+\noindent Overall, the preprocessing pipeline converts scraped raw listings into consistent, analysis-ready CSV and GeoJSON artifacts that are consumed by the backend services and the React/Vite-based frontend map interface.
 \subsection{POI Weight Calculation and Aggregation}
 
-A critical preprocessing step involved systematic calculation of POI weights and category-level aggregation, performed by the data preprocessing pipeline (\texttt{master.py}) prior to model training. The methodology proceeded as follows:
+A key preprocessing stage in the current implementation is the computation of POI-derived features and their aggregation around each reference location. This is handled by the project’s preprocessing scripts (notably \texttt{Data/master.py} and supporting utilities), which generate the feature tables used for model training and for scoring new candidate locations (including To-Let listings).
 
 \begin{enumerate}
-	\item \textbf{Individual POI Weighting:} Each Point of Interest was assigned a weight reflecting its influence on foot traffic generation and commercial viability. These weights were derived by combining multiple components: base category weight, normalized rating scores, normalized review counts, and normalized weekly operating hours. These components are averaged to produce a unified weight for each POI.
-	
-	\item \textbf{POI Category Aggregation:} POIs were grouped into meaningful categories: \textbf{banks}, \textbf{temples}, \textbf{education institutions}, \textbf{health facilities}, and \textbf{other amenities}. For each category, both raw counts and weighted sums were calculated for all POIs within a one-kilometer radius of each cafe location. These values were then normalized across the dataset to enable fair comparison.
-	
-	\item \textbf{Cafe-Level Scoring:} Individual cafe characteristics (rating, review count, weekly hours, search rank) were normalized and combined to produce a cafe properties score. Additionally, a "nearby cafes" component was calculated by aggregating the property scores of other cafes within the analysis radius.
-	
-	\item \textbf{Composite Score Generation:} For each cafe in the dataset, a final \textbf{poi\_composite\_score} (the target variable for prediction) was calculated by combining normalized category components, weighted cafe properties, and nearby cafe influence. This continuous score (ranging from 0.558 to 3.868, mean: 2.097) represents the location's commercial viability based on its surrounding amenities and competitive environment.
+    \item \textbf{Per-POI influence weighting:} Each POI is converted into a numeric contribution intended to approximate its ability to generate nearby activity. The contribution is based on (i) the POI’s category, and (ii) available Google/Apify metadata such as rating, review count, and opening-hours signals (when present). Values are normalized to a common scale and combined into a single POI-level weight; missing metadata is handled gracefully so POIs without certain fields can still be used.
+    
+    \item \textbf{Distance-aware aggregation within an analysis radius:} For each cafe (and for any queried coordinate at inference time), POIs are aggregated by category within a configurable neighborhood radius (the repository includes precomputed path/aggregation artifacts for different radii used during experimentation). The pipeline computes both:
+    \begin{itemize}
+        \item \textbf{Counts} per POI category (e.g., number of banks/temples/education/health/other nearby), and
+        \item \textbf{Weighted sums}, where closer and/or higher-quality POIs contribute more (including optional distance-decay behavior used in the POI feature utilities and tests).
+    \end{itemize}
+    These category-level features are then normalized across the dataset to make locations comparable.
+    
+    \item \textbf{Cafe/competition context features:} In addition to POI signals, the preprocessing computes cafe-centric features from the scraped competitor layer (e.g., normalized rating/reviews/hours where available). A local competition component is also derived by aggregating the properties of other cafes within the same neighborhood radius, capturing competitive pressure and clustering effects.
+    
+    \item \textbf{Composite target construction for training:} The training dataset includes a composite location score (stored as \texttt{poi\_composite\_score} in the processed outputs) built from the normalized POI-category components and the cafe/competition context signals. This continuous target is used for supervised learning (e.g., in the XGBoost training notebook) and is also the basis for generating comparable scores for new sites.
 \end{enumerate}
 
-The output of this preprocessing pipeline is a structured dataset where each cafe location has pre-computed POI count features, POI weight features, and the composite score target variable. This processed dataset serves as the input for the machine learning training phase.
+The output of this preprocessing pipeline is a structured, model-ready table (exported as the project’s final ``master'' cafe feature CSVs) in which each reference location has precomputed POI count features, POI weight features, and the composite score target variable. The same feature-generation logic is reused during inference to score user-selected coordinates and To-Let candidate listings consistently with the training data.
 
-\subsection{Mathematical Formulas for Preprocessing Pipeline}
+\subsection{Mathematical Formulas for the Preprocessing Pipeline}
 
-The following formulas describe the computations performed by the preprocessing pipeline (\texttt{master.py}) when producing per-POI weights, per-cafe POI metrics, and the final composite score. Note that these calculations are performed \textbf{prior to model training}, and the resulting pre-computed features are loaded by the training notebook.
+This section describes the main computations used in the current project to turn raw POIs/cafes into radius-based features and (for the cafe training set) a composite score. These steps are executed \textbf{before model training} (via the preprocessing scripts, with supporting utilities also used for generating path-based summaries/visualizations).
 
-\subsubsection{Per-POI Weight Calculation}
-Per-POI combined weight (for POI $j$): available components for a POI (base weight, rating norm, reviews norm, weekly hours norm) are averaged. For $k$ available components $c_{jm}$:
-$$
-\text{combined}_j=\frac{1}{k}\sum_{m=1}^{k}c_{jm}
-$$
+\subsubsection{POI Score (simple metadata-based quality)}
+Each POI $j$ is assigned a single score that represents its overall ``strength'' as an activity attractor. We compute it as the average of whichever normalized components are available for that POI.
 
-\subsubsection{Distance Calculation}
-Haversine distance (meters) between points with latitude/longitude $(\varphi_1,\lambda_1)$ and $(\varphi_2,\lambda_2)$ (in radians), with Earth radius $R=6{,}371{,}000\,$m:
-$$
-\Delta\varphi=\varphi_2-\varphi_1,\quad\Delta\lambda=\lambda_2-\lambda_1
-$$
-$$
-a=\sin^2\left(\tfrac{\Delta\varphi}{2}\right)+\cos\varphi_1\cos\varphi_2\sin^2\left(\tfrac{\Delta\lambda}{2}\right)
-$$
-$$
-d=2R\arctan2\big(\sqrt{a},\sqrt{1-a}\big)
-$$
+Let $\mathcal{M}_j$ be the set of available normalized metadata components for POI $j$ (some POIs may not have rating/hours, etc.). Then:
+\[
+\text{poi\_score}_j=\frac{1}{|\mathcal{M}_j|}\sum_{m\in \mathcal{M}_j} m
+\]
+Typical components include:
+\[
+m \in \Big\{\, \text{base\_cat\_weight}_{\text{cat}(j)},\ \text{rating}^{\text{norm}}_j,\ \text{reviews}^{\text{norm}}_j,\ \text{hours}^{\text{norm}}_j \Big\}
+\]
+where $\text{base\_cat\_weight}_{\text{cat}(j)}$ depends on the POI category (banks, education, health, temples, other).
 
-\subsubsection{Category-Level Aggregation and Normalization}
-For each POI category $p$ and cafe location $i$, weights within the search radius (e.g., 1km) are summed and normalized:
-$$
-\text{norm\_}w_{i}^{(p)}=\frac{w_{i}^{(p)}}{\max_j w_{j}^{(p)}}\quad(\text{else }0)
-$$
+\subsubsection{Distance Computation (road-network distance with fallback)}
+In the current implementation, distances are computed using the \textbf{roadway network} whenever possible (shortest-path distance along the road graph). If the road-network route cannot be computed for a specific pair, the system falls back to straight-line (Haversine) distance.
 
-Category component with category-specific weight:
-$$
-\text{component}_{i}^{(p)}=\text{norm\_}w_{i}^{(p)}\times\text{category\_weight}_{p}
-$$
+For a reference location $i$ and a POI $j$, the distance in kilometers is:
+\[
+\text{dist}_{ij}=
+\begin{cases}
+\text{road\_dist}_{ij} & \text{if a valid road-network path exists}\\
+\text{geo\_dist}_{ij} & \text{otherwise}
+\end{cases}
+\]
+Here $\text{road\_dist}_{ij}$ is the shortest-path distance on the road network, and $\text{geo\_dist}_{ij}$ is the great-circle distance (Haversine).
 
-\subsubsection{Cafe Property Score}
-Cafe-level property components (rating, reviews, weekly hours, rank) are normalized individually (e.g., $\text{rating}/5$, $\log(1+\text{reviews})/\max\log(1+\text{reviews})$) and averaged:
-$$
-\text{cafe\_props}_i=\frac{1}{K}\sum_{m=1}^{K}p_{im}
-$$
-where $p_{im}$ are the available normalized property components.
+\subsubsection{Distance decay (how nearby POIs contribute more)}
+Within a search radius $r$ (km), we use a simple decay function so that nearer POIs contribute more than farther POIs. The project uses a bounded linear term multiplied by an exponential term:
 
-\subsubsection{Nearby Cafes Component}
-Sum cafe property scores for other cafes within the analysis radius $R_{\text{master}}$ (excluding the cafe itself):
-$$
-\text{nearby\_sum}_i=\sum_{j\ne i:\ d_{ij}\le R_{\text{master}}}\text{cafe\_props}_j
-$$
-Normalized nearby component:
-$$
-\text{nearby\_norm}_i=\frac{\text{nearby\_sum}_i}{\max_j\text{nearby\_sum}_j}\quad(\text{else }0)
-$$
+\[
+\text{decay}_{ij}=\max\!\Big(0,\, 1-\frac{\text{dist}_{ij}}{r}\Big)\cdot \exp\!\Big(-\frac{\text{dist}_{ij}}{\lambda}\Big)
+\]
+where $\lambda$ (km) is the decay scale.
 
-\subsubsection{Final Composite Score (Target Variable)}
-The \texttt{poi\_composite\_score} combines all category components, cafe properties, and nearby cafe influence:
-\begin{multline*}
-\text{poi\_composite\_score}_i=\sum_{p}\text{component}_{i}^{(p)}+\text{PROPS\_WEIGHT}\times\text{cafe\_props}_i \\
-+\text{NEIGHBOR\_WEIGHT}\times\text{nearby\_norm}_i
-\end{multline*}
+\subsubsection{Category features around a location (counts + weighted influence)}
+For each reference location $i$ and each POI category $p$, we compute features within radius $r$.
 
-This composite score serves as the \textbf{target variable} (Y) for the supervised learning regression model. The trained model learns to predict this score for new locations based on their POI feature vectors.
+\paragraph{POI count in category $p$.}
+\[
+\text{count}_{i,p}(r)=\sum_{j\in p}\mathbf{1}\big[\text{dist}_{ij}\le r\big]
+\]
 
-\subsubsection{Individual Cafe Weight}
-For reference, individual cafe weights (normalized cafe properties) are calculated as:
-$$
-\text{cafe\_individual\_score}_i=\text{cafe\_props}_i
-$$
-$$
-\text{cafe\_weight}_i=\frac{\text{cafe\_individual\_score}_i}{\max_j\text{cafe\_individual\_score}_j}\quad(\text{else }0)
-$$
+\paragraph{Weighted POI influence in category $p$.}
+\[
+\text{influence}_{i,p}(r)=\sum_{j\in p,\ \text{dist}_{ij}\le r}\text{poi\_score}_j\cdot \text{decay}_{ij}
+\]
 
-\textbf{Note:} All these computations are performed during the preprocessing phase. The model training notebook loads the resulting dataset with pre-computed count features (e.g., \texttt{banks\_count\_1km}), weight features (e.g., \texttt{banks\_weight\_1km}), and the target variable \texttt{poi\_composite\_score}.
+\paragraph{Normalization (for comparability).}
+Aggregated values can be normalized across the training set, for example:
+\[
+\text{influence}^{\text{norm}}_{i,p}(r)=
+\begin{cases}
+\dfrac{\text{influence}_{i,p}(r)}{\max\limits_{u}\ \text{influence}_{u,p}(r)} & \text{if max}>0\\[8pt]
+0 & \text{otherwise}
+\end{cases}
+\]
+
+\subsubsection{Cafe properties and nearby-competition signal (training set)}
+For each cafe $i$, we compute a simple cafe-quality score from available normalized cafe metadata:
+\[
+\text{cafe\_score}_i=\frac{1}{|\mathcal{K}_i|}\sum_{k\in \mathcal{K}_i} k
+\]
+where $\mathcal{K}_i$ may include normalized rating, reviews, and hours (and rank if available).
+
+To capture local competition, we aggregate the scores of other cafes within radius $r$:
+\[
+\text{comp}_{i}(r)=\sum_{j\ne i:\ \text{dist}_{ij}\le r}\text{cafe\_score}_j
+\]
+and optionally normalize it:
+\[
+\text{comp}^{\text{norm}}_{i}(r)=
+\begin{cases}
+\dfrac{\text{comp}_{i}(r)}{\max\limits_{u}\ \text{comp}_{u}(r)} & \text{if max}>0\\[8pt]
+0 & \text{otherwise}
+\end{cases}
+\]
+
+\subsubsection{Composite target score for cafe training}
+For supervised training on cafes, the pipeline forms a continuous composite score (stored as \texttt{poi\_composite\_score}) using the normalized category influences plus cafe/competition terms:
+\[
+\texttt{poi\_composite\_score}_i
+=\sum_{p}\alpha_p\cdot \text{influence}^{\text{norm}}_{i,p}(r)
++\beta\cdot \text{cafe\_score}_i
++\gamma\cdot \text{comp}^{\text{norm}}_{i}(r)
+\]
+where $\alpha_p$ are category weights and $\beta,\gamma$ control the contributions from cafe properties and nearby competition.
+
+\paragraph{Note (how this is used).}
+The same feature computations are reused at inference time to score \textbf{new coordinates} and \textbf{To-Let candidate listings}. In inference, the trained model predicts a score from the generated feature vector; the composite target above is constructed directly only for the cafe training dataset.
 
 
+\section{Feature Engineering and Data Structuring}
 
-\subsection{Feature Engineering and Data Structuring}
+After scraping and cleaning, the project converts raw cafe/POI layers into a \textbf{model-ready, tabular feature dataset} (CSV) and a set of \textbf{map-ready GeoJSON layers}. Feature generation is implemented using lightweight Python tooling (\textbf{pandas} / \textbf{NumPy}) plus the project’s road-network utilities (used to compute shortest-path distances and export path geometries). The same feature logic is reused for scoring \textbf{user-selected coordinates} and \textbf{To-Let candidate listings} at inference time.
 
-The preprocessed POI weights and category aggregations are further refined through feature engineering using Python libraries such as \textbf{GeoPandas}, \textbf{Shapely}, and \textbf{scikit-learn}. The feature engineering process transforms raw geospatial data into a comprehensive feature set designed to capture location attractiveness.
+\subsubsection{Raw (Base) Features}
+For each reference location (a cafe for training, or a candidate site during inference), the pipeline uses:
 
-\subsubsection{Raw Features}
-For any given point on the map, the following base features are extracted:
 \begin{itemize}
-	\item \textbf{Geographic Coordinates:} Latitude (\texttt{lat}) and longitude (\texttt{lng}) values.
-	\item \textbf{POI Count Features:} Raw counts of each POI category within 1km radius:
-	\begin{itemize}
-		\item \texttt{banks\_count\_1km}: Number of banking institutions
-		\item \texttt{education\_count\_1km}: Number of educational facilities
-		\item \texttt{health\_count\_1km}: Number of healthcare facilities
-		\item \texttt{temples\_count\_1km}: Number of religious sites
-		\item \texttt{other\_count\_1km}: Count of other amenities
-	\end{itemize}
-	\item \textbf{POI Weight Features:} Quality-adjusted weighted scores for each POI category:
-	\begin{itemize}
-		\item \texttt{banks\_weight\_1km}, \texttt{education\_weight\_1km}, \texttt{health\_weight\_1km}, \texttt{temples\_weight\_1km}, \texttt{other\_weight\_1km}
-	\end{itemize}
+    \item \textbf{Coordinates:} latitude and longitude (\texttt{lat}, \texttt{lng}).
+    \item \textbf{Category counts within a radius $r$:} number of POIs per category inside the search radius (default experiments include $r=1$ km):
+    \begin{itemize}
+        \item \texttt{banks\_count\_$r$}, \texttt{education\_count\_$r$}, \texttt{health\_count\_$r$}, \texttt{temples\_count\_$r$}, \texttt{other\_count\_$r$}
+    \end{itemize}
+    \item \textbf{Distance-decay aggregation per category:} for POIs within $r$, a decay factor based on \textbf{road-network distance} (shortest path) is computed; the project stores a compact summary as the \emph{average decay score} per category:
+    \begin{itemize}
+        \item \texttt{banks\_weight\_$r$}, \texttt{education\_weight\_$r$}, \texttt{health\_weight\_$r$}, \texttt{temples\_weight\_$r$}, \texttt{other\_weight\_$r$}
+    \end{itemize}
+    These ``\texttt{\_weight\_}'' fields reflect proximity-based influence (nearer POIs contribute more), and are derived from the same decay used when exporting cafe$\rightarrow$POI paths.
 \end{itemize}
 
-\subsubsection{Engineered Features}
-Advanced features are derived to capture complex spatial relationships:
+\subsubsection{Road-Network Distance (what is actually used)}
+Distances are computed using the roadway graph whenever possible (shortest-path distance). To keep the computation fast, candidates are first pre-filtered using straight-line (Haversine) distance, and road routing is then applied only to those within the radius. If a valid road path cannot be produced, the pipeline falls back to the straight-line distance for that pair.
+
+\subsubsection{Engineered / Derived Features (used in the project)}
+On top of the raw category features, the project derives simple aggregate signals such as:
+
 \begin{itemize}
-	\item \textbf{\texttt{total\_poi\_count\_1km}:} Total count of all POIs within 1km radius, representing overall area activity level.
-	\item \textbf{Category Ratio Features:} Proportional distribution of each POI type:
-	\begin{itemize}
-		\item \texttt{bank\_ratio}: Proportion of banks among all POIs
-		\item \texttt{education\_ratio}: Proportion of educational facilities
-		\item \texttt{temple\_ratio}: Proportion of religious sites
-		\item \texttt{health\_ratio}: Proportion of healthcare facilities
-	\end{itemize}
-	\item \textbf{\texttt{weighted\_POI\_strength}:} A composite metric combining all weighted POI scores to represent the overall quality-adjusted attractiveness of the location.
-	\item \textbf{Target Variable (\texttt{poi\_composite\_score}):} A continuous value representing location commercial viability, derived from weighted POI aggregations and existing cafe performance data.
+    \item \textbf{Total POI count:} \texttt{total\_poi\_count\_$r$} as the sum of all category counts within the radius.
+    \item \textbf{Overall proximity activity:} an overall POI-strength proxy computed by combining category decay summaries (e.g., sum/average of the per-category decay scores).
+    \item \textbf{Cafe context fields (training rows only):} cafe-specific fields such as \texttt{cafe\_weight} and the training target \texttt{poi\_composite\_score} are carried from the preprocessed cafe dataset into the final training table.
 \end{itemize}
 
-\subsubsection{Data Preprocessing and Handling}
+\subsubsection{Data Structuring and Outputs}
+The engineered data is stored in two complementary formats:
+
 \begin{itemize}
-	\item \textbf{Missing Value Imputation:} Missing values are handled using median imputation to maintain data integrity without introducing bias.
-	\item \textbf{Outlier Detection:} Statistical analysis and visualization techniques identify and handle outliers in the dataset.
-	\item \textbf{Feature Scaling:} For baseline models requiring normalization, \texttt{StandardScaler} is applied to ensure features are on comparable scales.
-	\item \textbf{Duplicate Handling:} Initial data inspection removes duplicate entries to ensure training data quality.
+    \item \textbf{CSV feature tables:} compact per-location rows used for training and for runtime scoring (e.g., the minimal ``master'' CSV exported for analysis).
+    \item \textbf{GeoJSON path layers:} cafe$\rightarrow$POI shortest-path LineStrings exported for visualization and inspection, including per-edge properties such as \texttt{distance\_km} and decay-derived weights.
 \end{itemize}
 
-\subsubsection{Dataset Partitioning}
-To prepare for model training and rigorous evaluation, the dataset is partitioned using a standard train-test split, following best practices for supervised learning model validation.
+\subsubsection{Data Cleaning (as implemented)}
+The preprocessing code performs practical cleaning steps that match the current repository implementation:
 
-\subsection{Real-Time Location Scoring System}
+\begin{itemize}
+    \item \textbf{Coordinate validation:} latitude/longitude columns are auto-detected, coerced to numeric, and non-finite coordinates are excluded.
+    \item \textbf{Missing metadata handling:} when a POI/cafe weight field is absent, a safe fallback is used (proximity-based decay), ensuring feature generation does not fail due to incomplete scraped attributes.
+\end{itemize}
+
+\subsubsection{Dataset Partitioning (training notebook)}
+For model training and evaluation, the processed cafe feature table is split into training/testing subsets in the training notebook workflow. Inference-time scoring (including To-Let listings) reuses the same feature schema so predicted scores remain comparable to the trained target scale.
+
+\section{Real-Time Location Scoring System}
 
 The core of the application is a system that provides data-driven suitability predictions for any location in the study area. The prediction workflow operates as follows:
 
@@ -333,7 +365,7 @@ The core of the application is a system that provides data-driven suitability pr
 	\item The system categorizes scores into risk levels: High Risk ($<$1.0), Medium Risk (1.0-2.0), Low Risk ($>$2.0).
 \end{itemize}
 
-\subsection{Supervised Learning Regression Model}
+\section{Supervised Learning Regression Model}
 
 The project employs a \textbf{Supervised Learning} regression approach to predict location suitability. The model is trained on a labeled dataset of 1,330 existing cafe locations, each with pre-computed POI features and a known \texttt{poi\_composite\_score} target value.
 
@@ -376,11 +408,11 @@ Example values for a high-potential location:
  18.5, 12.3, 38.7, 43, 0.279, 0.186, 0.070, 0.116, 146.8]
 \end{verbatim}
 
-\subsection{Model Training and Evaluation Strategy}
+section{Model Training and Evaluation Strategy}
 
 The training process follows a rigorous methodology to ensure both accuracy and reliability, with comparative analysis between baseline and advanced models.
 
-\subsubsection{Model Selection and Training}
+\section{Model Selection and Training}
 \begin{enumerate}
 	\item \textbf{Baseline Model (Linear Regression):} A linear regression model with standardized features serves as the baseline, providing a performance benchmark. The model is implemented using scikit-learn's \texttt{Pipeline} combining \texttt{StandardScaler} and \texttt{LinearRegression} to ensure proper feature normalization.
 	
@@ -441,7 +473,7 @@ The system translates raw suitability scores into actionable risk categories:
 	\item \textbf{Low Risk:} Score $>$ 2.0 (favorable location)
 \end{itemize}
 
-\subsection{Database Schema and Storage}
+\section{Database Schema and Storage}
 
 To support real-time feature calculation and the overall application logic, all aggregated geographic data is stored in a professional-grade relational database system.
 \begin{itemize}
@@ -456,3 +488,39 @@ The system is built on a four-table relational schema as described in the ER dia
     \item[\texttt{points\_of\_interest}] Locations that attract foot traffic, such as schools, temples, and offices.
     \item[\texttt{listings}] Dynamic data about available "To-Let" properties, including area, rent, and location.
 \end{description}
+
+
+% % LaTeX figure: SiteX "Cafe location score" model architecture (XGBoost regressor)
+% % Requires: \usepackage{tikz}
+% %           \usetikzlibrary{arrows.meta,positioning,fit,calc}
+
+% % Table version (architecture-style) of the same model pipeline
+% \begin{table}[ht]
+% \centering
+% \renewcommand{\arraystretch}{1.25}
+% \setlength{\tabcolsep}{6pt}
+% \begin{tabular}{|c|p{0.24\textwidth}|p{0.62\textwidth}|}
+% \hline
+% \rowcolor{gray!15}
+% \textbf{\#} & \textbf{Block} & \textbf{What happens} \\
+% \hline
+% 1 & \textbf{Inputs} & Raw row from CSV containing \texttt{lat,lng} and POI features: \texttt{*\_count\_<r>\_km} and \texttt{*\_weight\_<r>\_km}. \\
+% \hline
+% 2 & \textbf{Target (training only)} & \texttt{poi\_composite\_score} is the supervised target used during training; it is not provided as an input at inference time. \\
+% \hline
+% 3 & \textbf{Feature engineering} & Derive aggregate signals such as: $\texttt{total\_poi\_count\_km}=\sum \texttt{count}_i$, $\texttt{category\_ratio}_i=\dfrac{\texttt{count}_i}{\sum \texttt{count}_j+\varepsilon}$, and $\texttt{weighted\_POI\_strength}=\sum \texttt{weight}_i$. \\
+% \hline
+% 4 & \textbf{Leakage control} & Drop identifier/leakage-prone columns (e.g., name, address, IDs, raw score-like fields). Optionally drop raw POI columns after feature engineering (keeping engineered features). \\
+% \hline
+% 5 & \textbf{Numeric matrix $X$} & Build numeric-only modeling matrix: select numeric columns and apply median imputation for missing values. \\
+% \hline
+% 6 & \textbf{Train/test split} & Split the dataset into train/test sets (70/30, \texttt{random\_state=42}). \\
+% \hline
+% 7 & \textbf{Modeling} & \textbf{Primary:} XGBoost Regressor, with ensemble prediction $\hat{y}=\sum_{t=1}^{T}\eta\, f_t(x)$, where $f_t$ are decision trees (depth $\le d$). Hyperparameters (from notebook): $T=200$, $\eta=0.05$, $d=20$, subsample=0.8, colsample\_bytree=0.8; early stopping: 20 rounds (RMSE). \textbf{Baseline:} Linear Regression (\texttt{StandardScaler + LR}). \\
+% \hline
+% 8 & \textbf{Output} & Predicted suitability score: $\hat{y}=\widehat{\texttt{poi\_composite\_score}}$. \\
+% \hline
+% \end{tabular}
+% \caption{SiteX model architecture: engineered POI features + numeric preprocessing + XGBoost regression to predict \texttt{poi\_composite\_score}.}
+% \label{fig:sitex-xgb-architecture}
+% \end{table}
