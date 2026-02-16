@@ -1,2 +1,316 @@
-\chapter{System Design and Architecture}
-    
+% --- Results & Discussion (UI screenshots) ---
+% Suggested packages in preamble:
+% \usepackage{graphicx}
+% \usepackage{float}   % for [H] placement if you want figures to stay put
+% \usepackage{caption}
+% \usepackage{subcaption}
+
+\chapter{Results and Discussion}
+
+% \section{Results}
+This chapter presents the comprehensive results of the SiteX system, divided into two key areas: the user interface (UI) implementation and the predictive model's performance. The first section details how the UI components support the site selection workflow, while the second section provides a quantitative analysis of the underlying machine learning model.
+
+\section{User Interface Implementation}
+Figure~\ref{fig:ui-main-tolet} shows the main page of the application, titled \textit{Location Analysis}. The design follows a left-panel + map layout:
+\begin{itemize}
+    \item The \textbf{left panel} collects user inputs (cafe name, analysis mode, latitude/longitude) and provides selection controls.
+    \item The \textbf{map view} provides the spatial context and immediate feedback by placing a marker at the selected location and showing nearby POIs when enabled.
+\end{itemize}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/mainPage.jpeg}
+    \caption{Main page with the \textit{To-let pick} mode. The left panel lists available rental listings for selection, while the map indicates the chosen listing location.}\label{fig:ui-main-tolet}
+\end{figure}
+
+\subsection{Analysis Modes: Point Pick vs. To-let Pick}
+A core result of the UI implementation is the availability of two selection modes that cover different real-world usage scenarios:
+\begin{itemize}
+    \item \textbf{Point pick:} the user selects one or more candidate points (e.g., by clicking the map). This supports exploratory analysis when a location is not constrained to existing listings.
+    \item \textbf{To-let pick:} the user selects from a curated list of available rental spaces. This supports practical site selection where the decision must be made among available properties.
+\end{itemize}
+In \textit{To-let pick}, the UI shows a scrollable list of listings with basic details (e.g., title and monthly rent) and optional navigation to more information. Selecting a listing automatically updates the latitude/longitude fields and places a marker on the map, reducing manual input errors and improving speed.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/mainPageMultiPointPick.jpeg}
+    \caption{Main page with the \textit{Point pick} mode. The left panel maintains a point list for managing selected candidate coordinates prior to generating results.}\label{fig:ui-main-pointlist}
+\end{figure}
+
+
+\subsection{Point List Management and Multi-candidate Comparison}
+The \textit{Point pick} workflow maintains a \textbf{Point list} with:
+\begin{itemize}
+    \item a clear representation of selected coordinates,
+    \item per-point removal controls,
+    \item bulk actions such as clearing all selections.
+\end{itemize}
+This enables users to build a short list of candidate locations and iteratively refine it. From a results perspective, the key benefit is that the selection process becomes reproducible: the user can explicitly see which coordinates are being analyzed before requesting the final results.
+
+
+
+% \pagebreak
+% \subsection{POI Visualization and Category Controls}
+% A major UI result is the ability to display contextual data points (POIs) directly on the map. When enabled, POI markers provide immediate visual cues about the surrounding environment (e.g., cafes, banks, education, health, temples, and other categories). The map can be populated with POI markers and a category control panel that supports:
+% \begin{itemize}
+%     \item \textbf{searching} places by name,
+%     \item \textbf{filtering} by category,
+%     \item \textbf{reviewing counts} of available POIs per category.
+% \end{itemize}
+% This directly supports interpretation: users can connect numerical outputs (in the results view) with the spatial distribution and density of relevant amenities.
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.98\linewidth]{figures/ui_poi_map_filters.png}
+%     \caption{Map view with POI markers enabled and category controls for filtering/search. The UI helps interpret the neighborhood context around the selected location.}\label{fig:ui-poi-filters}
+% \end{figure}
+
+\subsection{Results View and Visual Summary (Radar Chart)}
+The results visualization presented after the user clicks \textit{View Results} uses a radar chart that provides a compact, multi-dimensional summary of the selected location across categories (e.g., cafes, banks, education, health, temples, other). The key results of using this visualization are:
+\begin{itemize}
+    \item \textbf{At-a-glance comparison:} categories with higher relative values extend further from the center, making strengths and weaknesses easy to spot.
+    \item \textbf{Decision support:} rather than inspecting raw counts alone, users can interpret the overall balance of amenities around the site.
+\end{itemize}
+In practice, this supports the project goal of enabling site selection based on surrounding context, not only on a single metric.
+
+% --- Results & Discussion (place this AFTER your "Main Page" subsection) ---
+
+% \subsection{Results and Discussion}
+% \label{sec:results-discussion}
+
+% This section presents the observed outputs from the implemented web application and discusses how the UI supports the end-to-end workflow: selecting candidate locations, retrieving nearby Points of Interest (POIs), computing summary indicators, and (optionally) generating a natural-language explanation. The frontend implementation is centered around the \texttt{LocationForm} component (main page) and the \texttt{ResultPage} component.
+
+\section{Result Page Overview}\label{sec:result-overview}
+
+After submitting one or more coordinates from the main page, the system navigates to the Result Page. The Result Page reads coordinates from query parameters, supports both single-point and multi-point inputs, and visualizes results through three main tabs: \textbf{Insights}, \textbf{Nearby POIs}, and \textbf{Explanation}.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\linewidth]{img/resultsPageInsight.jpeg}
+  \caption{Result Page entry state showing the selected point header and the three analysis tabs (Insights, Nearby POIs, Explanation).}
+  \label{fig:ui-result-overview}
+\end{figure}
+
+\paragraph{Discussion.}
+The Result Page acts as the central dashboard for interpreting model-driven site suitability. It consolidates multiple signals—accessibility, model prediction, and POI-derived scores—into a single workflow, which improves usability compared to inspecting raw numeric outputs.
+
+\subsection{Insights Tab: Summary Indicators}\label{sec:insights}
+
+The \textbf{Insights} tab presents three headline indicators:
+(i) \textit{Accessibility Score},
+(ii) \textit{Model Prediction Score}, and
+(iii) \textit{POI Score}.
+Additionally, it includes visual summaries of POI composition via a category share chart and average decayed weights by category.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.8\linewidth]{img/resultsPageInsight.jpeg}
+  \caption{Insights tab (single-point mode) with ring indicators and POI category summary charts.}
+  \label{fig:ui-insights-single}
+\end{figure}
+
+\paragraph{Interpretation of indicators.}
+The \textit{POI Score} reflects the aggregated influence of nearby POIs within a fixed radius (e.g., 1\,km) after distance-based decay. Conceptually, each POI contributes a decayed weight, commonly modeled as
+\[
+w_{\text{decayed}} = w \, e^{-d/s},
+\]
+where $w$ is the POI weight, $d$ is distance (km), and $s$ is a decay scale (km). The UI then aggregates these contributions to derive per-category and total scores.
+
+\paragraph{Discussion.}
+In practice, the Insights view provides a compact, decision-oriented summary. The category share and average-decay plots help explain \emph{why} a location scores well (e.g., strong education/health presence) rather than only showing a single number.
+
+\subsection{Nearby POIs Tab: Spatial Verification}\label{sec:nearby}
+
+The \textbf{Nearby POIs} tab supports spatial verification by pairing an interactive map with a filterable POI list. Users can:
+(1) filter POIs by category (e.g., Cafes, Education, Health),
+(2) search by name, and
+(3) inspect distance-to-point values computed using the Haversine distance.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\linewidth]{img/resultsPageNearby.jpeg}
+  \caption{Nearby POIs tab (single-point mode) showing an interactive map and a categorized POI list with distances.}
+  \label{fig:ui-nearby-single}
+\end{figure}
+
+\paragraph{Discussion.}
+This view is important for trust and validation: the end-user can confirm whether high-impact POIs are genuinely close to the candidate location. It also makes data quality issues easier to spot (e.g., duplicated POIs or outliers).
+
+\subsection{Compare Mode: Two-Point Comparative Analysis}\label{sec:compare}
+
+When multiple points are provided, the UI enables a \textbf{Compare} mode that assigns the first two selected targets as \textbf{A} and \textbf{B} and presents side-by-side summaries. This includes:
+(1) per-point accessibility, prediction, and POI score,
+(2) category counts and average decayed weights as comparative charts, and
+(3) a map view with both markers.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.95\linewidth]{img/resultsPageMultiPointCompareViewInsights.jpeg}
+  \caption{Insights tab in compare mode (A vs B) with side-by-side indicators and comparative bar charts.}
+  \label{fig:ui-compare-insights}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\linewidth]{img/resultsPageMultiPointCompareViewNearby.png}
+    \caption{Nearby POIs in compare mode. The list presents distances to A and B, aiding point-to-point comparison.}\label{fig:ui-compare-nearby}
+\end{figure}
+
+\paragraph{Discussion.}
+Compare mode supports practical site selection: users can quickly evaluate trade-offs (e.g., A has better POI score but B has stronger accessibility). Presenting both points on the map and surfacing both distances in the POI list reduces cognitive load and makes the comparison more evidence-driven.
+
+\subsection{Explanation Tab: Interpretable Narrative of Top Contributors}\label{sec:explanation}
+
+The \textbf{Explanation} tab provides a structured view of \emph{top contributors by category} and optionally generates a natural-language narrative (via the backend explain endpoint) once both scores and POIs are loaded. The bar charts summarize which nearby POIs contribute most strongly to the total POI-derived score.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.85\linewidth]{img/resultsPageMultiPointCompareViewExplanation.jpeg}
+  \caption{Explanation tab (single-point mode) showing top contributing POIs per category with decayed contributions.}
+  \label{fig:ui-explain-single}
+\end{figure}
+
+% \begin{figure}[H]
+%   \centering
+%   \includegraphics[width=0.95\linewidth]{figures/ui_explanation_compare.png}
+%   \caption{Explanation tab (compare mode), showing top contributors for both points (A and B).}
+%   \label{fig:ui-explain-compare}
+% \end{figure}
+
+\paragraph{Discussion.}
+This component improves interpretability by translating the numeric aggregation into actionable insights (e.g., which specific banks/temples/education POIs drive the score). In compare mode, showing contributor sets for both points helps explain why one point outperforms another, beyond raw totals.
+
+% \pagebreak
+
+\section{Model Performance Analysis}
+
+This section evaluates the performance of the predictive model used in the SiteX application. The model, based on the XGBoost algorithm, was trained to predict the suitability score of a location based on various spatial features.
+
+\subsection{Feature Importance}
+Figure \ref{fig:feature-importance} displays the top 15 features learned by the model. The most significant feature is \verb|total_poi_count_km|, followed by \verb|health_ratio| and \verb|lng|. This indicates that the density of Points of Interest (POIs) and proximity to health facilities are critical factors in determining site suitability.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/topFifteenImpFeatures.png}
+    \caption{Top 15 features learned by the model, ranked by importance score.}
+    \label{fig:feature-importance}
+\end{figure}
+
+\subsection{Learning Curve}
+The learning curve in Figure \ref{fig:learning-curve} shows the Root Mean Square Error (RMSE) for both the training and test sets over boosting iterations. The convergence of both curves indicates that the model is learning effectively without significant overfitting.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/XGBoostLearningCurve.png}
+    \caption{XGBoost Learning Curve showing Training vs Test Loss (RMSE).}
+    \label{fig:learning-curve}
+\end{figure}
+
+\subsection{Performance Metrics}
+Figure \ref{fig:performance-metrics} compares the model's performance on the training and test sets using Mean Absolute Error (MAE), Root Mean Square Error (RMSE), and R-squared ($R^2$). High $R^2$ values indicate that the model explains a large portion of the variance in the target variable.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/TrainingVsTestingPerformance.png}
+    \caption{Model performance metrics (MAE, RMSE, $R^2$) on Training and Test sets.}
+    \label{fig:performance-metrics}
+\end{figure}
+
+\subsection{Actual vs. Predicted Scores}
+The scatter plots in Figure \ref{fig:actual-vs-predicted} visualize the relationship between the actual POI composite scores and the predicted scores. The strong linear alignment confirms the model's accuracy.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/trainTestSetActualAndPredicted.png}
+    \caption{Actual vs. Predicted Scores for Training (left) and Test (right) sets.}
+    \label{fig:actual-vs-predicted}
+\end{figure}
+
+\subsection{SHAP Summary}
+To interpret the model's predictions, SHAP (SHapley Additive exPlanations) values were computed. Figure \ref{fig:shap-summary} shows the impact of top features on the model output. For instance, high values of \verb|total_poi_count_km| (red points) generally lead to a higher impact on the model output.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{img/SHAP.png}
+    \caption{SHAP Summary Plot illustrating the impact of features on model output.}
+    \label{fig:shap-summary}
+\end{figure}
+
+\subsection{Spatial Error Distribution}
+Figure \ref{fig:error-map} maps the absolute error of predictions on the test set. This visualization helps identify if there are specific geographic regions where the model performs poorly.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{img/ErrorMap.png}
+    \caption{Geographic distribution of Absolute Error on the Test Set.}
+    \label{fig:error-map}
+\end{figure}
+
+\subsection{Residual Analysis}
+Figure \ref{fig:residuals} presents the residuals plotted against predicted values and the distribution of residuals. The residuals appear randomly distributed around zero, and their distribution is approximately normal, satisfying the assumptions of regression analysis.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/ResidualVsPredictedAndDistributionOfResidual.png}
+    \caption{Residuals vs. Predicted Values (left) and Distribution of Residuals (right).}
+    \label{fig:residuals}
+\end{figure}
+
+\subsection{Data Distribution}
+Figure \ref{fig:data-dist} shows the distribution of the target variable and the geographic locations in the training and test splits, ensuring that both sets are representative of the overall dataset.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1.0\linewidth]{img/TargetDist(plusOthers).png}
+    \caption{Dataset Split, Target Distribution, and Feature Distributions.}
+    \label{fig:data-dist}
+\end{figure}
+
+\section{System-Level Discussion and Limitations}\label{sec:limitations}
+
+\paragraph{End-to-end consistency.}
+The UI aligns model prediction and POI-based scoring into a single user journey: select one or more locations $\rightarrow$ retrieve signals $\rightarrow$ visualize $\rightarrow$ explain. This reduces the gap between model output and user decision-making.
+
+\paragraph{Operational dependency on backend endpoints.}
+The frontend requests POIs and explanations from backend API routes. If the POI router is not mounted, POI-dependent views may be unavailable even though the UI supports them. Ensuring that the POI endpoint is enabled in the backend routing is therefore important for full functionality.
+
+\paragraph{Data coverage and bias.}
+Scores and explanations are only as reliable as the underlying POI datasets and weighting scheme. Sparse or outdated POI coverage can understate true suitability for some neighborhoods.
+
+\paragraph{Interpretability vs.\ causality.}
+The Explanation tab provides \emph{descriptive} reasoning based on observed POIs and their decayed weights. These contributions should be interpreted as correlational indicators rather than causal guarantees of business success.
+
+% --- Suggested BibTeX keys for citations used above (add to your .bib) ---
+% @misc{sitex_locationform, title={SiteX LocationForm Component}, howpublished={\url{site_x_ui/src/components/locationForm/locationForm.tsx}}}
+% @misc{sitex_resultpage, title={SiteX ResultPage Component}, howpublished={\url{site_x_ui/src/pages/Result.tsx}}}
+% @misc{sitex_readme_api, title={SiteX README (API section)}, howpublished={\url{README.md}}}
+% @misc{sitex_pois_endpoint, title={SiteX POIs Endpoint and Mounting}, howpublished={\url{backend/app/api/endpoints/pois.py}, \url{backend/app/main.py}}}
+
+
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=0.72\linewidth]{figures/ui_results_radar_chart.png}
+%     \caption{Results visualization using a radar chart to summarize multiple POI categories around the selected site.}\label{fig:ui-radar}
+% \end{figure}
+
+% \subsection{Discussion}
+% Overall, the UI demonstrates that the system can translate geospatial and POI data into an interactive decision-making workflow:
+% \begin{itemize}
+%     \item \textbf{Usability:} separating inputs (left panel) from spatial feedback (map) reduces cognitive load and makes the selection---verification loop fast.
+%     \item \textbf{Practical workflow coverage:} supporting both \textit{Point pick} (exploration) and \textit{To-let pick} (real listings) makes the tool applicable to realistic site selection scenarios.
+%     \item \textbf{Interpretability:} POI markers and category filters make the data transparent, while the radar chart provides a compact summary for comparisons.
+% \end{itemize}
+
+% \subsubsection{Limitations}
+% The UI results are only as reliable as the underlying datasets and preprocessing. For example:
+% \begin{itemize}
+%     \item POI completeness may vary by area (missing or outdated entries).
+%     \item Rental listings (to-let data) may be incomplete or time-sensitive.
+%     \item Dense marker views can become visually crowded, which can affect readability for highly populated regions.
+% \end{itemize}
+
+% \subsubsection{Implications}
+% Despite these limitations, the UI effectively supports iterative site analysis by making it easy to test candidate coordinates, validate them on a map, and interpret multi-category summaries. This provides a practical foundation for location-based planning and data-informed site selection.
+
+% --- End of section ---

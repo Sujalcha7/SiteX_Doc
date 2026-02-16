@@ -36,6 +36,24 @@
     "latex-workshop.latex.outDir": "%DIR%",
     "latex-workshop.synctex.afterBuild.enabled": true,
     "latex-workshop.chktex.enabled": false,
+    "latex-workshop.latex.autoClean.run": "never",
+    "latex-workshop.latex.clean.method": "glob",
+    "latex-workshop.latex.clean.fileTypes": [
+        "*.aux",
+        "*.bbl",
+        "*.bcf",
+        "*.blg",
+        "*.fdb_latexmk",
+        "*.fls",
+        "*.lof",
+        "*.lot",
+        "*.log",
+        "*.out",
+        "*.run.xml",
+        "*.synctex.gz",
+        "*.toc",
+        "*.xdv"
+    ],
     "files.exclude": {
         "**/.vscode/build/**": true,
         "**/.vscode/tex-cache/**": true

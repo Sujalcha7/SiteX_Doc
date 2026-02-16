@@ -22,9 +22,11 @@
 \usepackage[numbers]{natbib} 
 \usepackage{subcaption}
 \usepackage{multirow}
-\usepackage{microtype}
+\usepackage{booktabs}
+\usepackage{tabularx}
+\usepackage{array}
 \usepackage{amsmath,amssymb,amsfonts,bbm}
-\usepackage{cite}
+% \usepackage{cite}
 \usepackage[hidelinks]{hyperref}
 \usepackage{url}
 % \usepackage{hyperref}
@@ -32,6 +34,7 @@
 \usepackage{pifont}
 \usepackage{enumitem}
 \usepackage{parskip}
+\usepackage{float}
 \usepackage{tikz}
 \usetikzlibrary{arrows.meta,positioning,fit,calc}
 % \usepackage{fontspec}
@@ -68,13 +71,13 @@
     \include{chapter/chapter_1}
     \include{chapter/chapter_2}
     \include{chapter/chapter_3}
-    \include{chapter/chapter_7} %newly added  chapter feasibility study 
     \include{chapter/chapter_4}
     \include{chapter/chapter_5}
-    % \include{chapter/chapter_6} 
+    \include{chapter/chapter_6} 
+    \include{chapter/chapter_7} % newly added chapter feasibility study 
     % \include{chapter/chapter_8}
     % \include{chapter/chapter_9}
-    % \include{chapter/chapter_10}
+    % \include{chapter/chapter_10} % commented out: source file chapter_10.tex not found
     \clearpage
     \bibliographystyle{plainnat}
     \renewcommand{\bibname}{REFERENCES}
