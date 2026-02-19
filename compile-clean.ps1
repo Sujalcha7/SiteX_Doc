@@ -24,9 +24,19 @@ Write-Host "Recompiling document..." -ForegroundColor Cyan
 Write-Host "Pass 1/4: Initial LaTeX run..."
 cmd /c "xelatex -halt-on-error -interaction=batchmode $mainFile.tex < nul > nul 2>&1"
 
-# BibTeX pass
+# BibTeX pass (only if aux exists and has bibliography data)
 Write-Host "Pass 2/4: Processing bibliography..."
-cmd /c "bibtex $mainFile.aux"
+$auxPath = Join-Path $docDir "$mainFile.aux"
+if (Test-Path $auxPath) {
+    $auxContent = Get-Content $auxPath -ErrorAction SilentlyContinue
+    if ($auxContent -match "\\bibdata" -and $auxContent -match "\\bibstyle") {
+        cmd /c "bibtex $mainFile.aux"
+    } else {
+        Write-Host "Skipping BibTeX: no \\bibdata/\\bibstyle in main.aux" -ForegroundColor Yellow
+    }
+} else {
+    Write-Host "Skipping BibTeX: main.aux not found (LaTeX likely failed)" -ForegroundColor Yellow
+}
 
 # Second pass
 Write-Host "Pass 3/4: Updating TOC and references..."
