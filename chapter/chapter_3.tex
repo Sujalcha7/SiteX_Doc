@@ -44,9 +44,9 @@ The software requirements for the development and deployment of the predictive s
 \begin{enumerate}
     \item \textbf{Collaboration \& Planning:} Google Drive, Trello, Discord
     \item \textbf{Backend Development:} Python 3.9+, \textbf{FastAPI} (for building a high-performance API), \textbf{Uvicorn} (as the ASGI server).
-    \item \textbf{Machine Learning:} Scikit-learn, XGBoost, LightGBM, Pandas, GeoPandas.
-	\item \textbf{GIS \& Data Analysis:} QGIS Desktop
-    \item \textbf{Database:} PostgreSQL with the \textbf{PostGIS} extension.
+    \item \textbf{Machine Learning \& Spatial Analysis:} Scikit-learn, XGBoost, LightGBM, Pandas, GeoPandas (for in-memory spatial operations).
+    \item \textbf{Data Storage:} CSV/GeoJSON (File-based storage).
+    \item \textbf{GIS Tools:} QGIS Desktop
     \item \textbf{Frontend Development:} Node.js, React.js
     \item \textbf{Mapping Library:} An interactive mapping library like \textbf{Leaflet}.
     \item \textbf{External APIs:} Integration with \textbf{OpenRouteService API} for isochrone (trade area) generation.
@@ -78,7 +78,7 @@ The functional requirements define the specific behaviors and capabilities of th
 \begin{enumerate}
 
     \item[\textbf{a.}] \textbf{Location Selection via Map Interface:} Provide an interactive map interface that allows users to select and evaluate a potential café or restaurant location by pin-pointing a specific latitude and longitude.
-    \item[\textbf{b.}] \textbf{Dynamic Heatmap Generation:} Generate and display a personalized "Opportunity Zone" heatmap on an interactive map of Bhaktapur, with high-potential areas tailored to the user's specific business profile.
+    \item[\textbf{b.}] \textbf{Map Visualization:} Display a color-coded suitability map of Bhaktapur, highlighting high-potential areas tailored to the user's specific business focus.
     \item[\textbf{c.}] \textbf{Integrated Property Discovery:} Display icons for currently available "To-Let" commercial properties that match the user's requirements directly on the map, allowing for seamless filtering and discovery.
     \item[\textbf{d.}] \textbf{Personalized Suitability Score Generation:} Upon selection of any point or property listing, calculate and display a quantitative "Personalized Suitability Score" that predicts the location's potential for success for the user's specific business profile.
     \item[\textbf{e.}] \textbf{Explainable AI (Prediction Breakdown):} Display a transparent breakdown of the key factors that positively and negatively influenced the suitability score, explaining the AI's reasoning to the user.
@@ -94,7 +94,7 @@ The non-functional requirements define the quality attributes and operational st
 \begin{enumerate}
     \item[\textbf{a.}] \textbf{Accuracy:} The predictive model must achieve a satisfactory level of accuracy (measured by metrics like MAE  and R²) when evaluated against the test dataset to ensure trustworthy recommendations. %accuracy metrics might be RMSE or R², depending on the model's output type change it if needed.
 
-    \item[\textbf{b.}] \textbf{Performance / Latency:} The system must return a full analysis (score, heatmap data, etc.) within a few seconds (e.g., < 1 seconds) of a user selecting a location to ensure a responsive and fluid user experience.
+    \item[\textbf{b.}] \textbf{Performance / Latency:} The system must return a full analysis (score, map data, etc.) within a few seconds (e.g., < 1 seconds) of a user selecting a location to ensure a responsive and fluid user experience.
 
     \item[\textbf{c.}] \textbf{Usability:} The user interface must be intuitive and easy to navigate for non-technical entrepreneurs, requiring minimal training to perform a full site analysis.
 

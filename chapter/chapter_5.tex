@@ -1,66 +1,568 @@
-\chapter{PROJECT WORK STATUS}\label{chap:outcomes}
-\section{Completed Works}
+\chapter{Methodology}
+\section{Block Diagram}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{img/BlockDiagram.png}
+	\caption{Block Diagram}
+	\label{fig:block-diagram}
+\end{figure}
+This block diagram illustrates the system architecture of \textbf{  SiteX}, detailing the interaction between the frontend user interface, the backend services, and the core data and model assets.
 
-The following major components of the project have been completed:
+\begin{itemize}
+    \item \textbf{User Interface (Frontend):} The user's journey begins here. They input their unique \textbf{Business Focus} (e.g., \textit{Cafe Business}) into the UI. The frontend is responsible for rendering the \textbf{Interactive Map Interface} and, upon user selection of a point, displaying the rich, multi-faceted \textbf{Detailed Analysis Dashboard} with calculated suitability scores and local insights.
 
-\begin{enumerate}
-    \item \textbf{Main Project User Interface:} \\
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[width=0.7\textwidth]{img/image2.png}
-        \caption{Main user interface showing the interactive map, sidebar for location input, POI radar chart, and contextual information for selected locations.}
-        \label{fig:main-ui}
-    \end{figure}
-    \par The main user interface integrates an interactive map with a sidebar for inputting location details, selecting radius, and visualizing POI distributions. It provides users with a comprehensive overview of the area, allowing them to explore and analyze spatial data efficiently.
+    \item \textbf{Backend Services (API Gateway):} Acting as the central nervous system, the FastAPI backend orchestrates the entire process. When it receives the user's request, the \textbf{Dynamic Feature Analyzer} queries the preprocessed geospatial files (Competitors, POIs, Demographics) using efficient spatial indexing to generate the data needed for analysis. When a user requests a deep analysis, the Feature Analyzer gathers all features for that specific point and passes them to the \textbf{Predictor Service}.
 
-    % \pagebreak
-    \item \textbf{Filtering and Searching POIs:} \\
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[width=0.5\textwidth]{img/image3.png}
-        \caption{Filtering and searching interface with category-based POI filters and dynamic search results.}
-        \label{fig:filter-search}
-    \end{figure}
-    \par This component enables users to filter and search for Points of Interest (POIs) by categories such as cafes, temples, banks, education, and health. The dynamic search panel displays the number of results per category and lists matching POIs, making it easy to focus on specific types of locations within the map.
-
-    % \pagebreak
-    \item \textbf{Result Analysis Dashboard:} \\
-    \begin{figure}[h!]
-        \centering
-        \includegraphics[width=0.5\textwidth]{img/image1.png}
-        \noindent \caption{Result analysis dashboard showing success score, POI distribution charts, and detailed statistics for the selected location.}
-        \label{fig:result-analysis}
-    \end{figure}
-    \par The result analysis dashboard presents a detailed breakdown of the selected location’s performance. It displays the computed success score, radar and bar charts for POI distribution, a donut chart comparing competitors with other POIs, and lists of top counts and detailed statistics for each POI category, supporting informed decision-making.
-\end{enumerate}
-
+    \item \textbf{Data \& Model Assets:} These are the foundational pillars of the system's intelligence.
+    \begin{itemize}
+        \item \textbf{File-Based Geospatial Data Store:} Structured CSV and GeoJSON files containing separate, optimized datasets for \texttt{Listings}, \texttt{Competitors} (Businesses), \texttt{Demographics} (Neighborhoods), and \texttt{Points of Interest}.
+        \item \textbf{The Trained Model:} A pre-trained \textbf{XGBoost model file}. The Predictor Service loads this model to calculate the final, personalized \textbf{Suitability Score} for the user's specific business profile at the selected location.
+    \end{itemize}
+\end{itemize}
+% \pagebreak
+\section{Usecase Diagram}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{img/UsecaseDiagram.png}
+	\caption{Usecase Diagram}
+	\label{fig:Usecase-diagram}
+\end{figure}\
 \noindent
-\par These completed modules form the core analytical and visualization features of the project, enabling users to perform spatial analysis and make informed decisions based on geospatial data.
+\par This diagram illustrates the simplified high-level architecture of the   SiteX platform, focusing on the clear separation of concerns between the user interface, backend services, and core data assets. It highlights the primary flow of data through the system during a typical user session.
 
+\begin{itemize}
+    \item \textbf{User Interface (Frontend):} This layer, depicted as a linear flowchart, represents the user's entire interactive journey. The process begins when the user defines their profile and requirements. This information is sent to the backend, which returns personalized map and listing data for the user to explore. After selecting a point for analysis, the relevant data is sent back to the backend. Finally, the frontend receives a complete analysis package to display on the detailed dashboard. This layer is responsible for all presentation and user interaction.
+
+    \item \textbf{Backend Services:} This layer acts as the central brain of the application and is logically divided into two distinct components:
+    \begin{itemize}
+        \item \textbf{API Gateway:} The single, public-facing entry point for the backend. It handles all incoming requests from the User Interface (User Profile, Location for Analysis) and routes them to the engine. It also formats and sends back all responses (Map Data, Full Analysis Package).
+        \item \textbf{Analysis \& Prediction Engine:} The internal powerhouse that performs all the heavy lifting. It receives tasks from the API Gateway and executes the core business logic: querying the database for geospatial data and loading the pre-trained XGBoost model to generate the full analysis.
+    \end{itemize}
+
+    \item \textbf{Data \& Model Assets:} These are the foundational pillars of the system's intelligence, accessed exclusively by the backend's Analysis \& Prediction Engine.
+    \begin{itemize}
+        \item \textbf{File-Based Data Store:} Stores all the preprocessed geospatial data, including competitor locations, demographic polygons, points of interest, and real estate listings.
+        \item \textbf{Trained Model (XGBoost):} The static, pre-trained machine learning model file. It contains the predictive intelligence required to calculate the Personalized Suitability Score.
+    \end{itemize}
+\end{itemize}
+% \pagebreak
+% \setlength{\parindent}{15pt}
+\section{Zero Context level Diagram}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{img/Level0ContextDiagram.png}
+	\caption{0-level Context Diagram}
+	\label{fig:Context-level-diagram}
+\end{figure}
+\noindent
+\par This 0-level context diagram provides a high-level overview of the   SiteX platform, illustrating its boundaries and its interactions with external entities. It shows the primary data flows into and out of the system without detailing the internal processes.
+
+\begin{description}
+    \item[Central System:] The \textbf{SiteX} is the core process that transforms raw data and user requirements into actionable business insights.
+
+	\item[External Entities:] External entities involve following: 
+	\begin{itemize}
+		\item \textbf{Entrepreneur:} The primary user who initiates the analysis and receives the final intelligence.
+		\item \textbf{Project Admin:} The team responsible for curating and inputting verified ground-truth data into the system.
+		\item \textbf{Public Geospatial Data Sources:} External sources like OpenStreetMap that provide foundational data (base maps, POIs, road networks).
+		\item \textbf{Real Estate Data Sources:} External sources for property listings and pricing data, which are used for both the property discovery feature and for deriving demographic proxies.
+		% \item \textbf{OpenRouteService API:} An external, third-party service that the system calls upon to perform the complex task of calculating realistic trade area isochrones.
+	\end{itemize}
+
+    \item[Primary Data Flows:] The diagram highlights the interactive, multi-step dialogue between the Entrepreneur and the system. The user explores the \texttt{Interactive Map}, selects a location, and then receives the final \texttt{Detailed Analysis Dashboard \& Suitability Report}.
+\end{description}
 \pagebreak
-\section{Remaining Works}
+\section{Level-1 Context Diagram}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{img/Level1ContextDiagram.png}
+	\caption{Level-1 Context Diagram}
+	\label{fig:level1-context-diagram}
+\end{figure}
+\noindent
+The Level-1 Context Diagram provides a decomposed view of the SiteCortex system, expanding upon the 0-level context by detailing the system’s internal functional processes and their interactions with external entities and data stores.
 
-The following key components are planned for future implementation to enhance the site analysis platform for opening a cafe:
+\begin{itemize}
+	\item \textbf{Core Processes:}
+	The SiteCortex platform is divided into four primary internal processes:
+	\begin{enumerate}
+		\item \textbf{Handle API Requests}: Serves as the central coordination layer, managing incoming user requests, routing data flows, and aggregating responses.
+		\item \textbf{Calculate Location Features}: Responsible for deriving spatial and contextual features such as competitor density, POI accessibility, and demographic indicators.
+		\item \textbf{Predict Suitability Score}: Executes machine learning inference using the trained XGBoost model to compute the final suitability score.
+		\item \textbf{Filter Property Listings}: Filters available “To-Let” properties based on user-defined requirements such as budget, area, and location constraints.
+	\end{enumerate}
 
+	\item \textbf{Data Stores:}
+	Each process interacts with specialized databases optimized for specific data types:
+	\begin{itemize}
+		\item \textbf{Listings Database:} Stores property listings and rental information.
+		\item \textbf{Competitor Database:} Contains data about existing businesses in the surrounding area.
+		\item \textbf{Demographics Database:} Holds neighborhood-level population and socio-economic data.
+		\item \textbf{POI Database:} Stores geospatial information about nearby amenities and landmarks.
+		\item \textbf{Trained Model Repository:} Stores the pre-trained XGBoost model used for prediction.
+	\end{itemize}
+
+	\item \textbf{Data Flow Overview:}
+	User requests originating from the UI Frontend enter the system through the API handler. Feature computation processes query the relevant data files and return calculated features. These features are then passed to the prediction process, which generates a specific suitability score for the chosen location. The scores and visual analytics are consolidated and returned to the frontend for presentation.
+\end{itemize}
+
+This Level-1 Context Diagram emphasizes the modular, service-oriented architecture of SiteCortex, illustrating how independent yet interconnected components collaborate to transform raw geospatial data into personalized, decision-support intelligence for entrepreneurs.
+
+\section{Workflow Diagram}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{img/WorkflowDiagram.png}
+	\caption{Workflow Diagram}
+	\label{fig:Workflow-diagram}
+\end{figure}
+\noindent
+\par This diagram illustrates the two primary and distinct workflows that define the entire   SiteX project: the offline data science pipeline that builds the system's intelligence, and the online user journey that consumes it.
+
+\begin{itemize}
+    \item \textbf{Admin Workflow (Right Side):} This represents the foundational, \textbf{offline process} performed by the project team. It begins with collecting multi-layered data (geospatial, demographic, listings) and populating the relational database. This structured data is then fed into an ML Pipeline to engineer features and train the XGBoost model. The two critical outputs of this workflow are the system's core assets: the populated \textbf{Relational Database} and the final \textbf{Trained Model} file.
+
+    \item \textbf{Business Owner's Workflow (Left Side):} This represents the \textbf{real-time, online journey} for the end-user. The process is initiated when the user selects a map location. The backend uses this to generate a specific detailed analysis. After the user explores the map and selects a point, the backend performs the full analysis by calculating the score, gathering insights, and returning the complete package to the user's detailed dashboard.
+
+    \item \textbf{The Bridge:} The diagram critically shows the connection between the two workflows. The assets created by the offline Admin Workflow are the essential inputs that power the live Business Owner Workflow. The \textbf{Analysis Engine} accesses the preprocessed data to generate location insights and gather competitor data, while the \textbf{Trained Model} is loaded on-demand to calculate the personalized score, seamlessly connecting the data science foundation to the interactive user application.
+\end{itemize}
+% \noindent
+%     The development of the predictive site selection platform will follow a systematic methodology grounded in geospatial data analysis and supervised machine learning. The project is designed to transform raw geographic data into actionable business intelligence, providing a data-driven forecast of a new retail location's potential success. The workflow encompasses geospatial data aggregation, feature engineering, predictive model training, and deployment via an interactive web application.
+
+\section{Sequence Diagram}
+\begin{figure}[h!]
+	\centering
+	\includegraphics[width=\textwidth]{img/SequenceDiagram.png}
+	\caption{Sequence Diagram}
+	\label{fig:sequence-diagram}
+\end{figure}
+\noindent
+This sequence diagram illustrates the chronological interaction between the user, frontend interface, backend services, databases, and the machine learning model during a complete analysis cycle in the SiteCortex platform. It highlights how a user’s request is transformed into actionable location intelligence through coordinated backend operations.
+
+\begin{itemize}
+	\item \textbf{User \& Frontend Interaction:}
+	The workflow begins when the user accesses the system through the UI Frontend. Initially, the frontend requests nearby Points of Interest (POIs) data to render an interactive base map. The user then enters a specific location and defines their business preferences, such as business type and constraints.
+
+	\item \textbf{API Request Handling:}
+	Upon submission, the UI sends an analysis request to the backend Handle API Requests service. This component acts as the orchestrator, managing communication between feature computation services, databases, and the prediction engine.
+
+	\item \textbf{Feature Calculation Process:}
+	The API service requests location-based features from the Calculate Location Features module. This module queries multiple data sources—including POI data, competitor information, and demographic datasets—from the database cluster. After aggregating and processing this information, it returns a structured feature vector representing the selected location.
+
+	\item \textbf{Suitability Prediction:}
+	The computed feature vector is forwarded to the Predict Suitability Score service. This service dynamically loads the pre-trained XGBoost model and performs inference to generate a personalized suitability score. In parallel, supporting spatial outputs such as proximity to competitors and Points of Interest are generated.
+
+	\item \textbf{Result Delivery:}
+	The predicted score and location insights are returned to the API service, which then sends the consolidated results back to the UI Frontend. Finally, the frontend displays the suitability score, interactive map, and detailed insights to the user, completing the interaction loop.
+\end{itemize}
+
+This sequence diagram clearly demonstrates how SiteCortex integrates real-time user inputs with geospatial analytics and machine learning inference to deliver instant, data-driven business location recommendations.
+
+
+\section{Model Selection and Training}
 \begin{enumerate}
-    \item \textbf{Heat Map Visualization:} \\
-    Develop and integrate a heat map feature to visually represent popular or viable areas for opening a cafe. This will help users quickly identify high-potential locations based on aggregated POI data and other relevant metrics.
-
-    \item \textbf{Demographic and Neighborhood Analysis:} \\
-    Incorporate demographic data and neighborhood characteristics into the analysis. This includes integrating population density, age distribution, income levels, and other socio-economic factors to provide a more comprehensive evaluation of each location.
-
-    \item \textbf{Area Comparison and Ranking:} \\
-    Implement tools to compare multiple areas side-by-side, allowing users to rank locations based on various criteria such as POI density, demographic suitability, and accessibility.
-
-    \item \textbf{User Analysis History and Comparison:} \\
-    Enable saving of users' past analysis sessions, allowing them to revisit previous results and perform direct comparisons between different locations or time periods.
-
-    \item \textbf{Enhanced Reporting and Export Options:} \\
-    Add functionality for generating detailed reports of analysis results, including charts and maps, with options to export these reports in PDF or other formats for offline review and sharing.
-
-    \item \textbf{User Feedback and Customization:} \\
-    Implement features for users to provide feedback on analysis results and customize the weighting of different factors according to their business strategy or preferences.
+	\item \textbf{Baseline Model (Linear Regression):} A linear regression model with standardized features serves as the baseline, providing a performance benchmark. The model is implemented using scikit-learn's \texttt{Pipeline} combining \texttt{StandardScaler} and \texttt{LinearRegression} to ensure proper feature normalization.
+	
+	\item \textbf{Primary Model (XGBoost):} The production model uses \texttt{xgb.XGBRegressor}, a gradient boosted decision tree algorithm chosen for its:
+	\begin{itemize}
+		\item Superior performance on tabular geospatial data
+		\item Built-in regularization preventing overfitting
+		\item Ability to capture non-linear relationships between POI features
+		\item Scale invariance (no feature normalization required)
+		\item Native support for missing values
+	\end{itemize}
 \end{enumerate}
 
-\noindent
-These enhancements will provide users with deeper insights and greater flexibility, supporting more informed and strategic decisions for cafe site selection.
+\subsubsection{Evaluation Metrics}
+Model performance is assessed on the held-out test set using comprehensive regression metrics:
+\begin{itemize}
+	\item \textbf{Mean Absolute Error (MAE):} Measures the average absolute difference between predicted and actual scores, providing an interpretable error metric in the same units as the target variable.
+	\item \textbf{Root Mean Squared Error (RMSE):} Similar to MAE but penalizes larger errors more heavily, ensuring the model performs well across the entire distribution.
+	\item \textbf{R-squared (R²):} Indicates the proportion of variance in the success score that is predictable from the input features, with values closer to 1.0 indicating better model fit.
+	\item \textbf{Mean and Standard Deviation of Residuals:} Assess model bias and prediction consistency.
+\end{itemize}
+
+\subsubsection{Model Performance Results}
+The XGBoost model demonstrates exceptional predictive performance on the test dataset:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|r|}
+	\hline
+	\textbf{Metric} & \textbf{Value} \\
+	\hline
+	\textbf{MAE} & 0.0908 points \\
+	\textbf{RMSE} & 0.1176 points \\
+	\textbf{R² Score} & 0.9822 (98.22\%) \\
+	\textbf{Mean Residual} & 0.00191 \\
+	\textbf{Std Residual} & 0.1178 \\
+	\hline
+\end{tabular}
+\caption{XGBoost Model Performance Metrics}
+\label{tab:model-performance}
+\end{table}
+The R² score of 0.9822 indicates that the model successfully explains 98.22\% of the variance in location suitability scores. The near-zero mean residual (0.00191) demonstrates that predictions are unbiased, while the low MAE (0.0908) confirms the model's practical accuracy for real-world deployment.
+
+\subsubsection{Model Persistence and Deployment}
+\begin{itemize}
+	\item The trained XGBoost model is serialized using \texttt{joblib} and saved to the models directory as \texttt{xgb\_baseline.pkl}.
+	\item Feature names are stored separately as \texttt{model\_features.pkl} to ensure consistency between training and production inference.
+	\item The production prediction pipeline requires only latitude and longitude as input, automatically computing all engineered features using k-Nearest Neighbors (k=5) for efficient spatial feature estimation.
+	\item Predictions are optimized for real-time responsiveness using efficient spatial indexing.
+\end{itemize}
+
+\subsubsection{Risk Assessment Framework}
+The system translates raw suitability scores into actionable risk categories:
+\begin{itemize}
+	\item \textbf{High Risk:} Score $<$ 1.0 (location not recommended)
+	\item \textbf{Medium Risk:} Score between 1.0 and 2.0 (proceed with caution)
+	\item \textbf{Low Risk:} Score $>$ 2.0 (favorable location)
+\end{itemize}
+
+
+\subsubsection{Model Architecture}
+\begin{table}[htbp]
+\centering
+\caption{XGBoost Regressor Model Architecture Summary}
+\label{tab:xgboost-arch}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.20\textwidth} >{\raggedright\arraybackslash}p{0.28\textwidth} >{\raggedright\arraybackslash}p{0.44\textwidth}}
+\toprule
+\textbf{Component} & \textbf{Description} & \textbf{Key Parameters / Value} \\
+\midrule
+Model Type & Gradient Boosted Decision Trees & XGBRegressor \\
+Objective & Regression loss & squared error \\
+Best iteration & With early stopping & 137 \\
+\midrule
+Input Features & Tabular engineered POI features & 9 features: lat, lng, total\_poi\_count\_km, banks\_ratio, education\_ratio, health\_ratio, other\_ratio, temples\_ratio, weighted\_POI\_strength \\
+\midrule
+Base Score & Initial constant prediction & $\approx$ mean of target \\
+\midrule
+Booster & Sequential ensemble of trees & n\_estimators = 200 (stopped at 137) \\
+Tree Structure & CART-style regression trees & max\_depth = 20; min\_child\_weight = 1 (default), gamma = 0 (default) \\
+\midrule
+Subsampling & Random sampling per tree & subsample = 0.8; colsample\_bytree = 0.8 \\
+\midrule
+Learning Process & Additive gradient boosting & learning\_rate ($\eta$) = 0.05 \\
+\midrule
+Regularization & Tree complexity \& coefficient penalties & reg\_lambda = 1 (default); reg\_alpha = 0 (default) \\
+\midrule
+Evaluation Metric & Used during training \& early stopping & rmse \\
+\midrule
+Prediction Formula & Final model output & $\hat{y} = \text{base\_score} + \sum_{k=1}^{137} \eta \cdot f_k(x)$ \\
+\midrule
+Randomness Control & Reproducibility & random\_state = 100 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\section{Data Collection and Preprocessing}
+\subsection{Geospatial Data Collection and Aggregation}
+
+The project's foundation is built on a comprehensive multi-layered geographic dataset covering the commercial areas in Kathmandu. The data collection process evolved through several iterations to achieve efficiency and scale:
+
+\begin{enumerate}
+	\item \textbf{Manual Data Collection:} Initially, data was collected manually through field surveys and Google Maps exploration. However, this approach proved to be highly time-consuming and difficult to scale across the geographic area.
+	
+	\item \textbf{Google Maps Scraper Extension:} To improve efficiency, the \textbf{Chrome Google Maps Scraper extension} was utilized. However, this tool had significant limitations, extracting only approximately 30 entries per scraping session, making it impractical for large-scale data aggregation.
+	
+	\item \textbf{Apify Web Scraping Platform:} To overcome these limitations, \textbf{Apify}, a professional web scraping platform, was employed. This tool proved highly effective, enabling the collection of a comprehensive dataset exceeding \textbf{3,000 total data entries}, including all Points of Interest (POIs) and competitor businesses. Among these, the cafe category alone contributed \textbf{1,330 entries}.
+\end{enumerate}
+
+The final curated layers used by the system are organized by category:
+\begin{itemize}
+    \item \textbf{Competitors (Cafes):} Existing cafe locations scraped via Apify and cleaned into a standardized schema (final CSV), also exported as GeoJSON for map display.
+    \item \textbf{Points of Interest (POIs):} Foot-traffic attractors grouped into categories including \textbf{banks, education, health, temples, and other amenities}. These layers serve as proxies for demand generators and contextual signals around candidate sites.
+    \item \textbf{Road network layer (context feature):} A roadway GeoJSON layer is included to support road-aware analysis (e.g., proximity to road types and accessibility-related features).
+    \item \textbf{To-Let listings (candidate locations):} A newly added dataset of \textbf{commercial rental/To-Let listings} (maintained as a CSV and associated assets) is integrated into the system to represent \textbf{real, available candidate sites}. These listings are used as evaluation targets on the map and in the analysis workflow, allowing the model to score and compare \emph{available} locations rather than only arbitrary coordinates.
+\end{itemize}
+
+\noindent Overall, the preprocessing pipeline converts scraped raw listings into consistent, analysis-ready CSV and GeoJSON artifacts that are consumed by the backend services and the React/Vite-based frontend map interface.
+\subsection{POI Weight Calculation and Aggregation}
+
+A key preprocessing stage in the current implementation is the computation of POI-derived features and their aggregation around each reference location. This is handled by the project’s preprocessing scripts (notably \texttt{Data/master.py} and supporting utilities), which generate the feature tables used for model training and for scoring new candidate locations (including To-Let listings).
+
+\begin{enumerate}
+    \item \textbf{Per-POI influence weighting:} Each POI is converted into a numeric contribution intended to approximate its ability to generate nearby activity. The contribution is based on (i) the POI’s category, and (ii) available Google/Apify metadata such as rating, review count, and opening-hours signals (when present). Values are normalized to a common scale and combined into a single POI-level weight; missing metadata is handled gracefully so POIs without certain fields can still be used.
+    
+    \item \textbf{Distance-aware aggregation within an analysis radius:} For each cafe (and for any queried coordinate at inference time), POIs are aggregated by category within a configurable neighborhood radius (the repository includes precomputed path/aggregation artifacts for different radii used during experimentation). The pipeline computes both:
+    \begin{itemize}
+        \item \textbf{Counts} per POI category (e.g., number of banks/temples/education/health/other nearby), and
+        \item \textbf{Weighted sums}, where closer and/or higher-quality POIs contribute more (including optional distance-decay behavior used in the POI feature utilities and tests).
+    \end{itemize}
+    These category-level features are then normalized across the dataset to make locations comparable.
+    
+    \item \textbf{Cafe/competition context features:} In addition to POI signals, the preprocessing computes cafe-centric features from the scraped competitor layer (e.g., normalized rating/reviews/hours where available). A local competition component is also derived by aggregating the properties of other cafes within the same neighborhood radius, capturing competitive pressure and clustering effects.
+    
+    \item \textbf{Composite target construction for training:} The training dataset includes a composite location score (stored as \texttt{poi\_composite\_score} in the processed outputs) built from the normalized POI-category components and the cafe/competition context signals. This continuous target is used for supervised learning (e.g., in the XGBoost training notebook) and is also the basis for generating comparable scores for new sites.
+\end{enumerate}
+
+The output of this preprocessing pipeline is a structured, model-ready table (exported as the project’s final ``master'' cafe feature CSVs) in which each reference location has precomputed POI count features, POI weight features, and the composite score target variable. The same feature-generation logic is reused during inference to score user-selected coordinates and To-Let candidate listings consistently with the training data.
+
+\subsection{Mathematical Formulas for the Preprocessing Pipeline}
+
+This section describes the main computations used in the current project to turn raw POIs/cafes into radius-based features and (for the cafe training set) a composite score. These steps are executed \textbf{before model training} (via the preprocessing scripts, with supporting utilities also used for generating path-based summaries/visualizations).
+
+\subsubsection{POI Score (simple metadata-based quality)}
+Each POI $j$ is assigned a single score that represents its overall ``strength'' as an activity attractor. We compute it as the average of whichever normalized components are available for that POI.
+
+Let $\mathcal{M}_j$ be the set of available normalized metadata components for POI $j$ (some POIs may not have rating/hours, etc.). Then:
+\[
+\text{poi\_score}_j=\frac{1}{|\mathcal{M}_j|}\sum_{m\in \mathcal{M}_j} m
+\]
+Typical components include:
+\[
+m \in \Big\{\, \text{base\_cat\_weight}_{\text{cat}(j)},\ \text{rating}^{\text{norm}}_j,\ \text{reviews}^{\text{norm}}_j,\ \text{hours}^{\text{norm}}_j \Big\}
+\]
+where $\text{base\_cat\_weight}_{\text{cat}(j)}$ depends on the POI category (banks, education, health, temples, other).
+
+\subsubsection{Distance Computation (road-network distance with fallback)}
+In the current implementation, distances are computed using the \textbf{roadway network} whenever possible (shortest-path distance along the road graph). If the road-network route cannot be computed for a specific pair, the system falls back to straight-line (Haversine) distance.
+
+For a reference location $i$ and a POI $j$, the distance in kilometers is:
+\[
+\text{dist}_{ij}=
+\begin{cases}
+\text{road\_dist}_{ij} & \text{if a valid road-network path exists}\\
+\text{geo\_dist}_{ij} & \text{otherwise}
+\end{cases}
+\]
+Here $\text{road\_dist}_{ij}$ is the shortest-path distance on the road network, and $\text{geo\_dist}_{ij}$ is the great-circle distance (Haversine).
+
+\subsubsection{Distance decay (how nearby POIs contribute more)}
+Within a search radius $r$ (km), we use a simple decay function so that nearer POIs contribute more than farther POIs. The project uses a bounded linear term multiplied by an exponential term:
+
+\[
+\text{decay}_{ij}=\max\!\Big(0,\, 1-\frac{\text{dist}_{ij}}{r}\Big)\cdot \exp\!\Big(-\frac{\text{dist}_{ij}}{\lambda}\Big)
+\]
+where $\lambda$ (km) is the decay scale.
+
+\subsubsection{Category features around a location (counts + weighted influence)}
+For each reference location $i$ and each POI category $p$, we compute features within radius $r$.
+
+\paragraph{POI count in category $p$.}
+\[
+\text{count}_{i,p}(r)=\sum_{j\in p}\mathbf{1}\big[\text{dist}_{ij}\le r\big]
+\]
+
+\paragraph{Weighted POI influence in category $p$.}
+\[
+\text{influence}_{i,p}(r)=\sum_{j\in p,\ \text{dist}_{ij}\le r}\text{poi\_score}_j\cdot \text{decay}_{ij}
+\]
+
+\paragraph{Normalization (for comparability).}
+Aggregated values can be normalized across the training set, for example:
+\[
+\text{influence}^{\text{norm}}_{i,p}(r)=
+\begin{cases}
+\dfrac{\text{influence}_{i,p}(r)}{\max\limits_{u}\ \text{influence}_{u,p}(r)} & \text{if max}>0\\[8pt]
+0 & \text{otherwise}
+\end{cases}
+\]
+
+\subsubsection{Cafe properties and nearby-competition signal (training set)}
+For each cafe $i$, we compute a simple cafe-quality score from available normalized cafe metadata:
+\[
+\text{cafe\_score}_i=\frac{1}{|\mathcal{K}_i|}\sum_{k\in \mathcal{K}_i} k
+\]
+where $\mathcal{K}_i$ may include normalized rating, reviews, and hours (and rank if available).
+
+To capture local competition, we aggregate the scores of other cafes within radius $r$:
+\[
+\text{comp}_{i}(r)=\sum_{j\ne i:\ \text{dist}_{ij}\le r}\text{cafe\_score}_j
+\]
+and optionally normalize it:
+\[
+\text{comp}^{\text{norm}}_{i}(r)=
+\begin{cases}
+\dfrac{\text{comp}_{i}(r)}{\max\limits_{u}\ \text{comp}_{u}(r)} & \text{if max}>0\\[8pt]
+0 & \text{otherwise}
+\end{cases}
+\]
+
+\subsubsection{Composite target score for cafe training}
+For supervised training on cafes, the pipeline forms a continuous composite score (stored as \texttt{poi\_composite\_score}) using the normalized category influences plus cafe/competition terms:
+\[
+\texttt{poi\_composite\_score}_i
+=\sum_{p}\alpha_p\cdot \text{influence}^{\text{norm}}_{i,p}(r)
++\beta\cdot \text{cafe\_score}_i
++\gamma\cdot \text{comp}^{\text{norm}}_{i}(r)
+\]
+where $\alpha_p$ are category weights and $\beta,\gamma$ control the contributions from cafe properties and nearby competition.
+
+\paragraph{Note (how this is used).}
+The same feature computations are reused at inference time to score \textbf{new coordinates} and \textbf{To-Let candidate listings}. In inference, the trained model predicts a score from the generated feature vector; the composite target above is constructed directly only for the cafe training dataset.
+
+
+\section{Feature Engineering and Data Structuring}
+
+After scraping and cleaning, the project converts raw cafe/POI layers into a \textbf{model-ready, tabular feature dataset} (CSV) and a set of \textbf{map-ready GeoJSON layers}. Feature generation is implemented using lightweight Python tooling (\textbf{pandas} / \textbf{NumPy}) plus the project’s road-network utilities (used to compute shortest-path distances and export path geometries). The same feature logic is reused for scoring \textbf{user-selected coordinates} and \textbf{To-Let candidate listings} at inference time.
+
+\subsubsection{Raw (Base) Features}
+For each reference location (a cafe for training, or a candidate site during inference), the pipeline uses:
+
+\begin{itemize}
+    \item \textbf{Coordinates:} latitude and longitude (\texttt{lat}, \texttt{lng}).
+    \item \textbf{Category counts within a radius $r$:} number of POIs per category inside the search radius (default experiments include $r=1$ km):
+    \begin{itemize}
+        \item \texttt{banks\_count\_$r$}, \texttt{education\_count\_$r$}, \texttt{health\_count\_$r$}, \texttt{temples\_count\_$r$}, \texttt{other\_count\_$r$}
+    \end{itemize}
+    \item \textbf{Distance-decay aggregation per category:} for POIs within $r$, a decay factor based on \textbf{road-network distance} (shortest path) is computed; the project stores a compact summary as the \emph{average decay score} per category:
+    \begin{itemize}
+        \item \texttt{banks\_weight\_$r$}, \texttt{education\_weight\_$r$}, \texttt{health\_weight\_$r$}, \texttt{temples\_weight\_$r$}, \texttt{other\_weight\_$r$}
+    \end{itemize}
+    These ``\texttt{\_weight\_}'' fields reflect proximity-based influence (nearer POIs contribute more), and are derived from the same decay used when exporting cafe$\rightarrow$POI paths.
+\end{itemize}
+
+\subsubsection{Road-Network Distance (what is actually used)}
+Distances are computed using the roadway graph whenever possible (shortest-path distance). To keep the computation fast, candidates are first pre-filtered using straight-line (Haversine) distance, and road routing is then applied only to those within the radius. If a valid road path cannot be produced, the pipeline falls back to the straight-line distance for that pair.
+
+\subsubsection{Engineered / Derived Features (used in the project)}
+On top of the raw category features, the project derives simple aggregate signals such as:
+
+\begin{itemize}
+    \item \textbf{Total POI count:} \texttt{total\_poi\_count\_$r$} as the sum of all category counts within the radius.
+    \item \textbf{Overall proximity activity:} an overall POI-strength proxy computed by combining category decay summaries (e.g., sum/average of the per-category decay scores).
+    \item \textbf{Cafe context fields (training rows only):} cafe-specific fields such as \texttt{cafe\_weight} and the training target \texttt{poi\_composite\_score} are carried from the preprocessed cafe dataset into the final training table.
+\end{itemize}
+
+\subsubsection{Data Structuring and Outputs}
+The engineered data is stored in two complementary formats:
+
+\begin{itemize}
+    \item \textbf{CSV feature tables:} compact per-location rows used for training and for runtime scoring (e.g., the minimal ``master'' CSV exported for analysis).
+    \item \textbf{GeoJSON path layers:} cafe$\rightarrow$POI shortest-path LineStrings exported for visualization and inspection, including per-edge properties such as \texttt{distance\_km} and decay-derived weights.
+\end{itemize}
+
+\subsubsection{Data Cleaning (as implemented)}
+The preprocessing code performs practical cleaning steps that match the current repository implementation:
+
+\begin{itemize}
+    \item \textbf{Coordinate validation:} latitude/longitude columns are auto-detected, coerced to numeric, and non-finite coordinates are excluded.
+    \item \textbf{Missing metadata handling:} when a POI/cafe weight field is absent, a safe fallback is used (proximity-based decay), ensuring feature generation does not fail due to incomplete scraped attributes.
+\end{itemize}
+
+\subsubsection{Dataset Partitioning (training notebook)}
+For model training and evaluation, the processed cafe feature table is split into training/testing subsets in the training notebook workflow. Inference-time scoring (including To-Let listings) reuses the same feature schema so predicted scores remain comparable to the trained target scale.
+
+\section{Real-Time Location Scoring System}
+
+The core of the application is a system that provides data-driven suitability predictions for any location in the study area. The prediction workflow operates as follows:
+
+\begin{itemize}
+    \item The user interacts with an \textbf{interactive map interface} displaying the study area.
+	\item Upon selecting any point on the map, the frontend sends the geographic coordinates (latitude, longitude) to the backend API.
+	\item The backend employs a \textbf{k-Nearest Neighbors (k=5) spatial query} against the pre-computed POI dataset to efficiently estimate all required features for that location:
+	\begin{itemize}
+		\item POI count features (e.g., \texttt{banks\_count\_1km}, \texttt{education\_count\_1km})
+		\item POI weight features (e.g., \texttt{banks\_weight\_1km}, \texttt{education\_weight\_1km})
+		\item Engineered ratio features (e.g., \texttt{bank\_ratio}, \texttt{education\_ratio})
+		\item Aggregate strength metric (\texttt{weighted\_POI\_strength})
+	\end{itemize}
+	\item The computed feature vector is passed to the pre-trained XGBoost model for inference.
+	\item The model returns a \textbf{Location Suitability Score} (continuous value in range 0.558-3.868).
+	\item The inference pipeline is optimized to handle concurrent requests efficiently.
+	\item The system categorizes scores into risk levels: High Risk ($<$1.0), Medium Risk (1.0-2.0), Low Risk ($>$2.0).
+\end{itemize}
+
+\section{Supervised Learning Regression Model}
+
+The project employs a \textbf{Supervised Learning} regression approach to predict location suitability. The model is trained on a labeled dataset of 1,330 existing cafe locations, each with pre-computed POI features and a known \texttt{poi\_composite\_score} target value.
+
+The system follows the standard supervised regression framework:
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|p{0.7\textwidth}|}
+	\hline
+	\textbf{ML Component}         & \textbf{Description} \\
+	\hline
+	\textbf{Input Features (X):}  & A 16-dimensional feature vector comprising: geographic coordinates (\texttt{lat}, \texttt{lng}), POI count features for 5 categories, POI weight features for 5 categories, \texttt{total\_poi\_count\_1km}, 4 ratio features (\texttt{bank\_ratio}, \texttt{education\_ratio}, \texttt{temple\_ratio}, \texttt{health\_ratio}), and \texttt{weighted\_POI\_strength}. \\
+	\hline
+	\textbf{Target Variable (Y):} & \texttt{poi\_composite\_score}: A continuous value (range 0.558-3.868, mean 2.097) representing location commercial viability based on surrounding amenities, cafe properties, and competitive environment. \\
+	\hline
+	\textbf{Model Architecture:}  & \texttt{xgb.XGBRegressor} with default hyperparameters - a gradient boosted decision tree ensemble chosen for superior performance on tabular geospatial data, built-in regularization, and ability to capture non-linear spatial relationships. \\
+	\hline
+	\textbf{Prediction Output:}   & A single continuous score (e.g., 2.35) representing the predicted \texttt{poi\_composite\_score} for a new location, indicating its commercial attractiveness. \\
+	\hline
+\end{tabular}
+\end{table}
+
+\subsubsection{Actual Feature Vector Structure}
+The complete input feature vector for a given location (after feature engineering):
+\begin{verbatim}
+Feature Vector (16 dimensions):
+[
+  lat, lng,                           # Geographic coordinates
+  banks_count_1km, education_count_1km, health_count_1km, 
+  temples_count_1km, other_count_1km, # POI counts
+  banks_weight_1km, education_weight_1km, health_weight_1km,
+  temples_weight_1km, other_weight_1km, # POI weights
+  total_poi_count_1km,                # Total POI count
+  bank_ratio, education_ratio, temple_ratio, health_ratio, # Ratios
+  weighted_POI_strength                # Aggregate strength
+]
+
+Example values for a high-potential location:
+[27.7172, 85.3240, 12, 8, 5, 3, 15, 45.2, 32.1, 
+ 18.5, 12.3, 38.7, 43, 0.279, 0.186, 0.070, 0.116, 146.8]
+\end{verbatim}
+
+section{Model Training and Evaluation Strategy}
+
+The training process follows a rigorous methodology to ensure both accuracy and reliability, with comparative analysis between baseline and advanced models.
+
+
+
+\section{Database Schema and Storage}
+
+To support real-time feature calculation and the overall application logic, all aggregated geographic data is stored in a professional-grade relational database system.
+\begin{itemize}
+	\item \textbf{Backend Framework:} \textbf{FastAPI} with \textbf{GeoPandas} and \textbf{scikit-learn}.
+	\item \textbf{Why this approach?} The combination of FastAPI for low-latency requests and scikit-learn's optimized spatial indexing (BallTree/KDTree) allows for real-time proximity analysis directly in memory, eliminating the overhead of external database queries for this scale of data.
+\end{itemize}
+
+The system is built on a four-table relational schema as described in the ER diagram:
+\begin{description}
+    \item[\texttt{neighborhoods}] Stores GIS polygons for different zones along with their derived demographic proxies (e.g., \texttt{avg\_rent\_psf}).
+    \item[\texttt{businesses}] The ground-truth data of existing competitor cafes used for training the model, including location and calculated popularity scores.
+    \item[\texttt{points\_of\_interest}] Locations that attract foot traffic, such as schools, temples, and offices.
+    \item[\texttt{listings}] Dynamic data about available "To-Let" properties, including area, rent, and location.
+\end{description}
+
+
+% % LaTeX figure: SiteX "Cafe location score" model architecture (XGBoost regressor)
+% % Requires: \usepackage{tikz}
+% %           \usetikzlibrary{arrows.meta,positioning,fit,calc}
+
+% % Table version (architecture-style) of the same model pipeline
+% \begin{table}[ht]
+% \centering
+% \renewcommand{\arraystretch}{1.25}
+% \setlength{\tabcolsep}{6pt}
+% \begin{tabular}{|c|p{0.24\textwidth}|p{0.62\textwidth}|}
+% \hline
+% \rowcolor{gray!15}
+% \textbf{\#} & \textbf{Block} & \textbf{What happens} \\
+% \hline
+% 1 & \textbf{Inputs} & Raw row from CSV containing \texttt{lat,lng} and POI features: \texttt{*\_count\_<r>\_km} and \texttt{*\_weight\_<r>\_km}. \\
+% \hline
+% 2 & \textbf{Target (training only)} & \texttt{poi\_composite\_score} is the supervised target used during training; it is not provided as an input at inference time. \\
+% \hline
+% 3 & \textbf{Feature engineering} & Derive aggregate signals such as: $\texttt{total\_poi\_count\_km}=\sum \texttt{count}_i$, $\texttt{category\_ratio}_i=\dfrac{\texttt{count}_i}{\sum \texttt{count}_j+\varepsilon}$, and $\texttt{weighted\_POI\_strength}=\sum \texttt{weight}_i$. \\
+% \hline
+% 4 & \textbf{Leakage control} & Drop identifier/leakage-prone columns (e.g., name, address, IDs, raw score-like fields). Optionally drop raw POI columns after feature engineering (keeping engineered features). \\
+% \hline
+% 5 & \textbf{Numeric matrix $X$} & Build numeric-only modeling matrix: select numeric columns and apply median imputation for missing values. \\
+% \hline
+% 6 & \textbf{Train/test split} & Split the dataset into train/test sets (70/30, \texttt{random\_state=42}). \\
+% \hline
+% 7 & \textbf{Modeling} & \textbf{Primary:} XGBoost Regressor, with ensemble prediction $\hat{y}=\sum_{t=1}^{T}\eta\, f_t(x)$, where $f_t$ are decision trees (depth $\le d$). Hyperparameters (from notebook): $T=200$, $\eta=0.05$, $d=20$, subsample=0.8, colsample\_bytree=0.8; early stopping: 20 rounds (RMSE). \textbf{Baseline:} Linear Regression (\texttt{StandardScaler + LR}). \\
+% \hline
+% 8 & \textbf{Output} & Predicted suitability score: $\hat{y}=\widehat{\texttt{poi\_composite\_score}}$. \\
+% \hline
+% \end{tabular}
+% \caption{SiteX model architecture: engineered POI features + numeric preprocessing + XGBoost regression to predict \texttt{poi\_composite\_score}.}
+% \label{fig:sitex-xgb-architecture}
+% \end{table}

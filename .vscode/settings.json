@@ -1,28 +1,59 @@
 {
     "latex-workshop.latex.recipes": [
         {
-            "name": "latexmk (xelatex)",
-            "tools": ["latexmk-xelatex"]
+            "name": "XeLaTeX → BibTeX → XeLaTeX ×2",
+            "tools": ["xelatex", "bibtex", "xelatex", "xelatex"]
+        },
+        {
+            "name": "XeLaTeX ×2 (no BibTeX)",
+            "tools": ["xelatex", "xelatex"]
         }
     ],
+    "latex-workshop.latex.recipe.default": "XeLaTeX → BibTeX → XeLaTeX ×2",
     "latex-workshop.latex.tools": [
         {
-            "name": "latexmk-xelatex",
-            "command": "latexmk",
+            "name": "xelatex",
+            "command": "xelatex",
             "args": [
-                "-xelatex",
                 "-synctex=1",
                 "-interaction=nonstopmode",
                 "-file-line-error",
-                "-outdir=%OUTDIR%",
                 "%DOC%"
+            ]
+        },
+        {
+            "name": "bibtex",
+            "command": "powershell",
+            "args": [
+                "-NoProfile",
+                "-Command",
+                "Set-Location '%DIR%'; bibtex '%DOCFILE%'"
             ]
         }
     ],
     "latex-workshop.view.pdf.viewer": "tab",
-    "latex-workshop.latex.autoBuild.run": "onSave",
+    "latex-workshop.latex.autoBuild.run": "onFileChange",
     "latex-workshop.latex.outDir": "%DIR%",
     "latex-workshop.synctex.afterBuild.enabled": true,
+    "latex-workshop.chktex.enabled": false,
+    "latex-workshop.latex.autoClean.run": "never",
+    "latex-workshop.latex.clean.method": "glob",
+    "latex-workshop.latex.clean.fileTypes": [
+        "*.aux",
+        "*.bbl",
+        "*.bcf",
+        "*.blg",
+        "*.fdb_latexmk",
+        "*.fls",
+        "*.lof",
+        "*.lot",
+        "*.log",
+        "*.out",
+        "*.run.xml",
+        "*.synctex.gz",
+        "*.toc",
+        "*.xdv"
+    ],
     "files.exclude": {
         "**/.vscode/build/**": true,
         "**/.vscode/tex-cache/**": true

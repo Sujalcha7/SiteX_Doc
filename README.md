@@ -1,12 +1,12 @@
-# SpoTex_Doc
+# SiteX_Doc
 
-Documentation for project SpoTex.
+Documentation for project SiteX.
 
 ---
 
 ## Overview
 
-This repository contains the documentation for the SpoTex project, structured according to standard academic and technical report conventions. All chapters and sections are implemented in LaTeX.
+This repository contains the documentation for the SiteX project, structured according to standard academic and technical report conventions. All chapters and sections are implemented in LaTeX.
 
 ## Table of Contents
 
