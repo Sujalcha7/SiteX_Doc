@@ -44,17 +44,17 @@ The software requirements for the development and deployment of the predictive s
 \begin{enumerate}
     \item \textbf{Collaboration \& Planning:} Google Drive, Trello, Discord
     \item \textbf{Backend Development:} Python 3.9+, \textbf{FastAPI} (for building a high-performance API), \textbf{Uvicorn} (as the ASGI server).
-    \item \textbf{Machine Learning \& Spatial Analysis:} Scikit-learn, XGBoost, LightGBM, Pandas, GeoPandas (for in-memory spatial operations).
+    \item \textbf{Machine Learning \& Spatial Analysis:} Scikit-learn, XGBoost, Pandas, Numpy, NetworkX (for graph-based routing), and GeoPandas (for offline spatial analysis).
     \item \textbf{Data Storage:} CSV/GeoJSON (File-based storage).
     \item \textbf{GIS Tools:} QGIS Desktop
-    \item \textbf{Frontend Development:} Node.js, React.js
-    \item \textbf{Mapping Library:} An interactive mapping library like \textbf{Leaflet}.
-    \item \textbf{External APIs:} Integration with \textbf{OpenRouteService API} for isochrone (trade area) generation.
-    \item \textbf{Web Scraping:} Python library such as \textbf{Apify} for collecting property listings.
+    \item \textbf{Frontend Development:} Node.js, React.js, \textbf{Vite} (build tool), \textbf{Tailwind CSS} (styling).
+    \item \textbf{Mapping Library:} \textbf{Leaflet} (via React-Leaflet).
+    \item \textbf{Routing Engine:} Custom local isochrone and path generation using \textbf{NetworkX} and local road network data (replacing external APIs).
     \item \textbf{Version Control:} Git, GitHub.
     \item \textbf{Code Editor:} Visual Studio Code.
     \item \textbf{Documentation:} MiKTeX in VS Code.
 \end{enumerate}
+
 
 \section{Hardware Requirements}
 

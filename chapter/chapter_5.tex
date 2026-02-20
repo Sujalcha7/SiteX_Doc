@@ -80,33 +80,37 @@ This block diagram illustrates the system architecture of \textbf{  SiteX}, deta
 	\label{fig:level1-context-diagram}
 \end{figure}
 \noindent
-The Level-1 Context Diagram provides a decomposed view of the SiteCortex system, expanding upon the 0-level context by detailing the system’s internal functional processes and their interactions with external entities and data stores.
+The Level-1 Context Diagram decomposes the single ``SiteX'' process from the 0-level context diagram into four internal sub-processes, while retaining every external entity and data flow established at Level-0. This decomposition reveals how the system internally transforms incoming data into actionable intelligence.
 
 \begin{itemize}
-	\item \textbf{Core Processes:}
-	The SiteCortex platform is divided into four primary internal processes:
-	\begin{enumerate}
-		\item \textbf{Handle API Requests}: Serves as the central coordination layer, managing incoming user requests, routing data flows, and aggregating responses.
-		\item \textbf{Calculate Location Features}: Responsible for deriving spatial and contextual features such as competitor density, POI accessibility, and demographic indicators.
-		\item \textbf{Predict Suitability Score}: Executes machine learning inference using the trained XGBoost model to compute the final suitability score.
-		\item \textbf{Filter Property Listings}: Filters available “To-Let” properties based on user-defined requirements such as budget, area, and location constraints.
-	\end{enumerate}
-
-	\item \textbf{Data Stores:}
-	Each process interacts with specialized databases optimized for specific data types:
+\item \textbf{External Entities (unchanged from Level-0):}
+The same four external entities interact with the decomposed system:
 	\begin{itemize}
-		\item \textbf{Listings Database:} Stores property listings and rental information.
-		\item \textbf{Competitor Database:} Contains data about existing businesses in the surrounding area.
-		\item \textbf{Demographics Database:} Holds neighborhood-level population and socio-economic data.
-		\item \textbf{POI Database:} Stores geospatial information about nearby amenities and landmarks.
-		\item \textbf{Trained Model Repository:} Stores the pre-trained XGBoost model used for prediction.
+	\item \textbf{Entrepreneur:} Sends business profile, requirements, and selected location; receives the personalized heatmap, property listings, and detailed analysis dashboard.
+	\item \textbf{Project Admin:} Supplies verified competitor and POI data into the respective data stores.
+	\item \textbf{Public Geospatial Data Sources:} Provides base map, POI, and road network data to the POI Database.
+	\item \textbf{Real Estate Data Sources:} Feeds property listings and pricing data into the Listings Database.
 	\end{itemize}
 
-	\item \textbf{Data Flow Overview:}
-	User requests originating from the UI Frontend enter the system through the API handler. Feature computation processes query the relevant data files and return calculated features. These features are then passed to the prediction process, which generates a specific suitability score for the chosen location. The scores and visual analytics are consolidated and returned to the frontend for presentation.
-\end{itemize}
+\item \textbf{Sub-Processes (decomposition of the Level-0 SiteX process):}
+	\begin{enumerate}
+	\item \textbf{1.0 Handle User Requests:} The central coordination process that receives all user inputs from the Entrepreneur, routes analysis requests to downstream processes, aggregates their results, and returns the final outputs (heatmap, listings, and analysis dashboard) back to the Entrepreneur.
+	\item \textbf{2.0 Calculate Location Features:} Queries the Competitor Database and POI Database to derive spatial and contextual features (e.g., competitor density, POI accessibility, weighted influence scores) for the selected location. The calculated feature vector is forwarded to Process 3.0.
+	\item \textbf{3.0 Predict Suitability Score:} Loads the trained XGBoost model from the Model data store and performs inference on the calculated features to produce a suitability score and risk level, which are returned to Process 1.0.
+	\item \textbf{4.0 Filter Property Listings:} Receives filter requirements from Process 1.0, queries the Listings Database, and returns the filtered set of available ``To-Let'' properties back to Process 1.0.
+	\end{enumerate}
 
-This Level-1 Context Diagram emphasizes the modular, service-oriented architecture of SiteCortex, illustrating how independent yet interconnected components collaborate to transform raw geospatial data into personalized, decision-support intelligence for entrepreneurs.
+\item \textbf{Data Stores:}
+	\begin{itemize}
+	\item \textbf{D1 -- Competitor Database:} Stores verified data about existing cafes and competing businesses; queried by Process 2.0 and populated by the Project Admin.
+	\item \textbf{D2 -- POI Database:} Stores geospatial information about nearby amenities and landmarks; queried by Process 2.0 and populated by both the Project Admin and Public Geospatial Data Sources.
+	\item \textbf{D3 -- Listings Database:} Stores commercial rental and ``To-Let'' property listings; queried by Process 4.0 and populated by Real Estate Data Sources.
+	\item \textbf{D4 -- Trained XGBoost Model:} Stores the serialized, pre-trained XGBoost model file; loaded by Process 3.0 during inference.
+	\end{itemize}
+
+% \item \textbf{Data Flow Overview:}
+% The Entrepreneur's requests enter through Process 1.0, which dispatches analysis coordinates to Process 2.0 and filter criteria to Process 4.0. Process 2.0 queries D1 and D2 to compute the feature vector, which is passed to Process 3.0. Process 3.0 loads the model from D4, predicts the suitability score and risk level, and returns them to Process 1.0. Simultaneously, Process 4.0 queries D3 and returns matching property listings to Process 1.0. Process 1.0 consolidates all results and delivers the personalized heatmap, property listings, and detailed analysis dashboard back to the Entrepreneur.
+\end{itemize}
 
 \section{Workflow Diagram}
 \begin{figure}[h!]
@@ -366,7 +370,7 @@ For each cafe $i$, we compute a simple cafe-quality score from available normali
 \[
 \text{cafe\_score}_i=\frac{1}{|\mathcal{K}_i|}\sum_{k\in \mathcal{K}_i} k
 \]
-where $\mathcal{K}_i$ may include normalized rating, reviews, and hours (and rank if available).
+where $\mathcal{K}_i$ may include normalized rating, reviews, and hours.
 
 To capture local competition, we aggregate the scores of other cafes within radius $r$:
 \[

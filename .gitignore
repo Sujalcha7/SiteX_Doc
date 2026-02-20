@@ -338,3 +338,14 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# LaTeX SyncTex busy files
+*.synctex(busy)
+*.synctex.gz(busy)
+
+# Additional LaTeX build artifacts
+*.synctex(busy)
+*.synctex.gz(busy)
+*.bak
+*~
+*.swp
