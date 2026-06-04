@@ -8,7 +8,7 @@ The age-old wisdom has always been that success in retail or hospitality comes d
 
 As computer science students, we are taught about the power of data. We learn how global giants like Amazon or Starbucks use sophisticated data analysis, Geographic Information Systems (GIS), and Artificial Intelligence (AI) to make these exact decisions with incredible accuracy. They don't guess; they forecast. They analyze dozens of factors  from foot traffic and competitor density to local income levels and demographic profiles  to predict a location's potential before investing a single rupee. This creates a huge analytical gap between them and the entrepreneurs we see every day.
 
-We saw this gap as the perfect challenge for our final year project. We asked ourselves: can we use the skills we've learned in our engineering course to build a tool that levels the playing field? Can we create an intelligent system that brings the power of predictive analytics to a business owner in Bhaktapur for now, helping them make a smarter, safer investment? This project is our attempt to answer that question.
+We saw this gap as the perfect challenge for our final year project. We asked ourselves: can we use the skills we've learned in our engineering course to build a tool that levels the playing field? Can we create an intelligent system that brings the power of predictive analytics to a business owner in the Kathmandu Valley, helping them make a smarter, safer investment? This project is our attempt to answer that question.
 
 \section{Motivation}
 
@@ -25,7 +25,7 @@ Selecting an appropriate business location in Nepal is a highly uncertain and ri
 
 The principal objective of this project is:
 \begin{itemize}
-	\item {To design SiteX, a data-driven location intelligence system that leverages an XGBoost Regressor model on geospatial POI features to predict suitability scores and risk levels for optimal franchised cafe site selection.}
+	\item {To design SiteX, a data-driven location intelligence system that leverages a Heterogeneous Graph Neural Network (HeteroGNN) model on geospatial POI features to predict suitability scores and risk levels for optimal franchised cafe site selection.}
 \end{itemize}
 
 \section{Scopes and Application}
@@ -34,7 +34,7 @@ The principal objective of this project is:
 
 To ensure the successful delivery of a robust and feature-rich platform, we have defined the following scope:
 \begin{itemize}
-	\item \textbf{Where?} Our project will focus exclusively on the commercial area of \textbf{Bhaktapur} for now.
+	\item \textbf{Where?} Our project will focus on the commercial areas across the \textbf{Kathmandu Valley}.
 	\item \textbf{What kind of shop?} Our initial model will be an expert on one thing: \textbf{cafes and coffee shops}, with a system designed to be scalable to other retail types in the future.
 	\item \textbf{What data?} Our system will be built on a multi-faceted dataset including:
 	      \begin{itemize}
@@ -67,4 +67,4 @@ The key milestones achieved during the $7^{th}$ semester include:
     \item \textbf{Core User Interface Implementation:} We built the primary SiteX web application featuring interactive mapping with 'Point pick' and 'To-let pick' modes. A comprehensive Results Dashboard was also implemented, offering insights into Accessibility, Model Prediction, and POI Scores, alongside an interactive Comparative Analysis mode and an interpretable narrative generation system.
 \end{itemize}
 
-In the ongoing $8^{th}$ semester, our focus will shift towards refining the existing architecture, enhancing the system's scalability, expanding our datasets, conducting real-world user testing, and delivering the final, full-featured version of the platform.
+In the ongoing $8^{th}$ semester, our core focus has shifted towards a major architectural upgrade of our predictive engine. We have transitioned from the tabular XGBoost model to a Heterogeneous Graph Neural Network (HeteroGNN) architecture, specifically implementing a Heterogeneous Graph Attention Network (HeteroGAT). This transition was necessary because traditional tabular models struggle to fully capture the complex, multi-hop spatial relationships and interactions between different entities (e.g., candidate sites, competitors, points of interest, and road networks) in an urban environment. By representing our data as a typed graph, the HeteroGNN can directly learn relation-specific transformations and attention weights, leading to more nuanced and context-aware suitability predictions. Our $8^{th}$ semester work also involves refining the existing architecture, integrating real-world "To-Let" property data, conducting real-world user testing, and delivering the final, full-featured version of the platform.

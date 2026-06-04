@@ -1,2 +1,59 @@
-        \chapter{Expected Outcome}
-        
+\chapter{Expected Outcomes}
+
+This chapter outlines the expected outcomes for the remaining and upcoming phases of the SiteX project. Building on the substantial work completed in both the 7th and 8th semesters, the following outcomes are targeted for the completion of the 8th semester defense and any subsequent enhancements.
+
+\section*{1. Completion of HeteroGAT Training and Benchmark Evaluation}
+
+The most immediate expected outcome is the successful completion of HeteroGAT training and its quantitative evaluation against the XGBoost baseline. The expected results include:
+\begin{itemize}
+    \item \textbf{Lower MAE and RMSE than XGBoost:} By leveraging multi-hop spatial dependencies through attention-based message passing, the graph model is expected to reduce prediction error, particularly in dense and mixed-use commercial zones where tabular features fail to capture relational context.
+    \item \textbf{Higher $R^2$ and improved generalization:} A spatial block-holdout evaluation is expected to demonstrate that HeteroGAT generalizes better to unseen geographic regions than the tabular baseline.
+    \item \textbf{Attention-based interpretability:} Relation-level attention weights will provide a natural, graph-native alternative to SHAP for explaining which neighboring node types (e.g., nearby banks vs.\ temples) most influence each prediction.
+\end{itemize}
+
+\section*{2. Integration of HeteroGAT into the Production Backend}
+
+Upon model validation, the production FastAPI backend is expected to be updated to serve HeteroGAT predictions in real time. The expected outcomes of this integration are:
+\begin{itemize}
+    \item The existing UI (analysis modes, insights tab, compare mode, explanation tab) will display HeteroGAT-derived suitability scores seamlessly, replacing the XGBoost baseline score without any changes to the frontend interface.
+    \item Inference will involve dynamic on-demand construction of a local heterogeneous subgraph around the user's selected point, followed by a forward pass through the loaded HeteroGAT checkpoint.
+    \item The road-graph-aware edge distances (via the in-memory OSMnx graph) will be used as real-time edge attributes during inference.
+\end{itemize}
+
+\section*{3. Sentiment-Enriched and Traffic-Aware Suitability Scores}
+
+The new composite ground truth score---which incorporates sentiment analysis and foot traffic data---is expected to produce a more holistic and realistic suitability signal. The expected outcome is:
+\begin{itemize}
+    \item Suitability predictions will reflect not just the density of nearby amenities (as in the XGBoost era) but also the \textit{quality} of business performance at similar nearby locations, as captured by review sentiment and popular times patterns.
+    \item This shift is expected to improve the \textbf{real-world validity} of the predicted scores, aligning model outputs more closely with what entrepreneurs and investors actually observe in the field.
+\end{itemize}
+
+\section*{4. Enhanced Explanation and Interpretability Layer}
+
+The current Explanation tab (which shows top contributing POIs by decayed weight) is expected to be augmented with HeteroGAT attention weights, providing a dual-layer explanation:
+\begin{itemize}
+    \item \textbf{Data-level explanation:} Which specific POIs (e.g., nearby hospitals, schools, banks) contribute most to the score, as shown in the current UI.
+    \item \textbf{Model-level explanation:} Which \textit{node types and relation types} the model attended to most strongly during its graph message-passing inference, surfaced from the attention weight tensors.
+\end{itemize}
+
+\section*{5. Refined To-Let Listings Database}
+
+The ``To-Let'' commercial listings database, currently populated from an initial scraping effort, is expected to be refreshed and expanded. The expected outcome is a larger and more geographically diverse set of candidate sites across Kathmandu and Bhaktapur, improving the practical utility of the To-Let Pick mode for end users.
+
+\section*{6. System Stability, Documentation, and Final Defense Readiness}
+
+Beyond the model itself, the expected outcomes for the final defense phase include:
+\begin{itemize}
+    \item \textbf{Clean, end-to-end documented codebase:} All pipeline stages (data collection, graph construction, training, and inference) documented with clear README files and inline comments.
+    \item \textbf{Complete and accurate project report:} The technical report (this document) fully reflecting the HeteroGAT architecture, the new data pipeline, and all results.
+    \item \textbf{Stable production deployment:} The full stack (React frontend + FastAPI backend + SpatiaLite + HeteroGAT model) deployable as a single, reproducible environment for demonstration.
+\end{itemize}
+
+\section*{7. Long-Term Vision: Generalization Beyond Cafes}
+
+While the current system is trained and validated specifically for the cafe and restaurant business category in the Kathmandu/Bhaktapur region, the long-term expected outcome is for the SiteX framework to generalize to:
+\begin{itemize}
+    \item Additional business types (retail, pharmacies, education centers) by adapting the data collection and graph construction pipelines.
+    \item Other urban regions of Nepal or similar developing-world cities where structured commercial location data is scarce, leveraging the system's reliance on freely available OpenStreetMap and Google Maps data.
+    \item A prescriptive recommendation mode, where given a business profile, the system proactively suggests optimal zones or streets rather than waiting for the user to select a point.
+\end{itemize}
