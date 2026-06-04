@@ -8,44 +8,44 @@
 	\item Sujal Koju      - 780342
 \end{enumerate}
 % \section{Feasibility Study}
-\section{Work Breakdown Structure}
+% \section{Work Breakdown Structure}
 
-\begin{table}[h]
-\centering
-\setlength{\tabcolsep}{5pt}  % Decreased horizontal padding
-\renewcommand{\arraystretch}{1.5}  % Increases vertical padding
-\begin{tabular}{|c|l|c|c|c|c|c|c|}
-\hline
-S.N & \multirow{2}{*}{Job Description} & \multicolumn{6}{c|}{Month} \\
-\cline{3-8}
- & & 1st & 2nd & 3rd & 4th & 5th & 6th \\
- & & month & month & month & month & month & month \\
-\hline
-1. & Project Identification & \cellcolor{gray!40} & & & & & \\
-\hline
-2. & Analysis & \cellcolor{gray!40} & \cellcolor{gray!40} & & & & \\
-\hline
-3. & Design & & \cellcolor{gray!40} & \cellcolor{gray!40} & \cellcolor{gray!40} & & \\
-\hline
-4. & Coding \& testing & & & \cellcolor{gray!40} & \cellcolor{gray!40} & \cellcolor{gray!40} & \\
-\hline
-5. & Implementation & & & & & \cellcolor{gray!40} & \cellcolor{gray!40} \\
-\hline
-6. & Documentation & \multicolumn{6}{c|}{\cellcolor{gray!40}} \\
-\hline
-\end{tabular}
-\caption{Project Timeline}
-\label{tab:project-timeline}
-\end{table}
+% \begin{table}[h]
+% \centering
+% \setlength{\tabcolsep}{5pt}  % Decreased horizontal padding
+% \renewcommand{\arraystretch}{1.5}  % Increases vertical padding
+% \begin{tabular}{|c|l|c|c|c|c|c|c|}
+% \hline
+% S.N & \multirow{2}{*}{Job Description} & \multicolumn{6}{c|}{Month} \\
+% \cline{3-8}
+%  & & 1st & 2nd & 3rd & 4th & 5th & 6th \\
+%  & & month & month & month & month & month & month \\
+% \hline
+% 1. & Project Identification & \cellcolor{gray!40} & & & & & \\
+% \hline
+% 2. & Analysis & \cellcolor{gray!40} & \cellcolor{gray!40} & & & & \\
+% \hline
+% 3. & Design & & \cellcolor{gray!40} & \cellcolor{gray!40} & \cellcolor{gray!40} & & \\
+% \hline
+% 4. & Coding \& testing & & & \cellcolor{gray!40} & \cellcolor{gray!40} & \cellcolor{gray!40} & \\
+% \hline
+% 5. & Implementation & & & & & \cellcolor{gray!40} & \cellcolor{gray!40} \\
+% \hline
+% 6. & Documentation & \multicolumn{6}{c|}{\cellcolor{gray!40}} \\
+% \hline
+% \end{tabular}
+% \caption{Project Timeline}
+% \label{tab:project-timeline}
+% \end{table}
 
-\section{Software Requirements}
+\section{Software Requirements and Tech Stack}
 
-The software requirements for the development and deployment of the predictive site selection system include:
+The software requirements and technology stack for the development and deployment of the predictive site selection system include:
 \begin{enumerate}
     \item \textbf{Collaboration \& Planning:} Google Drive, Trello, Discord
     \item \textbf{Backend Development:} Python 3.9+, \textbf{FastAPI} (for building a high-performance API), \textbf{Uvicorn} (as the ASGI server).
-    \item \textbf{Machine Learning \& Spatial Analysis:} Scikit-learn, XGBoost, Pandas, Numpy, NetworkX (for graph-based routing), and GeoPandas (for offline spatial analysis).
-    \item \textbf{Data Storage:} CSV/GeoJSON (File-based storage).
+    \item \textbf{Machine Learning \& Spatial Analysis:} \textbf{PyTorch}, \textbf{PyTorch Geometric} (for HeteroGNN implementation), Scikit-learn, XGBoost (for baseline modeling), Pandas, Numpy, NetworkX (for graph-based routing), and GeoPandas (for offline spatial analysis).
+    \item \textbf{Data Storage:} \textbf{SpatiaLite} (SQLite with spatial extensions) for structured geospatial data (listings, competitors, POIs, demographics), and a serialized \textbf{OSMnx road graph pickle} (\texttt{road\_graph.pkl}) for the road network. Baseline CSV exports are retained for XGBoost ablation only.
     \item \textbf{GIS Tools:} QGIS Desktop
     \item \textbf{Frontend Development:} Node.js, React.js, \textbf{Vite} (build tool), \textbf{Tailwind CSS} (styling).
     \item \textbf{Mapping Library:} \textbf{Leaflet} (via React-Leaflet).
@@ -78,7 +78,7 @@ The functional requirements define the specific behaviors and capabilities of th
 \begin{enumerate}
 
     \item[\textbf{a.}] \textbf{Location Selection via Map Interface:} Provide an interactive map interface that allows users to select and evaluate a potential café or restaurant location by pin-pointing a specific latitude and longitude.
-    \item[\textbf{b.}] \textbf{Map Visualization:} Display a color-coded suitability map of Bhaktapur, highlighting high-potential areas tailored to the user's specific business focus.
+    \item[\textbf{b.}] \textbf{Map Visualization:} Display a color-coded suitability map of the Kathmandu Valley, highlighting high-potential areas tailored to the user's specific business focus.
     \item[\textbf{c.}] \textbf{Integrated Property Discovery:} Display icons for currently available "To-Let" commercial properties that match the user's requirements directly on the map, allowing for seamless filtering and discovery.
     \item[\textbf{d.}] \textbf{Personalized Suitability Score Generation:} Upon selection of any point or property listing, calculate and display a quantitative "Personalized Suitability Score" that predicts the location's potential for success for the user's specific business profile.
     \item[\textbf{e.}] \textbf{Explainable AI (Prediction Breakdown):} Display a transparent breakdown of the key factors that positively and negatively influenced the suitability score, explaining the AI's reasoning to the user.
