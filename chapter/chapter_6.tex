@@ -1,302 +1,109 @@
-\chapter{Project Work Status}
+\chapter{Results and Discussion}
 
-This chapter documents the current status of the SiteX project, summarizing the work completed across both the 7th and 8th semesters. It traces the project's evolution from a tabular machine-learning baseline to a fully graph-neural-network-driven location intelligence platform. The chapter is organized into three parts: work completed in the 7th semester (stable foundation), work completed and ongoing in the 8th semester (GNN transition), and the expected outcomes of the remaining work.
+This section presents the observable results of the implemented system through the user interface (UI) and discusses how each UI component supports the overall workflow of site selection and location analysis. The key outcome of the project is a single, map-driven interface that allows users to (i) start a new project from a workspace, (ii) input business requirements through an intake wizard, and (iii) proceed to a results view that summarizes the location characteristics across multiple analytical dimensions for decision-making.
 
-% % =============================================================
-\section{Work Completed}
-% % =============================================================
+\section{Workspace and Project Initialization}
 
-% The 7th semester established the complete end-to-end software foundation of the SiteX platform, from the data pipeline and baseline model through to the fully deployed interactive frontend. All artifacts from this semester are stable and will not change in subsequent phases.
-
-% \subsection{Data Collection and Initial Database Setup}
-% An initial data collection pipeline was built to populate a spatial database for the Kathmandu and Bhaktapur regions. This included:
-% \begin{itemize}
-%     \item Manual and semi-automated collection of Points of Interest (POIs) across five categories: banks, education, health, temples, and other.
-%     \item An initial set of commercial ``To-Let'' rental listings, sourced and structured for the candidate sites database.
-%     \item Storage of initial datasets in structured CSV files, which were later migrated and integrated into a SpatiaLite database in the 8th semester.
-% \end{itemize}
-
-% \subsection{Baseline Model: XGBoost}
-% A complete supervised learning pipeline was built around an \textbf{XGBoost regression} model to predict location suitability from tabular geospatial features:
-% \begin{itemize}
-%     \item \textbf{Feature engineering:} Spatial features were computed using the OSMnx road graph, including POI counts, distance-decay-weighted influence scores per category, and competition signals within a fixed search radius.
-%     \item \textbf{Target variable:} A composite score based on normalized cafe rating, review count, and operating hours signals.
-%     \item \textbf{Evaluation:} The model was evaluated using MAE, RMSE, and $R^2$ on train/test splits. SHAP analysis was conducted to understand feature importance.
-%     \item \textbf{Outputs retained:} Feature importance plots, SHAP summary plots, learning curves, spatial error distribution maps, and residual analysis plots (see Figures~\ref{fig:feature-importance}--\ref{fig:data-dist}).
-% \end{itemize}
-
-% \subsection{Full-Stack Web Application (UI)}
-% A production-quality interactive web application was designed and deployed, forming the primary user interface of SiteX. This UI is complete, stable, and serves as the front-end for both the XGBoost baseline and the production HeteroGAT model.
-
-\subsection{Main Page and Analysis Modes}
-The main page provides a \textbf{left-panel + map} layout with two distinct analysis modes:
-\begin{itemize}
-    \item \textbf{Point Pick Mode:} The user clicks any location on the map to add it to a point list, enabling exploratory analysis of arbitrary coordinates (Figure~\ref{fig:mainPageMultiPointPick}).
-    \item \textbf{To-Let Pick Mode:} The user selects from a curated list of available commercial rental spaces. Selecting a listing automatically populates the coordinates and places a map marker, reducing manual input errors (Figure~\ref{fig:ui-main-tolet}).
-\end{itemize}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\linewidth]{img/mainPage.jpeg}
-    \caption{Main page with the \textit{To-let pick} mode. The left panel lists available rental listings for selection, while the map indicates the chosen listing location.}\label{fig:ui-main-tolet}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\linewidth]{img/mainPageMultiPointPick.jpeg}
-    \caption{Main page with the \textit{Point pick} mode. The left panel maintains a point list for managing selected candidate coordinates prior to generating results.}\label{fig:mainPageMultiPointPick}
-\end{figure}
-
-\subsection{Result Page and Analysis Dashboard}
-After submitting one or more candidate coordinates, the system navigates to the \textbf{Result Page}, which consolidates all analysis outputs into three navigable tabs:
-
-\paragraph{Insights Tab.}
-Presents three headline key performance indicators: \textit{Accessibility Score}, \textit{Model Prediction Score}, and \textit{POI Score}. Supporting charts show the POI category share and average decayed weights per category (Figure~\ref{fig:ui-insights-single}).
-
-\begin{figure}[H]
+Figure 6.1 shows the \textit{Home/Workspace} page of the application, titled Discover the Perfect Location. The design acts as a central hub for the user:
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.8\linewidth]{img/resultsPageInsight.jpeg}
-  \caption{Insights tab (single-point mode) with ring indicators and POI category summary charts.}
-  \label{fig:ui-insights-single}
+  \includegraphics[width=0.95\linewidth]{img/home_workspace.jpeg}
+  \caption{Home and Workspace page. Users can initiate a new suitability analysis or access their recent projects.}
+  \label{fig:home-workspace}
 \end{figure}
+\begin{itemize}
+    \item \textbf{Suitability Analysis:} A clear call-to-action allowing the user to start a new comprehensive site analysis.
+    \item \textbf{Recent Projects:} A list of previously conducted analyses (e.g., Kathmandu Central Cafe Analysis, Lalitpur Premium Branch), providing quick access to past results and scores.
+\end{itemize}
 
-\paragraph{Nearby POIs Tab.}
-Provides spatial verification via an interactive map paired with a filterable, searchable list of nearby POIs and their distances to the candidate point (Figure~\ref{fig:ui-nearby-single}).
 
-\begin{figure}[H]
+\section{Intake Wizard}
+
+Once a new analysis is initiated, the user is presented with the \textit{Intake Wizard} (Figure 6.2). This step ensures the analysis is tailored to the specific business persona:
+\begin{itemize}
+    \item \textbf{Project Identity and Type:} Collects the project name, brand name, and the specific type of café (e.g., Specialty Coffee, Fast-Food).
+    \item \textbf{Business Stage and Audience:} Captures the stage (New, Expanding, Relocating) and target demographic.
+    \item \textbf{Location Selection:} The user selects the target city and a center point on the interactive map for the analysis.
+\end{itemize}
+
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.95\linewidth]{img/resultsPageNearby.jpeg}
-  \caption{Nearby POIs tab (single-point mode) showing an interactive map and a categorized POI list with distances.}
-  \label{fig:ui-nearby-single}
+  \includegraphics[width=0.95\linewidth]{img/intake_wizard.jpeg}
+  \caption{Intake Wizard. The left panel collects detailed business requirements, while the map allows the user to pinpoint the target location.}
+  \label{fig:intake-wizard}
 \end{figure}
 
-\paragraph{Compare Mode.}
-When multiple points are submitted, the UI switches to \textbf{Compare Mode}, presenting side-by-side summaries for points A and B across all indicators and charts (Figures~\ref{fig:ui-compare-insights}--\ref{fig:ui-compare-nearby}).
+\section{Analysis Results and Insights}
 
-\begin{figure}[H]
+After the intake phase, the system computes the suitability of the selected location using the underlying GNN model and presents a series of detailed analytical views.
+
+\subsection{Analysis Overview}
+Figure 6.3 shows the \textit{Analysis Overview} (Business Fit Report). This is the primary dashboard for interpreting the location's viability:
+\begin{itemize}
+    \item \textbf{Score Overview:} Presents the raw GNN Location Score alongside a context-adjusted Business Fit score.
+    \item \textbf{Score Breakdown:} Deconstructs the score into contributing factors such as Location (GNN), POI Richness, Audience Fit, and Road Accessibility.
+\end{itemize}
+
+\begin{figure}[htbp]
   \centering
-  \includegraphics[width=0.95\linewidth]{img/resultsPageMultiPointCompareViewInsights.jpeg}
-  \caption{Insights tab in compare mode (A vs B) with side-by-side indicators and comparative bar charts.}
-  \label{fig:ui-compare-insights}
+  \includegraphics[width=0.95\linewidth]{img/analysis_overview.jpeg}
+  \caption{Analysis Overview. Displays the Business Fit Report with overall scores and risk assessment based on the model's predictions.}
+  \label{fig:analysis-overview}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.95\linewidth]{img/resultsPageMultiPointCompareViewNearby.png}
-    \caption{Nearby POIs in compare mode. The list presents distances to A and B, aiding point-to-point comparison.}\label{fig:ui-compare-nearby}
+\subsection{Nearby POIs}
+Figure 6.4 illustrates the \textit{Nearby POIs} view, which provides context on the surrounding urban amenities.
+\begin{itemize}
+    \item \textbf{Amenities by Category:} Lists places of interest such as Restaurants, Cafes, and Banks, alongside their distance from the target location.
+    \item \textbf{Coverage Metrics:} Summarizes the total number of POIs found within the defined search radius.
+\end{itemize}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{img/nearby_pois.jpeg}
+  \caption{Nearby POIs view. Categorizes local amenities and displays their proximity to the candidate location.}
+  \label{fig:nearby-pois}
 \end{figure}
 
-% \paragraph{Explanation Tab.}
-% Displays the top contributing POIs per category with their decayed contribution scores, providing interpretable reasoning for why a location scores high or low (Figure~\ref{fig:ui-explain-single}).
-
-% \begin{figure}[H]
-%   \centering
-%   \includegraphics[width=0.85\linewidth]{img/resultsPageMultiPointCompareViewExplanation.jpeg}
-%   \caption{Explanation tab showing top contributing POIs per category with decayed contributions.}
-%   \label{fig:ui-explain-single}
-% \end{figure}
-
-% % =============================================================
-% \section{Work Completed in 8th Semester (GNN Transition)}
-% % =============================================================
-
-% The 8th semester is dedicated to the architectural transition of SiteX from a tabular XGBoost model to a production \textbf{Heterogeneous Graph Neural Network (HeteroGAT)} as the core prediction engine. The following subsections document each completed task in detail.
-
-\subsection{Expanded Data Collection Campaign (\textasciitilde{}1 Week)}
-The single largest effort of the 8th semester was a large-scale, multi-day scraping campaign to build a dataset of sufficient size and richness for GNN training. The previous 7th-semester dataset was too small and lacked individual review text and foot traffic data.
-
-\paragraph{Scraping Infrastructure.}
-The team adopted the open-source \textbf{\texttt{google\allowbreak-maps\allowbreak-scraper}} tool (\url{https://github.com/gosom/google-maps-scraper}), a Go-based CLI application that scrapes Google Maps business data in bulk. The decision to switch from a browser-based approach was made because this tool:
+\subsection{Competitor Data}
+Understanding the competitive landscape is crucial. Figure 6.5 shows the \textit{Competitor Data} tab:
 \begin{itemize}
-    \item Supports bulk keyword and geographic bounding-box queries.
-    \item Outputs structured JSON/CSV data including reviews, ratings, popular times, price tier, and operating hours.
-    \item Can be run headlessly on a server or local machine without a browser.
+    \item \textbf{Competitor Density:} A breakdown of how many competing businesses exist within 0.5 km, 1 km, and 1.5 km radii.
+    \item \textbf{Competitor Details:} Lists individual competitors, displaying their ratings, distance, estimated revenue tier, and relative strength in the area.
 \end{itemize}
 
-\paragraph{Scraping Timeline (approx.\ 7 days).}
-\begin{itemize}
-    \item \textbf{Day 1--2: Configuration and Pilot Runs.} The tool was installed, configured with the target study area bounding box (Kathmandu Valley + Bhaktapur district), and pilot runs were executed to validate the output schema and estimate collection time per batch.
-    \item \textbf{Day 3--5: Cafe and Competitor Data Collection.} Sequential scraping batches were run targeting cafes, restaurants, and food-service competitors. Each batch required monitoring for rate-limiting and retry logic. Multiple runs were needed to cover the full geographic extent.
-    \item \textbf{Day 6--7: POI Category Collection.} Separate scraping jobs were run for each POI category: banks, education institutions, health facilities, temples, and other amenities.
-\end{itemize}
-
-\paragraph{Dataset Scale Achieved.}
-\begin{itemize}
-    \item \textbf{$\sim$10,000} cafe and competitor business records with full metadata (used as training nodes).
-    \item \textbf{$\sim$30,000} Points of Interest (POIs) across five categories.
-    \item Per cafe: individual review texts, per-review star ratings, popular times (hour-by-hour foot traffic), price tier, and operating hours.
-\end{itemize}
-
-\subsection{Dataset Cleaning and Deduplication}
-Raw data from multiple scraping batches required significant cleaning before use:
-\begin{itemize}
-    \item \textbf{Deduplication:} Multiple scraping runs with overlapping bounding boxes produced duplicate records. A deduplication pass using Google Place ID as the unique key was applied to remove duplicates.
-    \item \textbf{Coordinate Validation:} Records with missing, null, or out-of-bounds latitude/longitude coordinates were filtered out.
-    \item \textbf{Review Filtering:} Reviews in languages other than English and Nepali were detected and flagged. Reviews with fewer than three words were excluded from sentiment analysis.
-    \item \textbf{Handling Missing Fields:} Records with missing foot traffic data or rating data were retained but flagged; missing values were imputed with the dataset median during feature construction.
-    \item \textbf{Output:} A clean, deduplicated dataset stored as structured CSV and imported into the SpatiaLite database.
-\end{itemize}
-
-\subsection{Sentiment Analysis Pipeline}
-Given access to individual review texts, a complete NLP pipeline was built to produce a per-cafe sentiment score:
-
-\begin{itemize}
-    \item \textbf{Model Selection:} A pre-trained transformer-based sentiment model was used to score each individual review on a continuous sentiment scale.
-    \item \textbf{Batch Inference:} Reviews were processed in batches to manage memory usage during inference across the full review corpus.
-    \item \textbf{Score Aggregation:} Individual review-level sentiment scores were aggregated per cafe by taking a weighted mean, assigning higher weight to more recent reviews to reflect current business sentiment.
-    \item \textbf{Output:} A \texttt{sentiment\_score} column was computed and appended to the cafe dataset. This field directly participates in the ground truth composite score.
-\end{itemize}
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1.0\linewidth]{img/SentimentAnalysis.png}
-    \caption{Sentiment analysis outcomes, showing the distribution of sentiment scores and labels across the dataset.}
-    \label{fig:sentiment-analysis}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{img/competitor_data.jpeg}
+  \caption{Competitor Data view. Provides an analysis of market saturation and details of nearby competing businesses.}
+  \label{fig:competitor-data}
 \end{figure}
 
-\subsection{POI Weight/Scoring Redesign}
-The original POI scoring scheme (which used manually assigned static weights per category) was replaced with a data-driven approach consistent with the GNN philosophy:
+\subsection{Foot Traffic Analysis}
+The \textit{Foot Traffic Analysis} (Figure 6.6) provides temporal patterns to help assess the location's liveliness at different times:
 \begin{itemize}
-    \item \textbf{Old approach:} Hand-crafted static weights per category type (e.g., banks $\times$ 0.3, health $\times$ 0.5) used to compute a tabular ``influence score'' for each location.
-    \item \textbf{New approach:} POI nodes in the graph carry their own feature vectors (including rating, review count, and category encoding). The HeteroGAT model learns the effective importance of each POI type through attention weights during training, rather than using pre-specified weights.
-    \item \textbf{Road graph retention:} The OSMnx road-network distance is still used as a continuous edge attribute (reflecting real travel distance), but the model now learns how to use this distance contextually rather than applying a fixed exponential decay formula.
+    \item \textbf{Activity Patterns:} Bar charts visualize hourly activity and weekly patterns, indicating the busiest times and days.
+    \item \textbf{Peak Periods:} Identifies the percentage of traffic during Morning Rush, Lunch Peak, and Evening Social hours.
 \end{itemize}
 
-\subsection{Ground Truth Composite Score Redesign}
-The target variable for supervised training was completely redesigned to be based solely on intrinsic business success signals, deliberately decoupling it from spatial features:
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{img/foot_traffic.jpeg}
+  \caption{Foot Traffic Analysis view. Visualizes temporal activity trends, peak hours, and daily footfall metrics.}
+  \label{fig:foot-traffic}
+\end{figure}
 
-\begin{equation}
-S_i = w_1 \cdot \text{rating}_i + w_2 \cdot \log(1 + \text{count}_i) + w_3 \cdot \text{sentiment}_i + w_4 \cdot \text{traffic}_i
-\end{equation}
-\begin{equation}
-y_i = 100 \times \frac{S_i - \min(S)}{\max(S) - \min(S)}
-\end{equation}
-
-Key design decisions:
+\subsection{Area Reviews}
+Finally, the \textit{Area Reviews} tab (Figure 6.7) captures the qualitative sentiment of the selected location:
 \begin{itemize}
-    \item \textbf{Log-scaled review count} ($\log(1+\text{count})$): Dampens the effect of viral outliers with tens of thousands of reviews.
-    \item \textbf{Exclusion of road/spatial features from the target:} The ground truth score contains no distance or POI-density information. This forces the GNN to learn spatial influence purely from the graph message-passing structure.
-    \item \textbf{Min-max normalization to 0--100:} Produces a bounded, interpretable suitability score for display in the UI.
+    \item \textbf{Sentiment Analysis:} A progress bar format indicating the proportion of positive, neutral, and negative reviews in the area.
+    \item \textbf{Top Keywords:} Highlights frequently mentioned terms (e.g., ``good coffee'', ``crowded'', ``expensive'') for quick insights.
+    \item \textbf{Recent Reviews:} Displays snippets of actual reviews to provide deeper qualitative context.
 \end{itemize}
 
-% Figure~\ref{fig:geo-heatmap} shows a geographic visualization of the POI composite score distribution across the study area, with existing cafes overlaid as reference points.
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.95\linewidth]{img/output.png}
-%     \caption{Geographic prediction heatmap of the POI Composite Score across the Kathmandu/Bhaktapur study area. Warmer colors (green) indicate higher predicted suitability. Existing cafe locations are overlaid as reference.}
-%     \label{fig:geo-heatmap}
-% \end{figure}
-
-\subsection{Database Migration --- CSV to SpatiaLite}
-To simplify deployment, eliminate external database server dependencies, and optimize runtime query speed, the spatial data store was migrated:
-\begin{itemize}
-    \item \textbf{From:} Structured CSV files (the raw and cleaned output of the data collection and sentiment analysis pipeline).
-    \item \textbf{To:} \textbf{SpatiaLite} --- a self-contained, file-based spatial database (an extension of SQLite with spatial functions via libspatialite).
-    \item \textbf{Schema mapping:} All four core datasets (\texttt{listings}, \texttt{competitors}, \texttt{points\_of\_interest}, and \texttt{demographics}) were structured, imported, and spatialized with R-tree spatial indexing.
-    \item \textbf{Backend update:} The FastAPI backend was updated to use \textbf{aiosqlite} for asynchronous SpatiaLite queries, replacing the previous in-memory GeoPandas and BallTree spatial search approach.
-    \item \textbf{Deployment benefit:} The entire data layer is now a single portable \texttt{.db} file. No database server needs to be running for the application to function.
-\end{itemize}
-
-\subsection{OSMnx Road Graph Setup and Serialization}
-The road network graph required for road-aware distance computation was set up as a persistent backend asset:
-\begin{itemize}
-    \item \textbf{Graph download:} The road network for the Kathmandu and Bhaktapur districts was downloaded from OpenStreetMap using the OSMnx Python library.
-    \item \textbf{Graph cleaning:} OSMnx's built-in simplification and consolidation routines were applied to remove isolated nodes, duplicate edges, and self-loops.
-    \item \textbf{Serialization:} The cleaned graph was serialized using Python's \texttt{pickle} module and saved as \texttt{road\_graph.pkl}. This avoids re-downloading and re-processing the graph on every server restart.
-    \item \textbf{Runtime loading:} The backend loads \texttt{road\_graph.pkl} once at startup and keeps it in memory. Shortest-path distances are computed on demand using NetworkX's shortest-path algorithms, replacing the previous live OSMnx API calls.
-\end{itemize}
-
-\subsection{Task 8: Heterogeneous Graph Construction Pipeline}
-A full graph construction pipeline was implemented to transform the SpatiaLite database into a PyTorch Geometric \texttt{HeteroData} object suitable for HeteroGAT training:
-\begin{itemize}
-    \item \textbf{Node featurization:} Cafe nodes receive feature vectors of (normalized rating, log-review count, sentiment score, price tier). POI nodes receive (category one-hot encoding, rating, review count). Competitor nodes receive (rating, review count, estimated category).
-    \item \textbf{Edge construction:} For each candidate-to-POI and candidate-to-competitor pair within the search radius, a directed typed edge is created. The road-network shortest-path distance is attached as a scalar edge attribute.
-    \item \textbf{Graph assembly:} The assembled \texttt{HeteroData} object is validated for schema consistency (node feature dimensions, edge index bounds) before being passed to the training loop.
-\end{itemize}
-
-% =============================================================
-\section{Remaining Works and Expected Outcomes}
-% =============================================================
-
-The following work is underway and constitutes the primary remaining effort for the 8th semester defense:
-
-\begin{itemize}
-    \item \textbf{HeteroGAT Training and Evaluation:} Finalize model training and evaluate its performance against the XGBoost baseline. Expected outcomes include lower error rates, improved spatial generalization, and graph-native interpretability via attention weights.
-    \item \textbf{Enhanced Interpretability Layer:} Upgrade the UI Explanation tab to provide a dual-layer explanation: data-level (top contributing POIs) and model-level (HeteroGAT attention weights).
-    \item \textbf{Personalized Business Input:} Allow users to define their café or restaurant profile, including business type, target customer segment, budget constraints, and space requirements to generate customized suitability assessments.
-    \item \textbf{Real-Time Data Integration:} Incorporate real-time foot traffic and mobility data from sources like mobile location services to provide dynamic location assessments.
-    \item \textbf{Expanded Economic Indicators:} Integrate economic data such as rental price trends and purchasing power analysis to enhance the model's understanding of location viability.
-    \item \textbf{Multi-Branch Optimization:} Develop features that allow franchise owners to plan and optimize multiple outlet locations simultaneously.
-    \item \textbf{Café Categorization and Characterization:} Develop a classification framework categorizing cafés based on ambiance, cuisine type, and price range to deliver context-aware assessments.
-    \item \textbf{Prescriptive Location Recommendations:} Move beyond evaluating a single point to actively prescribing optimal locations based on the type of café the user intends to open.
-\end{itemize}
-
-% % =============================================================
-% \section{Baseline Model Performance (7th Semester Reference Results)}
-% % =============================================================
-
-% The XGBoost baseline was fully trained and evaluated in the 7th semester. These results are retained here as the completed benchmark that the HeteroGAT model is designed to surpass in the current semester.
-
-% \subsection{Feature Importance}
-% Figure~\ref{fig:feature-importance} shows the top 15 features learned by the XGBoost baseline. The most significant feature is \verb|total_poi_count_km|, followed by \verb|health_ratio| and \verb|lng|, consistent with domain knowledge.
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.9\linewidth]{img/topFifteenImpFeatures.png}
-%     \caption{Top 15 features learned by the XGBoost baseline, ranked by importance score.}
-%     \label{fig:feature-importance}
-% \end{figure}
-
-% \subsection{Learning Curve and Performance Metrics}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.9\linewidth]{img/XGBoostLearningCurve.png}
-%     \caption{XGBoost baseline learning curve: Training vs.\ Test Loss (RMSE) over boosting iterations.}
-%     \label{fig:learning-curve}
-% \end{figure}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.9\linewidth]{img/TrainingVsTestingPerformance.png}
-%     \caption{Baseline XGBoost performance metrics (MAE, RMSE, $R^2$) on Training and Test sets.}
-%     \label{fig:performance-metrics}
-% \end{figure}
-
-% \subsection{Actual vs.\ Predicted and SHAP Analysis}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=1.0\linewidth]{img/trainTestSetActualAndPredicted.png}
-%     \caption{Baseline XGBoost: Actual vs.\ Predicted Scores for Training (left) and Test (right) sets.}
-%     \label{fig:actual-vs-predicted}
-% \end{figure}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.9\linewidth]{img/SHAP.png}
-%     \caption{SHAP Summary Plot for XGBoost baseline: feature impact on model output.}
-%     \label{fig:shap-summary}
-% \end{figure}
-
-% \subsection{Spatial Error and Residual Analysis}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=0.8\linewidth]{img/ErrorMap.png}
-%     \caption{Geographic distribution of Absolute Prediction Error on the Test Set (XGBoost baseline).}
-%     \label{fig:error-map}
-% \end{figure}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=1.0\linewidth]{img/ResidualVsPredictedAndDistributionOfResidual.png}
-%     \caption{XGBoost baseline: Residuals vs.\ Predicted Values (left) and Distribution of Residuals (right).}
-%     \label{fig:residuals}
-% \end{figure}
-
-% \begin{figure}[H]
-%     \centering
-%     \includegraphics[width=1.0\linewidth]{img/TargetDist(plusOthers).png}
-%     \caption{Dataset Split, Target Distribution, and Feature Distributions.}
-%     \label{fig:data-dist}
-% \end{figure}
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{img/area_reviews.jpeg}
+  \caption{Area Reviews view. Summarizes local customer sentiment and lists top keywords and recent reviews.}
+  \label{fig:area-reviews}
+\end{figure}
