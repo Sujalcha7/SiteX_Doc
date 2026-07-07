@@ -1,17 +1,21 @@
-\chapter{Conclusion and Enhancements}
-\section*{Conclusion}
+\chapter{Conclusion and Future Enhancements}
 
-In conclusion, SiteX has been successfully developed as a Location Intelligence and Site-Suitability application tailored specifically for cafe and restaurant businesses. The system enables entrepreneurs to evaluate potential locations by selecting a point on the map and receiving a suitability score along with an associated risk level. 
+\section{Conclusion}
 
-A major achievement of the 8th semester was the successful transition from a foundational XGBoost baseline to an advanced Heterogeneous Graph Neural Network (HeteroGNN). By modeling surrounding commercial activity, competitor presence, and neighborhood characteristics as an interconnected graph, the platform effectively captures complex, multi-hop spatial dependencies. SiteX thus bridges the gap between raw geospatial data and real-world business decisions, helping reduce uncertainty and financial risk when launching or expanding a food-service business in Nepal.
+SiteX has been successfully developed as a comprehensive Location Intelligence platform, tailored for cafe and restaurant entrepreneurs to mitigate financial risks associated with site selection.
 
-\section*{Future Enhancements}
+The platform's core achievement is its advanced Heterogeneous Graph Neural Network (HeteroGNN) architecture, leveraging PyTorch Geometric, SpatiaLite, and OSMnx. By modeling the urban environment as an interconnected graph, the system accurately captures complex spatial dependencies—such as competitor proximity and POI accessibility—surpassing traditional distance-based methods.
 
-While the current system provides a strong foundation for data-driven site evaluation, several enhancements can further improve its accuracy, usability, and scalability:
+Furthermore, the interactive Intake Wizard enables personalized analytics through a Business Requirements Profile. SiteX computes a dynamically contextualized suitability score that adjusts the base GNN prediction according to business scale, target demographic, pricing, and competition. Coupled with a rich dashboard offering insights like Foot Traffic Analysis and Area Reviews, the system empowers users to make highly informed, data-driven real estate decisions in the Kathmandu Valley.
 
-    \begin{itemize}
+\section{Future Enhancements}
 
-            \item \textbf{Real-time live traffic data integration (via mobile APIs):} Incorporate live mobility and traffic feeds from mobile location APIs to provide dynamic, up-to-date location assessments.
-            \item \textbf{Integration of macro-economic indicators (real estate pricing APIs):} Incorporate broader pricing and economic signals to improve long-term site viability modeling.
-            \item \textbf{Multi-city scaling beyond the Kathmandu Valley:} Extend the platform to additional urban regions so the same workflow can support entrepreneurs in multiple markets.
-    \end{itemize}
+While the current iteration of SiteX provides a robust and reliable foundation for site evaluation, there are several avenues for future enhancement to further elevate its accuracy, scalability, and feature set:
+
+\begin{itemize}
+    \item \textbf{Real-Time Mobility and Traffic Integration:} Currently, foot traffic is estimated based on static proxies and scraped POI data. Integrating live mobility feeds from telecom providers or mobile location APIs would allow for dynamic, time-of-day specific footfall assessments.
+    \item \textbf{To-Let Property Listings and API Integration:} While the current system focuses on scoring user-selected map coordinates, a valuable future enhancement is the integration of real commercial "To-Let" listings. Integrating with major real estate platforms via APIs would allow the system to continuously ingest, score, and recommend live rental properties as they hit the market, bridging the gap between analysis and immediate action.
+    \item \textbf{Advanced Explainable AI (XAI) Visualizations:} While the current dashboard provides strong contextual breakdowns, future versions could project the HeteroGNN's attention weights directly onto the interactive map, visually highlighting exactly which neighboring streets or competitors most heavily influenced the score.
+    \item \textbf{Temporal Graph Modeling:} Urban landscapes evolve. Upgrading the architecture to a Spatio-Temporal Graph Neural Network (STGNN) would allow the model to account for seasonal variations, gentrification trends, and long-term urban development patterns.
+    \item \textbf{Geographic Expansion:} The data pipelines and graph construction logic have been built to be highly modular. A primary next step is scaling the system beyond the Kathmandu and Bhaktapur regions to encompass other major economic hubs across Nepal.
+\end{itemize}

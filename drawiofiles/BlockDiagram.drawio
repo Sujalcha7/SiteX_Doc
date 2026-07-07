@@ -22,7 +22,7 @@
         <mxCell id="MAkwM9LWOuF135wYsnWN-9" value="Backend API" style="whiteSpace=wrap;strokeWidth=2;flipV=0;flipH=1;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="2018.6175862068967" y="272.13235294117646" width="121.37931034482759" height="56.61764705882353" as="geometry" />
         </mxCell>
-        <mxCell id="MAkwM9LWOuF135wYsnWN-10" value="Property Listing Filter" style="whiteSpace=wrap;strokeWidth=2;flipV=0;flipH=1;fontSize=16;" parent="1" vertex="1">
+        <mxCell id="MAkwM9LWOuF135wYsnWN-10" value="Map Point Filter" style="whiteSpace=wrap;strokeWidth=2;flipV=0;flipH=1;fontSize=16;" parent="1" vertex="1">
           <mxGeometry x="1992.065172413793" y="402.35294117647055" width="174.48275862068968" height="56.61764705882353" as="geometry" />
         </mxCell>
         <mxCell id="MAkwM9LWOuF135wYsnWN-11" value="Feature Calculator / Analyzer" style="whiteSpace=wrap;strokeWidth=2;flipV=0;flipH=1;fontSize=16;" parent="1" vertex="1">
@@ -49,7 +49,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="MAkwM9LWOuF135wYsnWN-18" value="Filter &#xa;Listings" style="curved=0;startArrow=none;endArrow=block;exitX=0.343;exitY=0.994;entryX=0.386;entryY=0.022;rounded=0;entryDx=0;entryDy=0;exitDx=0;exitDy=0;fontSize=13;exitPerimeter=0;entryPerimeter=0;" parent="1" source="MAkwM9LWOuF135wYsnWN-9" target="MAkwM9LWOuF135wYsnWN-10" edge="1">
+        <mxCell id="MAkwM9LWOuF135wYsnWN-18" value="Filter &#xa;Points" style="curved=0;startArrow=none;endArrow=block;exitX=0.343;exitY=0.994;entryX=0.386;entryY=0.022;rounded=0;entryDx=0;entryDy=0;exitDx=0;exitDy=0;fontSize=13;exitPerimeter=0;entryPerimeter=0;" parent="1" source="MAkwM9LWOuF135wYsnWN-9" target="MAkwM9LWOuF135wYsnWN-10" edge="1">
           <mxGeometry x="0.3205" relative="1" as="geometry">
             <Array as="points" />
             <mxPoint as="offset" />

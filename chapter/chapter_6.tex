@@ -2,9 +2,43 @@
 
 This section presents the observable results of the implemented system through the user interface (UI) and discusses how each UI component supports the overall workflow of site selection and location analysis. The key outcome of the project is a single, map-driven interface that allows users to (i) start a new project from a workspace, (ii) input business requirements through an intake wizard, and (iii) proceed to a results view that summarizes the location characteristics across multiple analytical dimensions for decision-making.
 
+\section{Model Evaluation and Performance}
+
+Before discussing the application interface, it is essential to evaluate the predictive performance of the underlying Heterogeneous Graph Neural Network (HeteroGNN) that powers the suitability analysis. The following diagrams illustrate the model's training stability, predictive accuracy, and geographic reliability.
+
+\subsection{Training and Validation Loss Curves}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.55\linewidth]{img/LossCurve.png}
+  \caption{Training and Validation Loss Curves. The curves show stable learning and generalization without overfitting.}
+  \label{fig:loss-curve}
+\end{figure}
+The training and validation loss curves (Figure 6.1) illustrate the learning stability of the HeteroGNN model. Over the course of 200 epochs, both the training Mean Squared Error (MSE) and the validation Root Mean Squared Error (RMSE) demonstrate a smooth, consistent downward trend before stabilizing. The absence of divergence between the training and validation curves indicates that the model is generalizing well to unseen data without overfitting. The validation RMSE converges to approximately 5.1 points, demonstrating the model's ability to consistently evaluate the spatial relationships between business locations, points of interest (POIs), and the road network.
+
+% \subsection{Predicted vs. Actual Scatter Plot}
+% \begin{figure}[htbp]
+%   \centering
+%   \includegraphics[width=0.65\linewidth]{img/PredictedVsActualScatter.png}
+%   \caption{Predicted vs. Actual Scatter Plot. The model excels at distinguishing low-score from high-score areas, forming distinct clusters.}
+%   \label{fig:predicted-actual}
+% \end{figure}
+% The Predicted vs. Actual scatter plot (Figure 6.2) visualizes the model's predictive performance on the test set. The model achieves a high global $R^2$ of $\sim$0.82 (explaining 82\% of the variance), which is primarily driven by its strong ability to distinguish between two major clusters in the dataset: lower-scoring locations (around 20) and higher-scoring locations (40+). While the model is highly effective at performing this broad binary categorization based on spatial density and connectivity, the plot reveals a flat predictive band within the higher-scoring cluster (the 35–60 range). This indicates that while current spatial features are excellent for establishing baseline viability, additional granular features (e.g., foot traffic, demographics) will be required in future iterations to capture the fine-grained variance between "good" and "exceptional" locations.
+
+
+\subsection{Geographic Residual Map}
+Because SiteX is inherently a spatial application, standard scalar metrics are insufficient to validate the model's real-world utility; we must also ensure there is no geographic bias. The Geographic Residual Map (Figure 6.3) overlays the model's prediction errors (residuals) across the city's coordinates. An ideal model exhibits a random, "white noise" distribution of over-predictions and under-predictions. This visualization confirms that the model's errors are relatively evenly distributed across the geographic area, rather than being heavily concentrated in specific neighborhoods. This spatial stability proves that the GNN is learning generalized topological rules rather than simply memorizing the coordinates of specific affluent or highly-rated districts.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.65\linewidth]{img/GeographicResidualMap.png}
+  \caption{Geographic Residual Map. Prediction errors are evenly distributed, indicating geographic stability and lack of spatial bias.}
+  \label{fig:geographic-residual}
+\end{figure}
+
 \section{Workspace and Project Initialization}
 
-Figure 6.1 shows the \textit{Home/Workspace} page of the application, titled Discover the Perfect Location. The design acts as a central hub for the user:
+Figure 6.4 shows the \textit{Home/Workspace} page of the application, titled Discover the Perfect Location. The design acts as a central hub for the user:
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.95\linewidth]{img/home_workspace.jpeg}
@@ -19,7 +53,7 @@ Figure 6.1 shows the \textit{Home/Workspace} page of the application, titled Dis
 
 \section{Intake Wizard}
 
-Once a new analysis is initiated, the user is presented with the \textit{Intake Wizard} (Figure 6.2). This step ensures the analysis is tailored to the specific business persona:
+Once a new analysis is initiated, the user is presented with the \textit{Intake Wizard} (Figure 6.5). This step ensures the analysis is tailored to the specific business persona:
 \begin{itemize}
     \item \textbf{Project Identity and Type:} Collects the project name, brand name, and the specific type of café (e.g., Specialty Coffee, Fast-Food).
     \item \textbf{Business Stage and Audience:} Captures the stage (New, Expanding, Relocating) and target demographic.
@@ -38,21 +72,22 @@ Once a new analysis is initiated, the user is presented with the \textit{Intake 
 After the intake phase, the system computes the suitability of the selected location using the underlying GNN model and presents a series of detailed analytical views.
 
 \subsection{Analysis Overview}
-Figure 6.3 shows the \textit{Analysis Overview} (Business Fit Report). This is the primary dashboard for interpreting the location's viability:
-\begin{itemize}
-    \item \textbf{Score Overview:} Presents the raw GNN Location Score alongside a context-adjusted Business Fit score.
-    \item \textbf{Score Breakdown:} Deconstructs the score into contributing factors such as Location (GNN), POI Richness, Audience Fit, and Road Accessibility.
-\end{itemize}
-
 \begin{figure}[htbp]
   \centering
   \includegraphics[width=0.95\linewidth]{img/analysis_overview.jpeg}
-  \caption{Analysis Overview. Displays the Business Fit Report with overall scores and risk assessment based on the model's predictions.}
+  \caption{Analysis Overview. Displays the Business Fit Report with overall scores and risk assessment. Note: The Explainable AI reasoning section is located further down the page and requires scrolling.}
   \label{fig:analysis-overview}
 \end{figure}
+Figure 6.6 shows the \textit{Analysis Overview} (Business Fit Report). This is the primary dashboard for interpreting the location's viability:
+\begin{itemize}
+    \item \textbf{Score Overview:} Presents the raw GNN Location Score alongside a context-adjusted Business Fit score.
+    \item \textbf{Score Breakdown:} Deconstructs the score into contributing factors such as Location (GNN), POI Richness, Audience Fit, and Road Accessibility.
+    \item \textbf{Explainable AI (XAI):} Accessible by scrolling further down the page, this section provides transparent, AI-driven reasoning explaining exactly why the location received its score and how well it fits the specific business context.
+\end{itemize}
+
 
 \subsection{Nearby POIs}
-Figure 6.4 illustrates the \textit{Nearby POIs} view, which provides context on the surrounding urban amenities.
+Figure 6.7 illustrates the \textit{Nearby POIs} view, which provides context on the surrounding urban amenities.
 \begin{itemize}
     \item \textbf{Amenities by Category:} Lists places of interest such as Restaurants, Cafes, and Banks, alongside their distance from the target location.
     \item \textbf{Coverage Metrics:} Summarizes the total number of POIs found within the defined search radius.
@@ -66,7 +101,7 @@ Figure 6.4 illustrates the \textit{Nearby POIs} view, which provides context on 
 \end{figure}
 
 \subsection{Competitor Data}
-Understanding the competitive landscape is crucial. Figure 6.5 shows the \textit{Competitor Data} tab:
+Understanding the competitive landscape is crucial. Figure 6.8 shows the \textit{Competitor Data} tab:
 \begin{itemize}
     \item \textbf{Competitor Density:} A breakdown of how many competing businesses exist within 0.5 km, 1 km, and 1.5 km radii.
     \item \textbf{Competitor Details:} Lists individual competitors, displaying their ratings, distance, estimated revenue tier, and relative strength in the area.
@@ -80,7 +115,7 @@ Understanding the competitive landscape is crucial. Figure 6.5 shows the \textit
 \end{figure}
 
 \subsection{Foot Traffic Analysis}
-The \textit{Foot Traffic Analysis} (Figure 6.6) provides temporal patterns to help assess the location's liveliness at different times:
+The \textit{Foot Traffic Analysis} (Figure 6.9) provides temporal patterns to help assess the location's liveliness at different times:
 \begin{itemize}
     \item \textbf{Activity Patterns:} Bar charts visualize hourly activity and weekly patterns, indicating the busiest times and days.
     \item \textbf{Peak Periods:} Identifies the percentage of traffic during Morning Rush, Lunch Peak, and Evening Social hours.
@@ -94,14 +129,14 @@ The \textit{Foot Traffic Analysis} (Figure 6.6) provides temporal patterns to he
 \end{figure}
 
 \subsection{Area Reviews}
-Finally, the \textit{Area Reviews} tab (Figure 6.7) captures the qualitative sentiment of the selected location:
+Finally, the \textit{Area Reviews} tab (Figure 6.10) captures the qualitative sentiment of the selected location:
 \begin{itemize}
     \item \textbf{Sentiment Analysis:} A progress bar format indicating the proportion of positive, neutral, and negative reviews in the area.
     \item \textbf{Top Keywords:} Highlights frequently mentioned terms (e.g., ``good coffee'', ``crowded'', ``expensive'') for quick insights.
     \item \textbf{Recent Reviews:} Displays snippets of actual reviews to provide deeper qualitative context.
 \end{itemize}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
   \centering
   \includegraphics[width=0.95\linewidth]{img/area_reviews.jpeg}
   \caption{Area Reviews view. Summarizes local customer sentiment and lists top keywords and recent reviews.}

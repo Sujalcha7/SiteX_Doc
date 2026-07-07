@@ -35,15 +35,13 @@ The principal objective of this project is:
 To ensure the successful delivery of a robust and feature-rich platform, we have defined the following scope:
 \begin{itemize}
 	\item \textbf{Where?} Our project will focus on the commercial areas across the \textbf{Kathmandu Valley}.
-	\item \textbf{What kind of shop?} Our initial model will be an expert on one thing: \textbf{cafes and coffee shops}, with a system designed to be scalable to other retail types in the future.
+	\item \textbf{What kind of shop?} Our initial model will be an expert on one thing: \textbf{cafes, coffee shops and restaurants}, with a system designed to be scalable to other retail types in the future.
 	\item \textbf{What data?} Our system will be built on a multi-faceted dataset including:
 	      \begin{itemize}
 		      \item Publicly available geospatial data from OpenStreetMap.
 		      \item Manually collected "ground-truth" data (e.g., business verification, visibility scores).
-		      \item Demographic proxy data, derived from scraped real estate values and business density analysis.
-		      \item Crowdsourced property listings for available "To-Let" spaces.
 	      \end{itemize}
-			\item \textbf{What it is?} SiteX is a \textbf{location intelligence and site-suitability application} designed to help entrepreneurs evaluate the business potential of a specific location for franchised cafes by providing a clear suitability assessment and associated risk level.
+			\item \textbf{What it is?} SiteX is a \textbf{location intelligence and site-suitability application} designed to help entrepreneurs evaluate the business potential of a specific location for cafes, coffee shops and restaurants by providing a clear suitability assessment and associated risk level.
 
 \end{itemize}
 
@@ -51,20 +49,20 @@ To ensure the successful delivery of a robust and feature-rich platform, we have
 
 The finished application is designed to be a strategic partner for entrepreneurs and planners. Here’s how it will be used:
 \begin{itemize}
-    \item \textbf{Integrated Property Search:} Users can discover and filter available "To-Let" properties directly on the map, bridging the gap between analysis and action.
+ 
     \item \textbf{Deep Site Analysis:} For any point or property, users can get a detailed suitability score, a breakdown of influencing factors, and an analysis of the local competition and trade area.
     \item \textbf{Strategic Comparison:} The platform allows users to save and compare multiple locations side-by-side to make a final, evidence-based decision.
     \item \textbf{A Tool for Planners:} Urban planners and real estate agents can use the rich data layers (competition density, demographic proxies) to gain a deeper understanding of the city's commercial ecosystem.
 \end{itemize}
 
-\section{Project Progress and Organization}
+% \section{Project Progress and Organization}
 
-This major project is structured to span across two academic semesters ($7^{th}$ and $8^{th}$ semesters). During the first phase in the $7^{th}$ semester, we successfully completed the foundational work, which was evaluated through our project proposal, mid-defense, and final defense. 
+% This major project is structured to span across two academic semesters ($7^{th}$ and $8^{th}$ semesters). During the first phase in the $7^{th}$ semester, we successfully completed the foundational work, which was evaluated through our project proposal, mid-defense, and final defense. 
 
-The key milestones achieved during the $7^{th}$ semester include:
-\begin{itemize}
-    \item \textbf{Model Development and Evaluation:} We trained and optimized an XGBoost Regressor model to predict location suitability scores based on spatial features. The model's performance was rigorously evaluated using metrics such as RMSE, MAE, and $R^2$, and its predictions were made interpretable using SHAP values and feature importance analysis.
-    \item \textbf{Core User Interface Implementation:} We built the primary SiteX web application featuring interactive mapping with 'Point pick' and 'To-let pick' modes. A comprehensive Results Dashboard was also implemented, offering insights into Accessibility, Model Prediction, and POI Scores, alongside an interactive Comparative Analysis mode and an interpretable narrative generation system.
-\end{itemize}
+% The key milestones achieved during the $7^{th}$ semester include:
+% \begin{itemize}
+%     \item \textbf{Model Development and Evaluation:} We trained and optimized an XGBoost Regressor model to predict location suitability scores based on spatial features. The model's performance was rigorously evaluated using metrics such as RMSE, MAE, and $R^2$, and its predictions were made interpretable using SHAP values and feature importance analysis.
+%     \item \textbf{Core User Interface Implementation:} We built the primary SiteX web application featuring interactive mapping with 'Point pick' and 'To-let pick' modes. A comprehensive Results Dashboard was also implemented, offering insights into Accessibility, Model Prediction, and POI Scores, alongside an interactive Comparative Analysis mode and an interpretable narrative generation system.
+% \end{itemize}
 
-In the $8^{th}$ semester, we successfully shifted from a prototype-style analysis workflow to a complete, product-oriented location intelligence system. The most significant milestone was the completion of the Requirements Input Form and the introduction of dynamic persona-based scoring, which allowed users to tailor suitability outputs to brand identity, business scale, pricing tier, audience, and competitor-avoidance preferences. We also completed the migration to a Heterogeneous Graph Neural Network (HeteroGNN) architecture based on HeteroGAT, enabling more nuanced and context-aware suitability predictions for real-world cafe site selection in the Kathmandu Valley.
+% In the $8^{th}$ semester, we successfully shifted from a prototype-style analysis workflow to a complete, product-oriented location intelligence system. The most significant milestone was the completion of the Requirements Input Form and the introduction of dynamic persona-based scoring, which allowed users to tailor suitability outputs to brand identity, business scale, pricing tier, audience, and competitor-avoidance preferences. We also completed the migration to a Heterogeneous Graph Neural Network (HeteroGNN) architecture based on HeteroGAT, enabling more nuanced and context-aware suitability predictions for real-world cafe site selection in the Kathmandu Valley.

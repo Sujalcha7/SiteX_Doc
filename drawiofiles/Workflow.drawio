@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.0.6 Chrome/138.0.7204.100 Electron/37.2.3 Safari/537.36">
   <diagram name="Page-1" id="NNCEa-szgrd3ZI8YKl5c">
-    <mxGraphModel dx="1758" dy="975" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1875" dy="1040" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -25,7 +25,7 @@
         <mxCell id="XTEuA5kA4qtezXJb3yhF-9" parent="1" style="whiteSpace=wrap;strokeWidth=2;fontSize=16;" value="Output Trained Model" vertex="1">
           <mxGeometry height="54" width="214" x="1168" y="820" as="geometry" />
         </mxCell>
-        <mxCell id="XTEuA5kA4qtezXJb3yhF-10" parent="1" style="whiteSpace=wrap;strokeWidth=2;fontSize=16;" value="Collect Geospatial, Demographic &amp; Listing Data" vertex="1">
+        <mxCell id="XTEuA5kA4qtezXJb3yhF-10" parent="1" style="whiteSpace=wrap;strokeWidth=2;fontSize=16;" value="Collect Geospatial &amp; Demographic Data" vertex="1">
           <mxGeometry height="78" width="260" x="1145" y="310" as="geometry" />
         </mxCell>
         <mxCell id="XTEuA5kA4qtezXJb3yhF-38" edge="1" parent="1" source="XTEuA5kA4qtezXJb3yhF-11" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=16;" target="XTEuA5kA4qtezXJb3yhF-7">
@@ -48,7 +48,7 @@
         <mxCell id="XTEuA5kA4qtezXJb3yhF-14" parent="1" style="whiteSpace=wrap;strokeWidth=2;fontSize=16;" value="User Defines Requirements&#xa;(Cafe Type, Audience, Pricing, Scale, etc.)" vertex="1">
           <mxGeometry height="80" width="259" x="463" y="260" as="geometry" />
         </mxCell>
-        <mxCell id="XTEuA5kA4qtezXJb3yhF-15" parent="1" style="whiteSpace=wrap;strokeWidth=2;fontSize=16;" value="Backend: Filters Listings &amp;&#xa;Generates Personalized Heatmap" vertex="1">
+        <mxCell id="XTEuA5kA4qtezXJb3yhF-15" parent="1" style="whiteSpace=wrap;strokeWidth=2;fontSize=16;" value="Backend: Generates&#xa;Personalized Heatmap" vertex="1">
           <mxGeometry height="102" width="260" x="462" y="420" as="geometry" />
         </mxCell>
         <mxCell id="XTEuA5kA4qtezXJb3yhF-16" parent="1" style="whiteSpace=wrap;strokeWidth=2;fontSize=16;" value="User Explores Personalized Map" vertex="1">
@@ -89,7 +89,7 @@
             <mxPoint x="589.938596491228" y="310" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="XTEuA5kA4qtezXJb3yhF-27" edge="1" parent="1" source="XTEuA5kA4qtezXJb3yhF-12" style="curved=0;startArrow=none;endArrow=block;exitX=0;exitY=0.5;entryX=1;entryY=0.5;rounded=0;exitDx=0;exitDy=0;entryDx=0;entryDy=0;fontSize=16;" target="XTEuA5kA4qtezXJb3yhF-15" value="Reads Listings &amp;&#xa;Geo-Data">
+        <mxCell id="XTEuA5kA4qtezXJb3yhF-27" edge="1" parent="1" source="XTEuA5kA4qtezXJb3yhF-12" style="curved=0;startArrow=none;endArrow=block;exitX=0;exitY=0.5;entryX=1;entryY=0.5;rounded=0;exitDx=0;exitDy=0;entryDx=0;entryDy=0;fontSize=16;" target="XTEuA5kA4qtezXJb3yhF-15" value="Reads Geo-Data">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="990" y="1073" />

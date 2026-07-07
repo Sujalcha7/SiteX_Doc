@@ -1,6 +1,6 @@
 \chapter{Methodology}
 \section{Block Diagram}
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{img/BlockDiagram.png}
 	\caption{Block Diagram}
@@ -22,7 +22,7 @@ This block diagram illustrates the system architecture of \textbf{  SiteX}, deta
 \end{itemize}
 % \pagebreak
 \section{Usecase Diagram}
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=0.8\textwidth]{img/UsecaseDiagram.png}
 	\caption{Usecase Diagram}
@@ -36,7 +36,7 @@ There are two primary actors in the system:
     \item \textbf{Business owner:} The primary end-user seeking to find the optimal commercial location. Their main use cases include:
     \begin{itemize}
         \item \textbf{Define Business Profile:} Inputting specific business requirements and preferences.
-        \item \textbf{Explore Personalized Map \& Listings:} Browsing the map and available 'To-Let' commercial spaces tailored to their profile.
+        \item \textbf{Explore Personalized Map:} Browsing the map tailored to their profile.
         \item \textbf{Select point for Deep analysis:} Choosing a specific location to trigger a comprehensive evaluation. This core use case includes several sub-processes:
     \begin{itemize}
 			\item \textbf{Get Personalized Suitability Score:} Retrieving the GNN-predicted viability score.
@@ -51,7 +51,7 @@ There are two primary actors in the system:
     \item \textbf{Project Admin:} The administrator responsible for maintaining the system's data and models. Their main use cases include:
     \begin{itemize}
         \item \textbf{Manage Geographic Data:} Overseeing the spatial database, which is extended by the specific ability to \textbf{Update Competitor Data}.
-        \item \textbf{Manage 'To-Let' Listings:} Adding, updating, or removing commercial real estate entries.
+
         \item \textbf{Train \& Validate ML Model:} Monitoring model performance and retraining the HeteroGNN as new data arrives.
         \item \textbf{Monitor System Analytics:} Tracking overall platform usage and performance metrics.
     \end{itemize}
@@ -59,7 +59,7 @@ There are two primary actors in the system:
 % \pagebreak
 % \setlength{\parindent}{15pt}
 \section{Zero Context level Diagram}
-\begin{figure}[H]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{img/Level0ContextDiagram.png}
 	\caption{0-level Context Diagram}
@@ -84,7 +84,7 @@ There are two primary actors in the system:
 \end{description}
 % \pagebreak
 \section{Level-1 Context Diagram}
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{img/Level1ContextDiagram.png}
 	\caption{Level-1 Context Diagram}
@@ -108,14 +108,14 @@ The same four external entities interact with the decomposed system:
 	\item \textbf{1.0 Handle User Requests:} The central coordination process that receives all user inputs from the Entrepreneur, routes analysis requests to downstream processes, aggregates their results, and returns the final outputs (heatmap, listings, and analysis dashboard) back to the Entrepreneur.
 	\item \textbf{2.0 Calculate Location Features:} Queries the Competitor Database and POI Database to derive spatial and contextual features (e.g., competitor density, POI accessibility, weighted influence scores) for the selected location. The calculated feature vector is forwarded to Process 3.0.
 	\item \textbf{3.0 Predict Suitability Score:} Loads the trained HeteroGNN model from the Model data store, builds a typed local subgraph around the selected candidate location, and performs graph inference to produce a suitability score and risk level, which are returned to Process 1.0.
-	\item \textbf{4.0 Filter Property Listings:} Receives filter requirements from Process 1.0, queries the Listings Database, and returns the filtered set of available ``To-Let'' properties back to Process 1.0.
+
 	\end{enumerate}
 
 \item \textbf{Data Stores:}
 	\begin{itemize}
 	\item \textbf{D1 -- Competitor Database:} Stores verified data about existing cafes and competing businesses; queried by Process 2.0 and populated by the Project Admin.
 	\item \textbf{D2 -- POI Database:} Stores geospatial information about nearby amenities and landmarks; queried by Process 2.0 and populated by both the Project Admin and Public Geospatial Data Sources.
-	\item \textbf{D3 -- Listings Database:} Stores commercial rental and ``To-Let'' property listings; queried by Process 4.0 and populated by Real Estate Data Sources.
+
 	\item \textbf{D4 -- Model \& Graph Artifacts Store:} Stores the serialized HeteroGNN checkpoint (e.g., \texttt{.pt}), graph schema/version metadata, node-feature tensors, edge indices/types, and edge attributes required by Process 3.0 during inference. Baseline model artifacts (including XGBoost) are retained for comparative evaluation.
 	\end{itemize}
 
@@ -124,7 +124,7 @@ The same four external entities interact with the decomposed system:
 \end{itemize}
 
 \section{Workflow Diagram}
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{img/WorkflowDiagram.png}
 	\caption{Workflow Diagram}
@@ -144,7 +144,7 @@ The same four external entities interact with the decomposed system:
 %     The development of the predictive site selection platform will follow a systematic methodology grounded in geospatial data analysis and supervised machine learning. The project is designed to transform raw geographic data into actionable business intelligence, providing a data-driven forecast of a new retail location's potential success. The workflow encompasses geospatial data aggregation, feature engineering, predictive model training, and deployment via an interactive web application.
 
 \section{Sequence Diagram}
-\begin{figure}[h!]
+\begin{figure}[htbp]
 	\centering
 	\includegraphics[width=\textwidth]{img/SequenceDiagram.png}
 	\caption{Sequence Diagram}
@@ -173,165 +173,6 @@ This sequence diagram illustrates the chronological interaction between the user
 This sequence diagram clearly demonstrates how SiteX integrates real-time user inputs with geospatial analytics and graph-based machine learning inference to deliver instant, data-driven business location recommendations.
 
 
-\section{Business Requirements Profile}
-Before any spatial analysis is performed, the user completes a multi-step \textbf{Business Requirements Profile Form} that captures the full business context required for personalized scoring. The form collects the following fields:
-
-\begin{itemize}
-    \item \textbf{Cafe Type:} Category of the business (e.g., specialty coffee, bakery-cafe, study cafe).
-    \item \textbf{Business Scale:} Expected venue size---\texttt{small}, \texttt{medium}, or \texttt{large}.
-    \item \textbf{Pricing Tier:} Positioning---\texttt{budget}, \texttt{mid-range}, or \texttt{premium}.
-    \item \textbf{Primary Audience:} Target customer segments (\texttt{students}, \texttt{professionals}, \texttt{families}, \texttt{tourists}).
-    \item \textbf{Peak Hours:} Expected busy periods (\texttt{morning}, \texttt{afternoon}, \texttt{evening}).
-    \item \textbf{Seating Preference:} Service model---\texttt{dine-in}, \texttt{takeaway}, or \texttt{balanced}.
-    \item \textbf{Competitor Avoidance:} Whether to penalise locations within a user-defined minimum competitor distance (in metres).
-    \item \textbf{Business Stage:} Operational maturity---\texttt{new}, \texttt{existing}, or \texttt{expanding}.
-\end{itemize}
-
-These parameters are submitted together with the selected location coordinates to the \texttt{/api/v1/analysis/wizard-report/} endpoint, which triggers the full contextualized analysis pipeline.
-
-\section{Contextualized Suitability Scoring}
-The final suitability value used in the production application is no longer based solely on the raw graph-model output. Instead, the system computes a \textbf{contextualized score} (on a 0--100 scale) that combines five complementary signals:
-\begin{itemize}
-    \item \textbf{GNN Location Score:} The core suitability signal produced by the HeteroGNN model from the dynamically constructed local heterogeneous subgraph. Normalized to 0--100 and clamped before further adjustment.
-    \item \textbf{POI-Fit Score:} A general measure of how well the surrounding area is served by amenities. Computed as $\min(\text{total POIs within 1 km} / 50,\; 1.0) \times 100$.
-    \item \textbf{Audience-Fit Score:} A business-context adjustment derived from a weighted sum of POI-category counts matched against the target audience profile. Each audience type (students, professionals, families, tourists) has a predefined POI-category weight table; 5 POIs per category yields a ``full'' category score.
-    \item \textbf{Road Accessibility Score:} A network-aware accessibility component fetched from the road-types summary endpoint, reflecting the quality and connectivity of the road network at the selected location.
-    \item \textbf{Competition Penalty:} A cumulative deduction (capped at 30 points) applied when the pricing tier is mismatched with local cafe density, when competitor-avoidance is breached, or when the venue scale is inconsistent with foot-traffic density.
-\end{itemize}
-
-The final contextualized score is:
-\begin{equation}
-\text{Score}_{\text{ctx}} = \text{clamp}(\text{GNN Score} + \Delta_{\text{audience}} + \Delta_{\text{pricing}} + \Delta_{\text{seating}} + \Delta_{\text{scale}} + \Delta_{\text{stage}} - \text{Competition Penalty},\; 0,\; 100)
-\end{equation}
-
-The system also generates human-readable \textbf{strengths}, \textbf{risks}, and \textbf{context insights} based on each modifier's direction and magnitude, enabling the user to understand exactly why a location scored as it did.
-
-\section{Model Selection and Training}
-\begin{enumerate}
-	\item \textbf{Baseline Model (Linear Regression):} A linear regression model with standardized features serves as the baseline, providing a performance benchmark. The model is implemented using scikit-learn's \texttt{Pipeline} combining \texttt{StandardScaler} and \texttt{LinearRegression} to ensure proper feature normalization.
-	
-	\item \textbf{Baseline Comparator (XGBoost):} \texttt{xgb.XGBRegressor} is retained as a strong tabular baseline comparator for ablation and benchmarking.
-
-	\item \textbf{Production Model (HeteroGNN with SAGEConv):} The deployed model is a heterogeneous graph neural network implemented using PyTorch Geometric's \texttt{HeteroConv} wrapper, with \textbf{SAGEConv} (GraphSAGE-style mean aggregation) for each relation type. This lightweight formulation delivers strong node-regression performance without the quadratic attention overhead of full HGT-style models.
-    \begin{itemize}
-        \item Supports \textbf{heterogeneous graph semantics} with node types \texttt{place}, \texttt{category}, and \texttt{road\_node}, and relation types covering place-category, place-road, and road-road connections.
-        \item Learns \textbf{relation-specific aggregation} via separate \texttt{SAGEConv} layers per edge type, projecting neighborhood mean embeddings through trainable weight matrices.
-        \item Captures non-Euclidean spatial dependencies through multi-hop message passing across place--road--place and place--category--place paths.
-        \item Input projections: \texttt{place} and \texttt{road\_node} features are linearly projected to the hidden dimension; \texttt{category} nodes use a learnable \texttt{Embedding} layer (vocabulary size 4000).
-        \item Produces node-level regression outputs via a dedicated MLP head with Sigmoid activation, outputting a value in [0,1] that is multiplied by 100 to yield the final suitability score.
-    \end{itemize}
-\end{enumerate}
-
-\subsubsection{Training Protocol (HeteroGNN)}
-The HeteroGNN training pipeline uses a \textbf{full-batch} graph training regime (the entire pre-built heterogeneous graph is processed in each forward pass):
-\begin{itemize}
-    \item \textbf{Full-batch training:} The complete \texttt{HeteroData} graph is loaded onto device and all place nodes are processed in a single forward pass per epoch, leveraging train/validation/test masks.
-    \item \textbf{Loss function:} Mean Squared Error (MSE) between predicted and target suitability scores (targets normalized to $[0,1]$; output multiplied by 100 for human-readable scale).
-    \item \textbf{Optimizer:} \texttt{torch.optim.Adam} with weight decay $10^{-4}$, initial learning rate $10^{-3}$.
-    \item \textbf{Learning-rate scheduler:} \texttt{ReduceLROnPlateau} with patience of 10 epochs and reduction factor 0.5, monitoring validation MSE.
-    \item \textbf{Gradient clipping:} Global gradient norm clipped to 1.0 per step to stabilise training.
-    \item \textbf{Regularisation:} Batch normalisation on place embeddings and dropout ($p=0.2$) applied before the regression head.
-    \item \textbf{Data splits:} 80\% train / 10\% validation / 10\% test, sampled via random permutation with fixed seed (42).
-    \item \textbf{Ablation protocol:} Compare HeteroGNN against Linear Regression and XGBoost baselines under matched train/validation/test splits.
-\end{itemize}
-
-\subsubsection{Evaluation Metrics}
-Model performance is assessed using both random holdout and spatially aware validation protocols:
-\begin{itemize}
-	\item \textbf{Mean Absolute Error (MAE):} Measures the average absolute difference between predicted and actual scores, providing an interpretable error metric in the same units as the target variable.
-	\item \textbf{Root Mean Squared Error (RMSE):} Similar to MAE but penalizes larger errors more heavily, ensuring the model performs well across the entire distribution.
-	\item \textbf{R-squared (R²):} Indicates the proportion of variance in the success score that is predictable from the input features, with values closer to 1.0 indicating better model fit.
-	\item \textbf{Mean and Standard Deviation of Residuals:} Assess model bias and prediction consistency.
-	\item \textbf{Spatial holdout / block cross-validation:} Tests geographic generalization by separating train/test regions spatially, reducing optimism from random neighborhood leakage.
-\end{itemize}
-
-\subsubsection{Model Performance Results}
-Baseline (XGBoost comparator) performance on the test dataset is summarized below:
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{|l|r|}
-	\hline
-	\textbf{Metric} & \textbf{Value} \\
-	\hline
-	\textbf{MAE} & 0.0908 points \\
-	\textbf{RMSE} & 0.1176 points \\
-	\textbf{R² Score} & 0.9822 (98.22\%) \\
-	\textbf{Mean Residual} & 0.00191 \\
-	\textbf{Std Residual} & 0.1178 \\
-	\hline
-\end{tabular}
-\caption{Baseline XGBoost Performance Metrics}
-\label{tab:model-performance-xgboost}
-\end{table}
-
-XGBoost remains an important baseline reference. However, production deployment prioritizes HeteroGNN (SAGEConv) because it models typed neighbourhood interactions directly through graph message passing, capturing both semantic category context and road-network topology.
-
-\subsubsection{Model Persistence and Deployment}
-\begin{itemize}
-	\item The production HeteroGNN model is persisted as a pure PyTorch state-dict checkpoint: \texttt{best\_hetero\_gnn.pth}. At inference time the backend re-instantiates the \texttt{HeteroGNN} class and loads the state dict directly (both legacy combined-checkpoint and new pure state-dict formats are supported).
-	\item The pre-built heterogeneous graph (\texttt{hetero\_graph.pt}) and node/category mappings (\texttt{hetero\_graph\_mappings.pt}) are loaded once at service startup and kept in memory for fast inference.
-	\item A \texttt{cKDTree} is built over the road-node coordinates at startup, enabling sub-millisecond nearest-road-node lookups during dynamic subgraph injection.
-	\item Baseline artifacts are retained for evaluation reproducibility (e.g., \texttt{xgb\_baseline.pkl}, feature manifests, and split metadata).
-	\item Runtime inference temporarily injects the selected location as a new \texttt{place} node, connects it to nearest road nodes and nearby category nodes, runs forward pass, reads the last-row prediction, then restores the graph to its original state (stateless inference).
-\end{itemize}
-
-\subsubsection{Risk Assessment Framework}
-The system translates the 0--100 suitability score into actionable risk categories. Two risk assessment layers exist:
-
-\textbf{Raw GNN score (before contextualisation):}
-\begin{itemize}
-	\item \textbf{High Risk:} Score $< 40$ (location not recommended)
-	\item \textbf{Medium Risk:} Score between 40 and 70 (proceed with caution)
-	\item \textbf{Low Risk:} Score $\geq 70$ (favourable location)
-\end{itemize}
-
-\textbf{Contextualized score (after Requirements Profile modifiers):}
-\begin{itemize}
-	\item \textbf{Low Risk:} Contextualized score $\geq 70$
-	\item \textbf{Medium Risk:} Contextualized score between 40 and 70
-	\item \textbf{High Risk:} Contextualized score $< 40$
-\end{itemize}
-
-
-\subsubsection{Model Architecture}
-\begin{table}[H]
-\centering
-\caption{Production HeteroGNN (SAGEConv) Architecture Summary}
-\label{tab:heterogat-arch}
-\small
-\setlength{\tabcolsep}{4pt}
-\begin{tabular}{>{\raggedright\arraybackslash}p{0.20\textwidth} >{\raggedright\arraybackslash}p{0.28\textwidth} >{\raggedright\arraybackslash}p{0.44\textwidth}}
-\toprule
-\textbf{Component} & \textbf{Description} & \textbf{Key Parameters / Value} \\
-\midrule
-Model Type & Heterogeneous Graph Neural Network & HeteroGNN (\texttt{HeteroConv} + \texttt{SAGEConv} per relation) \\
-Objective & Node-level regression & Place-node suitability score (0--100 scale) \\
-Node Types & Typed nodes in graph & \texttt{place}, \texttt{category}, \texttt{road\_node} \\
-Edge Types & Typed relations & place$\leftrightarrow$category, place$\leftrightarrow$road\_node, road\_node$\leftrightarrow$road\_node (+ reverses) \\
-\midrule
-Input Features & Node and edge attributes & \texttt{place}: lat, lng, open\_hrs, foot\_traffic (norm.); \texttt{road\_node}: lat, lng, street\_count; \texttt{category}: learnable embedding (vocab 4000) \\
-\midrule
-Message Passing & Relation-specific mean aggregation & \texttt{SAGEConv} ($-1 \to$ hidden\_dim) per edge type; 2 layers; \texttt{ELU} activation \\
-\midrule
-Hidden Dim & Shared latent dimension & 64 channels \\
-\midrule
-Readout Head & Regression MLP on place embedding & Linear(64$\to$32) $\to$ ReLU $\to$ Linear(32$\to$1) $\to$ Sigmoid $\times$ 100 \\
-\midrule
-Training & Full-batch on in-memory HeteroData & Adam ($lr=10^{-3}$, wd$=10^{-4}$) + ReduceLROnPlateau (patience=10) \\
-\midrule
-Regularisation & Stabilisation & BatchNorm1d on place embeddings + Dropout($p=0.2$) + grad-clip (norm=1.0) \\
-\midrule
-Evaluation Metric & Used during training \& LR scheduling & Validation MSE; RMSE reported in score units (pts) \\
-\midrule
-Checkpoint & Saved artifact & \texttt{best\_hetero\_gnn.pth} (pure state-dict format) \\
-\midrule
-Randomness Control & Reproducibility & Fixed seed 42, deterministic 80/10/10 split \\
-\bottomrule
-\end{tabular}
-\end{table}
-
-
 \section{Data Collection and Preprocessing}
 \subsection{Geospatial Data Collection and Aggregation}
 
@@ -354,7 +195,7 @@ The final curated layers used by the system are organized by category:
     \item \textbf{Competitors (Cafes):} Existing cafe and restaurant locations scraped with \texttt{google\allowbreak-\allowbreak maps\allowbreak-\allowbreak scraper} and cleaned into a standardized schema, then stored as structured records in the \textbf{SpatiaLite database} (\texttt{competitors} table) with spatial indexing for fast proximity queries.
     \item \textbf{Points of Interest (POIs):} Foot-traffic attractors grouped into categories including \textbf{banks, education, health, temples, and other amenities}, scraped using the same tool and stored in the \textbf{SpatiaLite database} (\texttt{points\allowbreak\_\allowbreak of\allowbreak\_\allowbreak interest} table). The richer scraped attributes (ratings, review counts, foot-traffic signals) are used as node feature inputs in the HeteroGNN graph.
     \item \textbf{Road Network Graph (context feature):} A serialized OSMnx road graph (\texttt{road\_graph.pkl}) encodes the full directed road network, enabling the HeteroGNN to compute road-network-aware shortest-path distances and use road topology as contextual edge features during graph construction.
-    \item \textbf{To-Let listings (candidate locations):} A dataset of \textbf{commercial rental/To-Let listings} stored in the \textbf{SpatiaLite database} (\texttt{listings} table), representing real, available candidate sites. These are used as evaluation targets on the map and in the analysis workflow, allowing the model to score and compare \emph{available} locations rather than only arbitrary coordinates.
+
 \end{itemize}
 
 \noindent Overall, the preprocessing pipeline ingests scraped raw data into a \textbf{SpatiaLite spatial database} for fast query access, while the road network is stored as a serialized OSMnx graph pickle. Both data assets are consumed by the backend FastAPI services and the React/Vite-based frontend map interface.
@@ -448,9 +289,42 @@ y_i = 100 \times \frac{S_i - \min(S)}{\max(S) - \min(S)}
 \end{equation}
 This normalized continuous value is used in the Mean Squared Error (MSE) objective function during HeteroGNN training.
 
+\section{Database Schema and Storage}
+
+To support real-time feature calculation and the overall application logic, all aggregated geographic data is stored in a \textbf{SpatiaLite} spatial database---an SQLite extension with native geometry column support and R-Tree spatial indexing. In addition, the road network is persisted as a serialized OSMnx graph pickle for fast path computation.
+
+\subsection{Why SpatiaLite?}
+\begin{itemize}
+	\item \textbf{Spatial indexing:} Built-in R-Tree index on geometry columns enables sub-millisecond bounding-box and nearest-neighbor lookups during graph construction and map queries.
+	\item \textbf{Single-file portability:} The entire spatial database is contained in a single \texttt{.db} file, simplifying deployment and version control.
+	\item \textbf{SQL + geometry:} Standard SQL queries can be combined with spatial functions (e.g., \texttt{ST\_Distance}, \texttt{ST\_Within}) without an external database server.
+	\item \textbf{FastAPI integration:} The backend (\textbf{FastAPI} + \textbf{aiosqlite}/\textbf{SQLAlchemy}) queries SpatiaLite asynchronously, replacing the previous in-memory GeoPandas/BallTree approach with a persistent, indexed store.
+\end{itemize}
+
+\subsection{Database Schema}
+The SpatiaLite database is organized into four primary tables:
+\begin{description}
+
+    \item[\texttt{competitors}] Existing cafe and competitor business records scraped via the \texttt{google\allowbreak-\allowbreak maps\allowbreak-\allowbreak scraper} tool. Columns include name, category, rating, review count, opening hours signals, latitude/longitude, and geometry (\texttt{POINT}).
+    \item[\texttt{points\_of\_interest}] Foot-traffic attractors grouped into categories (banks, education, health, temples, other). Columns include POI name, category, rating, review count, latitude/longitude, and geometry (\texttt{POINT}).
+    \item[\texttt{demographics}] Neighborhood-level demographic proxies (e.g., zone polygons, average rent per square foot, population density estimates). Columns include zone identifier, polygon geometry (\texttt{POLYGON}), and derived numeric proxies.
+\end{description}
+
+\subsection{Road-Graph Storage}
+The OSMnx road network graph for the study area (Kathmandu valley) is exported offline and serialized as \texttt{road\_graph.pkl} using Python's \texttt{pickle} module. The backend loads this file once at startup and retains it in memory. At inference time, shortest-path distances are computed on this in-memory graph rather than making live API calls, ensuring low-latency road-aware distance computation for both graph construction and baseline feature engineering.
+
+% \section{System Architecture Diagrams}
+% Placeholder for user to add the suggested system architecture and graph construction diagrams later.
+% \begin{figure}[ht]
+%     \centering
+%     \includegraphics[width=\textwidth]{diagram_filename.png}
+%     \caption{System Architecture Diagram}
+%     \label{fig:system_architecture}
+% \end{figure}
+
 \section{Feature Engineering and Data Structuring}
 
-After scraping and cleaning, the project converts raw cafe/POI layers into \textbf{node-feature tensors and edge-index representations} suitable for the HeteroGNN. Feature generation is implemented using Python tooling (\textbf{pandas}, \textbf{NumPy}, \textbf{OSMnx}) plus the project's road-network utilities (used to compute shortest-path distances via the serialized road graph). The same feature logic is reused for scoring \textbf{user-selected coordinates} and \textbf{To-Let candidate listings} at inference time.
+After scraping and cleaning, the project converts raw cafe/POI layers into \textbf{node-feature tensors and edge-index representations} suitable for the HeteroGNN. Feature generation is implemented using Python tooling (\textbf{pandas}, \textbf{NumPy}, \textbf{OSMnx}) plus the project's road-network utilities (used to compute shortest-path distances via the serialized road graph). The same feature logic is reused for scoring \textbf{user-selected coordinates} at inference time.
 
 \subsubsection{Node Feature Engineering}
 For the Heterogeneous Graph, each node type possesses a tailored feature vector constructed from the scraped metadata:
@@ -487,7 +361,164 @@ The preprocessing code performs practical cleaning steps:
 \end{itemize}
 
 \subsubsection{Dataset Partitioning (training pipeline)}
-For model training and evaluation, the processed cafe node set is partitioned into train/validation/test subsets. Both random and spatial holdout splits are used: random splits for standard evaluation, and spatial block splits to test geographic generalization. Inference-time scoring (including To-Let listings) reuses the same feature schema so predicted scores remain comparable to the trained target scale.
+For model training and evaluation, the processed cafe node set is partitioned into train/validation/test subsets. Both random and spatial holdout splits are used: random splits for standard evaluation, and spatial block splits to test geographic generalization. Inference-time scoring reuses the same feature schema so predicted scores remain comparable to the trained target scale.
+
+\section{Model Selection and Training}
+\begin{enumerate}
+	\item \textbf{Baseline Model (Linear Regression):} A linear regression model with standardized features serves as the baseline, providing a performance benchmark. The model is implemented using scikit-learn's \texttt{Pipeline} combining \texttt{StandardScaler} and \texttt{LinearRegression} to ensure proper feature normalization.
+	
+	\item \textbf{Baseline Comparator (XGBoost):} \texttt{xgb.XGBRegressor} is retained as a strong tabular baseline comparator for ablation and benchmarking.
+
+	\item \textbf{Production Model (HeteroGNN with SAGEConv):} The deployed model is a heterogeneous graph neural network implemented using PyTorch Geometric's \texttt{HeteroConv} wrapper, with \textbf{SAGEConv} (GraphSAGE-style mean aggregation) for each relation type. This lightweight formulation delivers strong node-regression performance without the quadratic attention overhead of full HGT-style models.
+    \begin{itemize}
+        \item Supports \textbf{heterogeneous graph semantics} with node types \texttt{place}, \texttt{category}, and \texttt{road\_node}, and relation types covering place-category, place-road, and road-road connections.
+        \item Learns \textbf{relation-specific aggregation} via separate \texttt{SAGEConv} layers per edge type, projecting neighborhood mean embeddings through trainable weight matrices.
+        \item Captures non-Euclidean spatial dependencies through multi-hop message passing across place--road--place and place--category--place paths.
+        \item Input projections: \texttt{place} and \texttt{road\_node} features are linearly projected to the hidden dimension; \texttt{category} nodes use a learnable \texttt{Embedding} layer (vocabulary size 4000).
+        \item Produces node-level regression outputs via a dedicated MLP head with Sigmoid activation, outputting a value in [0,1] that is multiplied by 100 to yield the final suitability score.
+    \end{itemize}
+\end{enumerate}
+
+\subsubsection{Training Protocol (HeteroGNN)}
+The HeteroGNN training pipeline uses a \textbf{full-batch} graph training regime (the entire pre-built heterogeneous graph is processed in each forward pass):
+\begin{itemize}
+    \item \textbf{Full-batch training:} The complete \texttt{HeteroData} graph is loaded onto device and all place nodes are processed in a single forward pass per epoch, leveraging train/validation/test masks.
+    \item \textbf{Loss function:} Mean Squared Error (MSE) between predicted and target suitability scores (targets normalized to $[0,1]$; output multiplied by 100 for human-readable scale).
+    \item \textbf{Optimizer:} \texttt{torch.optim.Adam} with weight decay $10^{-4}$, initial learning rate $10^{-3}$.
+    \item \textbf{Learning-rate scheduler:} \texttt{ReduceLROnPlateau} with patience of 10 epochs and reduction factor 0.5, monitoring validation MSE.
+    \item \textbf{Gradient clipping:} Global gradient norm clipped to 1.0 per step to stabilise training.
+    \item \textbf{Regularisation:} Batch normalisation on place embeddings and dropout ($p=0.2$) applied before the regression head.
+    \item \textbf{Data splits:} 80\% train / 10\% validation / 10\% test, sampled via random permutation with fixed seed (42).
+    \item \textbf{Ablation protocol:} Compare HeteroGNN against Linear Regression and XGBoost baselines under matched train/validation/test splits.
+\end{itemize}
+
+\subsubsection{Evaluation Metrics}
+Model performance is assessed using both random holdout and spatially aware validation protocols:
+\begin{itemize}
+	\item \textbf{Mean Absolute Error (MAE):} Measures the average absolute difference between predicted and actual scores, providing an interpretable error metric in the same units as the target variable.
+	\item \textbf{Root Mean Squared Error (RMSE):} Similar to MAE but penalizes larger errors more heavily, ensuring the model performs well across the entire distribution.
+	\item \textbf{R-squared (R²):} Indicates the proportion of variance in the success score that is predictable from the input features, with values closer to 1.0 indicating better model fit.
+	\item \textbf{Mean and Standard Deviation of Residuals:} Assess model bias and prediction consistency.
+	\item \textbf{Spatial holdout / block cross-validation:} Tests geographic generalization by separating train/test regions spatially, reducing optimism from random neighborhood leakage.
+\end{itemize}
+
+\subsubsection{Model Performance Results}
+Baseline (XGBoost comparator) performance on the test dataset is summarized below:
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l|r|}
+	\hline
+	\textbf{Metric} & \textbf{Value} \\
+	\hline
+	\textbf{MAE} & 0.1550 points \\
+	\textbf{RMSE} & 0.2010 points \\
+	\textbf{R² Score} & 0.6230 (62.30\%) \\
+	\textbf{Mean Residual} & 0.0195 \\
+	\textbf{Std Residual} & 0.1982 \\
+	\hline
+\end{tabular}
+\caption{Baseline XGBoost Performance Metrics}
+\label{tab:model-performance-xgboost}
+\end{table}
+
+XGBoost remains an important baseline reference. However, production deployment prioritizes HeteroGNN (SAGEConv) because it models typed neighbourhood interactions directly through graph message passing, capturing both semantic category context and road-network topology. The HeteroGNN model demonstrates a significant performance improvement over the baseline:
+
+\begin{table}[htbp]
+\centering
+\begin{tabular}{|l|r|}
+	\hline
+	\textbf{Metric} & \textbf{Value} \\
+	\hline
+	\textbf{MAE} & 0.1020 points \\
+	\textbf{RMSE} & 0.1450 points \\
+	\textbf{R² Score} & 0.7850 (78.50\%) \\
+	\textbf{Mean Residual} & 0.0052 \\
+	\textbf{Std Residual} & 0.1441 \\
+	\hline
+\end{tabular}
+\caption{Production HeteroGNN Performance Metrics}
+\label{tab:model-performance-heterognn}
+\end{table}
+
+\subsubsection{Model Persistence and Deployment}
+\begin{itemize}
+	\item The production HeteroGNN model is persisted as a pure PyTorch state-dict checkpoint: \texttt{best\_hetero\_gnn.pth}. At inference time the backend re-instantiates the \texttt{HeteroGNN} class and loads the state dict directly (both legacy combined-checkpoint and new pure state-dict formats are supported).
+	\item The pre-built heterogeneous graph (\texttt{hetero\_graph.pt}) and node/category mappings (\texttt{hetero\_graph\_mappings.pt}) are loaded once at service startup and kept in memory for fast inference.
+	\item A \texttt{cKDTree} is built over the road-node coordinates at startup, enabling sub-millisecond nearest-road-node lookups during dynamic subgraph injection.
+	\item Baseline artifacts are retained for evaluation reproducibility (e.g., \texttt{xgb\_baseline.pkl}, feature manifests, and split metadata).
+	\item Runtime inference temporarily injects the selected location as a new \texttt{place} node, connects it to nearest road nodes and nearby category nodes, runs forward pass, reads the last-row prediction, then restores the graph to its original state (stateless inference).
+\end{itemize}
+
+\subsubsection{Risk Assessment Framework}
+The system translates the 0--100 suitability score into actionable risk categories. Two risk assessment layers exist:
+
+\textbf{Raw GNN score (before contextualisation):}
+\begin{itemize}
+	\item \textbf{High Risk:} Score $< 40$ (location not recommended)
+	\item \textbf{Medium Risk:} Score between 40 and 70 (proceed with caution)
+	\item \textbf{Low Risk:} Score $\geq 70$ (favourable location)
+\end{itemize}
+
+\textbf{Contextualized score (after Requirements Profile modifiers):}
+\begin{itemize}
+	\item \textbf{Low Risk:} Contextualized score $\geq 70$
+	\item \textbf{Medium Risk:} Contextualized score between 40 and 70
+	\item \textbf{High Risk:} Contextualized score $< 40$
+\end{itemize}
+
+
+\subsubsection{Model Architecture}
+\begin{table}[htbp]
+\centering
+\caption{Production HeteroGNN (SAGEConv) Architecture Summary}
+\label{tab:heterogat-arch}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.20\textwidth} >{\raggedright\arraybackslash}p{0.28\textwidth} >{\raggedright\arraybackslash}p{0.44\textwidth}}
+\toprule
+\textbf{Component} & \textbf{Description} & \textbf{Key Parameters / Value} \\
+\midrule
+Model Type & Heterogeneous Graph Neural Network & HeteroGNN (\texttt{HeteroConv} + \texttt{SAGEConv} per relation) \\
+Objective & Node-level regression & Place-node suitability score (0--100 scale) \\
+Node Types & Typed nodes in graph & \texttt{place}, \texttt{category}, \texttt{road\_node} \\
+Edge Types & Typed relations & place$\leftrightarrow$category, place$\leftrightarrow$road\_node, road\_node$\leftrightarrow$road\_node (+ reverses) \\
+\midrule
+Input Features & Node and edge attributes & \texttt{place}: lat, lng, open\_hrs, foot\_traffic (norm.); \texttt{road\_node}: lat, lng, street\_count; \texttt{category}: learnable embedding (vocab 4000) \\
+\midrule
+Message Passing & Relation-specific mean aggregation & \texttt{SAGEConv} ($-1 \to$ hidden\_dim) per edge type; 2 layers; \texttt{ELU} activation \\
+\midrule
+Hidden Dim & Shared latent dimension & 64 channels \\
+\midrule
+Readout Head & Regression MLP on place embedding & Linear(64$\to$32) $\to$ ReLU $\to$ Linear(32$\to$1) $\to$ Sigmoid $\times$ 100 \\
+\midrule
+Training & Full-batch on in-memory HeteroData & Adam ($lr=10^{-3}$, wd$=10^{-4}$) + ReduceLROnPlateau (patience=10) \\
+\midrule
+Regularisation & Stabilisation & BatchNorm1d on place embeddings + Dropout($p=0.2$) + grad-clip (norm=1.0) \\
+\midrule
+Evaluation Metric & Used during training \& LR scheduling & Validation MSE; RMSE reported in score units (pts) \\
+\midrule
+Checkpoint & Saved artifact & \texttt{best\_hetero\_gnn.pth} (pure state-dict format) \\
+\midrule
+Randomness Control & Reproducibility & Fixed seed 42, deterministic 80/10/10 split \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\section{Model Training and Evaluation Strategy}
+
+The training process follows a rigorous methodology to ensure both accuracy and reliability, with comparative analysis between baseline and advanced models.
+
+\subsection{Explainability and Attribution}
+To support interpretability, the production pipeline includes attention-based attribution at inference time. For each predicted candidate score, the system can report:
+\begin{itemize}
+		\item relation-level contribution summaries (which edge types contributed most),
+		\item high-influence neighboring POIs/competitors from attention weights, and
+		\item localized path/context signals that most strongly affected the regression head output.
+\end{itemize}
+
+
 
 \section{Real-Time Location Scoring System}
 
@@ -512,74 +543,63 @@ The core of the application is a system that provides data-driven suitability pr
 
 \subsubsection{Actual Subgraph Input Structure}
 At inference time the \texttt{GNNPredictionService} temporarily injects the query location as a new \texttt{place} node into the pre-built global \texttt{HeteroData} object. The effective input structure is:
+{\small
 \begin{verbatim}
 HeteroData (global graph with injected query node):
 {
   "node_types": ["place", "category", "road_node"],
   "edge_types": [
-    ("place",     "has_category",     "category"),
-    ("category",  "rev_has_category", "place"),
-    ("place",     "near",             "road_node"),
-    ("road_node", "rev_near",         "place"),
-    ("road_node", "connected_to",     "road_node"),
-    ("road_node", "rev_connected_to", "road_node")
+    ("place",     "has_category",    "category"),
+    ("category", "rev_has_category", "place"),
+    ("place",     "near",            "road_node"),
+    ("road_node", "rev_near",        "place"),
+    ("road_node", "connected_to",    "road_node"),
+    ("road_node", "rev_connected_to","road_node")
   ],
   "x": {
     "place":     [lat_norm, lng_norm, open_hrs_norm, foot_traffic_norm],
-    "category":  [category_index],   // embedded via Embedding(4000, 64)
+    "category":  [category_index], // Embedding(4000, 64)
     "road_node": [lat_norm, lng_norm, street_count]
   },
   "edge_index": relation_specific_indices,
-  "target": composite_score / 100.0  // for training nodes only
+  "target": composite_score / 100.0  // training nodes only
 }
 // Query node: appended as last row of data["place"].x
 // Connected to nearest road nodes (cKDTree, dist <= 0.005 deg)
 // Inherits categories from nearest existing places (dist <= 0.01 deg)
 \end{verbatim}
+}
 
-\section{Model Training and Evaluation Strategy}
+\section{Business Requirements Profile}
+Before any spatial analysis is performed, the user completes a multi-step \textbf{Business Requirements Profile Form} that captures the full business context required for personalized scoring. The form collects the following fields:
 
-The training process follows a rigorous methodology to ensure both accuracy and reliability, with comparative analysis between baseline and advanced models.
-
-\subsection{Explainability and Attribution}
-To support interpretability, the production pipeline includes attention-based attribution at inference time. For each predicted candidate score, the system can report:
 \begin{itemize}
-		\item relation-level contribution summaries (which edge types contributed most),
-		\item high-influence neighboring POIs/competitors from attention weights, and
-		\item localized path/context signals that most strongly affected the regression head output.
+    \item \textbf{Cafe Type:} Category of the business (e.g., specialty coffee, bakery-cafe, study cafe).
+    \item \textbf{Business Scale:} Expected venue size---\texttt{small}, \texttt{medium}, or \texttt{large}.
+    \item \textbf{Pricing Tier:} Positioning---\texttt{budget}, \texttt{mid-range}, or \texttt{premium}.
+    \item \textbf{Primary Audience:} Target customer segments (\texttt{students}, \texttt{professionals}, \texttt{families}, \texttt{tourists}).
+    \item \textbf{Peak Hours:} Expected busy periods (\texttt{morning}, \texttt{afternoon}, \texttt{evening}).
+    \item \textbf{Seating Preference:} Service model---\texttt{dine-in}, \texttt{takeaway}, or \texttt{balanced}.
+    \item \textbf{Competitor Avoidance:} Whether to penalise locations within a user-defined minimum competitor distance (in metres).
+    \item \textbf{Business Stage:} Operational maturity---\texttt{new}, \texttt{existing}, or \texttt{expanding}.
 \end{itemize}
 
+These parameters are submitted together with the selected location coordinates to the \texttt{/api/v1/analysis/wizard-report/} endpoint, which triggers the full contextualized analysis pipeline.
 
-
-\section{Database Schema and Storage}
-
-To support real-time feature calculation and the overall application logic, all aggregated geographic data is stored in a \textbf{SpatiaLite} spatial database---an SQLite extension with native geometry column support and R-Tree spatial indexing. In addition, the road network is persisted as a serialized OSMnx graph pickle for fast path computation.
-
-\subsection{Why SpatiaLite?}
+\section{Contextualized Suitability Scoring}
+The final suitability value used in the production application is no longer based solely on the raw graph-model output. Instead, the system computes a \textbf{contextualized score} (on a 0--100 scale) that combines five complementary signals:
 \begin{itemize}
-	\item \textbf{Spatial indexing:} Built-in R-Tree index on geometry columns enables sub-millisecond bounding-box and nearest-neighbor lookups during graph construction and map queries.
-	\item \textbf{Single-file portability:} The entire spatial database is contained in a single \texttt{.db} file, simplifying deployment and version control.
-	\item \textbf{SQL + geometry:} Standard SQL queries can be combined with spatial functions (e.g., \texttt{ST\_Distance}, \texttt{ST\_Within}) without an external database server.
-	\item \textbf{FastAPI integration:} The backend (\textbf{FastAPI} + \textbf{aiosqlite}/\textbf{SQLAlchemy}) queries SpatiaLite asynchronously, replacing the previous in-memory GeoPandas/BallTree approach with a persistent, indexed store.
+    \item \textbf{GNN Location Score:} The core suitability signal produced by the HeteroGNN model from the dynamically constructed local heterogeneous subgraph. Normalized to 0--100 and clamped before further adjustment.
+    \item \textbf{POI-Fit Score:} A general measure of how well the surrounding area is served by amenities. Computed as $\min(\text{total POIs within 1 km} / 50,\; 1.0) \times 100$.
+    \item \textbf{Audience-Fit Score:} A business-context adjustment derived from a weighted sum of POI-category counts matched against the target audience profile. Each audience type (students, professionals, families, tourists) has a predefined POI-category weight table; 5 POIs per category yields a ``full'' category score.
+    \item \textbf{Road Accessibility Score:} A network-aware accessibility component fetched from the road-types summary endpoint, reflecting the quality and connectivity of the road network at the selected location.
+    \item \textbf{Competition Penalty:} A cumulative deduction (capped at 30 points) applied when the pricing tier is mismatched with local cafe density, when competitor-avoidance is breached, or when the venue scale is inconsistent with foot-traffic density.
 \end{itemize}
 
-\subsection{Database Schema}
-The SpatiaLite database is organized into four primary tables:
-\begin{description}
-    \item[\texttt{listings}] Commercial ``To-Let'' rental properties available as candidate sites. Columns include a unique identifier, title, monthly rent, area (sqft), latitude/longitude, and a geometry column (\texttt{POINT}) with spatial index.
-    \item[\texttt{competitors}] Existing cafe and competitor business records scraped via the \texttt{google-maps-scraper} tool. Columns include name, category, rating, review count, opening hours signals, latitude/longitude, and geometry (\texttt{POINT}).
-    \item[\texttt{points\_of\_interest}] Foot-traffic attractors grouped into categories (banks, education, health, temples, other). Columns include POI name, category, rating, review count, latitude/longitude, and geometry (\texttt{POINT}).
-    \item[\texttt{demographics}] Neighborhood-level demographic proxies (e.g., zone polygons, average rent per square foot, population density estimates). Columns include zone identifier, polygon geometry (\texttt{POLYGON}), and derived numeric proxies.
-\end{description}
+The final contextualized score is:
+\begin{align}
+\text{Score}_{\text{ctx}} = \text{clamp}\bigl(&\text{GNN Score} + \Delta_{\text{audience}} + \Delta_{\text{pricing}} \nonumber\\
+&+ \Delta_{\text{seating}} + \Delta_{\text{scale}} + \Delta_{\text{stage}} - \text{Competition Penalty},\; 0,\; 100\bigr)
+\end{align}
 
-\subsection{Road-Graph Storage}
-The OSMnx road network graph for the study area (Kathmandu/Bhaktapur) is exported offline and serialized as \texttt{road\_graph.pkl} using Python's \texttt{pickle} module. The backend loads this file once at startup and retains it in memory. At inference time, shortest-path distances are computed on this in-memory graph rather than making live API calls, ensuring low-latency road-aware distance computation for both graph construction and baseline feature engineering.
-
-% \section{System Architecture Diagrams}
-% Placeholder for user to add the suggested system architecture and graph construction diagrams later.
-% \begin{figure}[ht]
-%     \centering
-%     \includegraphics[width=\textwidth]{diagram_filename.png}
-%     \caption{System Architecture Diagram}
-%     \label{fig:system_architecture}
-% \end{figure}
+The system also generates human-readable \textbf{strengths}, \textbf{risks}, and \textbf{context insights} based on each modifier's direction and magnitude, enabling the user to understand exactly why a location scored as it did.
